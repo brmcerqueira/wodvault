@@ -149,3 +149,7 @@ export function saveCharacter(character: Character) {
 export function removeCharacter(id: string) {
   localStorage.removeItem(localStorageCharacterKey(id));
 }
+
+export function observeCharacter(callback: (character: Character) => void) {
+  
+}
