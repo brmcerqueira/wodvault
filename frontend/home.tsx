@@ -115,15 +115,15 @@ export class Home extends Component<{}, {
     </Navbar><Offcanvas show={this.state.showOffcanvas} placement="end" onHide={() => this.setState({ showOffcanvas: false })}>
         <Offcanvas.Header closeButton />
         <Offcanvas.Body className="d-flex flex-column">
+          {this.state.hostId !== null && (
+            <Button variant="outline-secondary" className="mb-2 w-100" onClick={() => this.onCopyHostId()}>
+              {this.state.hostId}
+            </Button>
+          )}
           <div className="mt-auto border-top pt-3">
-            {this.state.hostId !== null && (
-              <Button variant="outline-secondary" className="mb-2 w-100" onClick={() => this.onCopyHostId()}>
-                {this.state.hostId}
-              </Button>
-            )}
             <Form.Check className="mb-2" onChange={ async e => await this.onSwitchHost(e.target.checked)} defaultChecked={this.state.host}
               type="switch"
-              label={<i className={`bi ${this.state.host ? "bi-plug-fill" : "bi-plug"}`} />}
+              label={<i className={`bi ${this.state.host ? "bi-broadcast" : "bi-broadcast-pin"}`} />}
             />
             <Form.Check className="mb-2" onChange={e => this.onSwitchDark(e.target.checked)} defaultChecked={this.state.dark}
               type="switch"
