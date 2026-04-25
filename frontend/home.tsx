@@ -13,11 +13,13 @@ import { format } from "./fields/common.tsx";
 import { locale } from "./i18n/locale.ts";
 import { allCharacters, getCharacter, myId, removeCharacter, saveCharacter } from "./services/characterService.ts";
 import { isDark, dark } from "./services/preferencesService.ts";
-import { observeCharacter } from "./services/peerjsService.ts";
+import { host, observeCharacter } from "./services/peerjsService.ts";
 
 export class Home extends Component<{}, {
   showOffcanvas: boolean,
+  host: boolean,
   dark: boolean,
+  hostId: string | null,
   characters: Record<string, Character>,
   redirect?: string,
 }> {
@@ -32,7 +34,9 @@ export class Home extends Component<{}, {
 
     this.state = {
       showOffcanvas: false,
+      host: false,
       dark: isDark(),
+      hostId: null,
       characters
     }
 
@@ -42,6 +46,15 @@ export class Home extends Component<{}, {
         this.setState({ characters: this.state.characters });
       }
     });
+  }
+
+  private async onSwitchHost(value: boolean): Promise<void> {
+    const id = await host(value);
+    this.setState({ host: value, hostId: id });
+  }
+
+  private onCopyHostId(): void {
+    navigator.clipboard.writeText(this.state.hostId!);
   }
 
   private onSwitchDark(value: boolean): void {
@@ -103,6 +116,15 @@ export class Home extends Component<{}, {
         <Offcanvas.Header closeButton />
         <Offcanvas.Body className="d-flex flex-column">
           <div className="mt-auto border-top pt-3">
+            {this.state.hostId !== null && (
+              <Button variant="outline-secondary" className="mb-2 w-100" onClick={() => this.onCopyHostId()}>
+                {this.state.hostId}
+              </Button>
+            )}
+            <Form.Check className="mb-2" onChange={ async e => await this.onSwitchHost(e.target.checked)} defaultChecked={this.state.host}
+              type="switch"
+              label={<i className={`bi ${this.state.host ? "bi-plug-fill" : "bi-plug"}`} />}
+            />
             <Form.Check className="mb-2" onChange={e => this.onSwitchDark(e.target.checked)} defaultChecked={this.state.dark}
               type="switch"
               label={<i className={`bi ${this.state.dark ? "bi-moon-fill" : "bi-sun-fill"}`} />}
