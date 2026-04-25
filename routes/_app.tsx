@@ -6,7 +6,7 @@ export default function App({ Component }: PageProps) {
       <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Wodify</title>
+        <title>Wodvault</title>
         <link rel="stylesheet" href="/vendor/bootstrap/bootstrap.min.css" />
         <link
           rel="stylesheet"

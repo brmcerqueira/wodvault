@@ -37,7 +37,7 @@ export async function getImage(
 > {
   const response = await fetch(`${pixhostThumbs}/${path}`, {
     headers: {
-      "User-Agent": "Wodify-Image-Proxy",
+      "User-Agent": "Wodvault-Image-Proxy",
       Accept: "image/*",
     },
   });
