@@ -1,7 +1,7 @@
 /** @jsxImportSource $react */
 /** @jsxRuntime automatic */
 
-import { CharacterKind } from "../../domain/character.ts";;
+import { CharacterKind } from "../../character.ts";;
 import { Col, Container, Form, Row } from "$react-bootstrap";
 import { TextField } from "./fields/textField.tsx";
 import { SelectField } from "./fields/selectField.tsx";

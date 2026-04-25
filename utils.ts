@@ -1,4 +1,4 @@
-import { Character } from "./domain/character.ts";
+import { Character } from "./character.ts";
 
 export function keys<T extends object>(o: T): (keyof T)[] {
   return Object.keys(o) as (keyof T)[];

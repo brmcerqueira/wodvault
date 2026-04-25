@@ -1,7 +1,7 @@
 import * as dao from "../persistence/characterDao.ts";
 import { add, notify, remove } from "./broadcastService.ts";
 import { characterSchema } from "../domain/validation/characterSchema.ts";
-import { Character, CharacterMode } from "../domain/character.ts";
+import { Character, CharacterMode } from "../character.ts";
 import { getDiscordUser } from "../endpoints/discord.ts";
 import { locale } from "../i18n/backend/locale.ts";
 import { DiscordUser } from "../types.ts";

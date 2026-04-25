@@ -1,4 +1,4 @@
-import { Character } from "../../../domain/character.ts";
+import { Character } from "../../../character.ts";
 import { WebSocketMessage, WebSocketMessageKind } from "../../../types.ts";
 import { allCharacters, saveCharacter } from "./characterService.ts";
 

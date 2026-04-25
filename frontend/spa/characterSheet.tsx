@@ -1,7 +1,7 @@
 /** @jsxImportSource $react */
 /** @jsxRuntime automatic */
 
-import { Character, CharacterKind, CharacterMode } from "../../domain/character.ts";;
+import { Character, CharacterKind, CharacterMode } from "../../character.ts";;
 import { Component, createRef } from "$react";
 import { Form, Nav, Navbar } from "$react-bootstrap";
 import { JSX } from "$react/jsx-runtime";

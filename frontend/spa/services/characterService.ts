@@ -2,7 +2,7 @@ import {
   Character,
   CharacterKind,
   CharacterMode,
-} from "../../../domain/character.ts";
+} from "../../../character.ts";
 import { webSocketId } from "./webSocketService.ts";
 import { authorizationHeaders } from "./discordService.ts";
 

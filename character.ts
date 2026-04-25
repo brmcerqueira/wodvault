@@ -91,7 +91,6 @@ export type Character = {
   advantages: Record<string, number>;
   flaws: Record<string, number>;
   hungerOrRage: number;
-  //Vampire
   resonance: string;
   ambition: string;
   desire: string;
@@ -118,7 +117,6 @@ export type Character = {
     rituals?: string[];
     thinBloodAlchemy?: string[];
   };
-  //Werewolf
   auspice: string;
   tribe: string;
   renown: {

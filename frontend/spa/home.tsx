@@ -1,7 +1,7 @@
 /** @jsxImportSource $react */
 /** @jsxRuntime automatic */
 
-import { Character, CharacterKind } from "../../domain/character.ts";
+import { Character, CharacterKind } from "../../character.ts";
 import { DiscordUser } from "../../types.ts";
 import { keys } from "../../utils.ts";
 import { Component } from "$react";

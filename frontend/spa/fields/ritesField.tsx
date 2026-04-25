@@ -1,7 +1,7 @@
 /** @jsxImportSource $react */
 /** @jsxRuntime automatic */
 
-import { CharacterMode } from "../../../domain/character.ts";
+import { CharacterMode } from "../../../character.ts";
 import { keys } from "../../../utils.ts";
 import { CharacterManagerContext } from "../characterManager.ts";
 import { Component } from "$react";

@@ -2,7 +2,7 @@
 /** @jsxRuntime automatic */
 
 import { JSX } from "$react/jsx-runtime";
-import { CharacterMode } from "../../../domain/character.ts";
+import { CharacterMode } from "../../../character.ts";
 import { CharacterManagerContext } from "../characterManager.ts";
 import { Component } from "$react";
 import { Button } from "$react-bootstrap";

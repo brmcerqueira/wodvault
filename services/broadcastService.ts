@@ -1,4 +1,4 @@
-import { Character } from "../domain/character.ts";
+import { Character } from "../character.ts";
 
 type CharacterCallback = (character: Character) => void;
 
