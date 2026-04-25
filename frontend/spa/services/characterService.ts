@@ -1,0 +1,198 @@
+import {
+  Character,
+  CharacterKind,
+  CharacterMode,
+} from "../../../domain/character.ts";
+import { webSocketId } from "./webSocketService.ts";
+import { authorizationHeaders } from "./discordService.ts";
+
+export function buildCharacter(kind: CharacterKind): Character {
+  return {
+    _id: crypto.randomUUID(),
+    details: "",
+    image: "",
+    name: "",
+    player: "",
+    owner: null,
+    deleted: false,
+    mode: CharacterMode.Opened,
+    kind: kind,
+    attributes: {
+      physical: {
+        strength: 1,
+        dexterity: 1,
+        stamina: 1,
+      },
+      social: {
+        charisma: 1,
+        manipulation: 1,
+        composure: 1,
+      },
+      mental: {
+        intelligence: 1,
+        wits: 1,
+        resolve: 1,
+      },
+    },
+    skills: {
+      physical: {
+        athletics: 0,
+        brawl: 0,
+        craft: 0,
+        drive: 0,
+        firearms: 0,
+        melee: 0,
+        larceny: 0,
+        stealth: 0,
+        survival: 0,
+      },
+      social: {
+        animalKen: 0,
+        etiquette: 0,
+        insight: 0,
+        intimidation: 0,
+        leadership: 0,
+        performance: 0,
+        persuasion: 0,
+        streetwise: 0,
+        subterfuge: 0,
+      },
+      mental: {
+        academics: 0,
+        awareness: 0,
+        finance: 0,
+        investigation: 0,
+        medicine: 0,
+        occult: 0,
+        politics: 0,
+        science: 0,
+        technology: 0,
+      },
+    },
+    health: {
+      superficial: 0,
+      aggravated: 0,
+      penalty: 0,
+      start: 3,
+    },
+    willpower: {
+      superficial: 0,
+      aggravated: 0,
+      penalty: 0,
+    },
+    experience: {
+      total: 0,
+      spent: 0,
+    },
+    specialties: {},
+    advantages: {},
+    flaws: {},
+    hungerOrRage: 0,
+    //Vampire
+    resonance: "",
+    ambition: "",
+    desire: "",
+    predator: "",
+    clan: "",
+    generation: 0,
+    humanity: {
+      total: 0,
+      stains: 0,
+    },
+    bloodPotency: 0,
+    disciplines: {},
+    //Werewolf
+    auspice: "",
+    tribe: "",
+    renown: {
+      glory: 0,
+      honor: 0,
+      wisdom: 0,
+    },
+    harano: 0,
+    hauglosk: 0,
+    gifts: {},
+    rites: [],
+  };
+}
+
+function localStorageCharacterKey(id: string): string {
+  return `character:${id}`;
+}
+
+export function allCharacters(): string[] {
+  const result: string[] = [];
+  for (let index = 0; index < localStorage.length; index++) {
+    const key = localStorage.key(index);
+    if (key?.startsWith("character:")) {
+      const [_, id] = key.split(":");
+      result.push(id.trim());
+    }
+  }
+
+  return result;
+}
+
+export function getCharacter(id: string): Character {
+  return JSON.parse(localStorage.getItem(localStorageCharacterKey(id))!);
+}
+
+export async function saveCharacter(
+  character: Character,
+  onlyLocalStorage?: boolean,
+) {
+  const body = JSON.stringify(character);
+  localStorage.setItem(localStorageCharacterKey(character._id), body);
+  if (onlyLocalStorage === undefined || !onlyLocalStorage) {
+    fetch(`api/character/${webSocketId}`, {
+      method: "POST",
+      body: body,
+      headers: await authorizationHeaders(),
+    });
+  }
+}
+
+export async function removeCharacter(id: string) {
+  localStorage.removeItem(localStorageCharacterKey(id));
+  fetch(`api/character/${webSocketId}/${id}`, {
+    method: "DELETE",
+    headers: await authorizationHeaders(),
+  });
+}
+
+async function updateCharacterByResponse(
+  response: Response,
+): Promise<Character | null> {
+  if (response.ok) {
+    const character: Character = await response.json();
+    localStorage.setItem(
+      localStorageCharacterKey(character._id),
+      JSON.stringify(character),
+    );
+    return character;
+  }
+  return null;
+}
+
+export async function ownership(
+  id: string,
+  owner: boolean,
+): Promise<string | null> {
+  const response = await fetch(`api/character/${webSocketId}/${id}`, {
+    method: "PUT",
+    body: JSON.stringify({ owner }),
+    headers: await authorizationHeaders(),
+  });
+
+  const character = await updateCharacterByResponse(response);
+
+  return character ? character.owner : null;
+}
+
+export async function importCharacter(code: string): Promise<Character | null> {
+  const response = await fetch(`api/character/${webSocketId}/${code}`, {
+    method: "GET",
+  });
+
+  return await updateCharacterByResponse(response);
+}

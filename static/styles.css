@@ -1,0 +1,63 @@
+i {
+    margin-right: 0.1em;
+    margin-left: 0.1em;
+}
+
+img {
+    width: 10em;
+    height: 10em;
+}
+
+.card {
+    min-width: 10em;
+    cursor: pointer;
+}
+
+.form-switch .form-check-input {
+    cursor: pointer
+}
+
+.character-head {
+    margin-top: 4em;
+}
+
+.btn {
+    z-index: 10;
+    position: relative;
+}
+
+.penalty {
+    font-size: 0.6em;
+    color: red;
+}
+
+.avatar {
+    width: 32px;
+    height: 32px;
+    object-fit: cover;
+}
+
+[data-bs-theme="dark"] {
+  --bs-body-bg: #000;
+  --bs-body-color: #fff;
+
+  --bs-tertiary-bg: #000;
+  --bs-tertiary-bg-rgb: 0, 0, 0;
+
+  --bs-secondary-bg: #000;
+  --bs-tertiary-bg: #000;
+
+  --bs-card-bg: #000;
+  --bs-modal-bg: #000;
+  --bs-dropdown-bg: #000;
+
+  --bs-border-color: #1f1f1f;
+
+  --bs-navbar-bg: #000;
+  --bs-navbar-color: #fff;
+  --bs-navbar-hover-color: #fff;
+  --bs-navbar-active-color: #fff;
+  --bs-navbar-disabled-color: #666;
+  --bs-navbar-brand-color: #fff;
+  --bs-navbar-brand-hover-color: #fff;
+}

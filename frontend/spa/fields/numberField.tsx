@@ -1,0 +1,23 @@
+/** @jsxImportSource $react */
+/** @jsxRuntime automatic */
+
+import { CharacterManagerContext } from "../characterManager.ts";
+import { Col, Component, Form, Row } from "../deps.ts";
+import { FieldProps } from "./common.tsx";
+
+export class NumberField extends Component<{ suffix?: string } & FieldProps<number>> {
+    static override contextType = CharacterManagerContext
+    declare context: React.ContextType<typeof CharacterManagerContext>
+
+    public override render() {
+        return <Row className="align-items-center mb-1">
+            <Col sm={4} xs={4} className="text-end">
+                <b>{this.props.name}:</b>
+            </Col>
+            <Col sm={8} xs={8} className="text-start">{this.context.canUpdate ?
+                <Form.Control size="sm" type="number" step={1} min={0} defaultValue={this.props.get()} onChange={e => this.props.update(parseInt(e.target.value) || 0)} /> :
+                <>{this.props.get()}{this.props.suffix && this.props.suffix}</>
+            }</Col>
+        </Row>
+    }
+}
