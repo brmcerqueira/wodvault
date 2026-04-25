@@ -1,4 +1,4 @@
-import { createRef } from "react";
+import { createRef } from "$react";
 import { DialogBody } from "./dialogBody.ts";
 import { DialogModal } from "./dialogModal.tsx";
 

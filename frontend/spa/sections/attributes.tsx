@@ -2,8 +2,8 @@
 /** @jsxRuntime automatic */
 
 import { Character } from "../../../domain/character.ts";
-import { Component } from "react";
-import { Col, Container, Row } from "react-bootstrap";
+import { Component } from "$react";
+import { Col, Container, Row } from "$react-bootstrap";
 import { DotsField } from "../fields/dotsField.tsx";
 import { locale } from "../i18n/locale.ts";
 

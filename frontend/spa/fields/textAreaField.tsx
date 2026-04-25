@@ -2,8 +2,8 @@
 /** @jsxRuntime automatic */
 
 import { CharacterManagerContext } from "../characterManager.ts";
-import { Component } from "react";
-import { Col, Container, Form, Row } from "react-bootstrap";
+import { Component } from "$react";
+import { Col, Container, Form, Row } from "$react-bootstrap";
 import { FieldProps } from "./common.tsx";
 
 export class TextAreaField extends Component<FieldProps<string>> {

@@ -2,8 +2,8 @@
 /** @jsxRuntime automatic */
 
 import { CharacterManagerContext } from "../characterManager.ts";
-import { Component, createRef } from "react";
-import { Col, Form, Row } from "react-bootstrap";
+import { Component, createRef } from "$react";
+import { Col, Form, Row } from "$react-bootstrap";
 import { locale } from "../i18n/locale.ts";
 
 type State = {

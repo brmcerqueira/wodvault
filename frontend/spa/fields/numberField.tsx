@@ -2,8 +2,8 @@
 /** @jsxRuntime automatic */
 
 import { CharacterManagerContext } from "../characterManager.ts";
-import { Component } from "react";
-import { Col, Form, Row } from "react-bootstrap";
+import { Component } from "$react";
+import { Col, Form, Row } from "$react-bootstrap";
 import { FieldProps } from "./common.tsx";
 
 export class NumberField extends Component<{ suffix?: string } & FieldProps<number>> {

@@ -1,8 +1,8 @@
 /** @jsxImportSource $react */
 /** @jsxRuntime automatic */
 
-import { createRoot } from "react-dom/client";
-import { HashRouter, Route, Routes } from "react-router";
+import { createRoot } from "$react-dom/client";
+import { HashRouter, Route, Routes } from "$react-router";
 import { dialogRef } from "./dialog/dialog.ts";
 import { DialogModal } from "./dialog/dialogModal.tsx";
 import { Home } from "./home.tsx";
