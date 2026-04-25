@@ -1,5 +1,7 @@
 {
     "chat.tools.terminal.autoApprove": {
         "true": true
-    }
+    },
+    "deno.enable": true,
+    "deno.config": "./deno.json"
 }
