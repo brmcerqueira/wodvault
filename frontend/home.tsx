@@ -5,7 +5,7 @@ import { Character, CharacterKind } from "../character.ts";
 import { keys } from "../utils.ts";
 import { Component, createRef } from "$react";
 import { Navigate } from "$react-router";
-import { Button, ButtonGroup, Card, Col, Container, Form, Nav, Navbar, NavDropdown, Offcanvas, Row } from "$react-bootstrap";
+import { Button, ButtonGroup, Card, Col, Container, Form, Nav, Navbar, NavDropdown, Offcanvas, Row, Spinner } from "$react-bootstrap";
 import { Alert } from "./dialog/alert.ts";
 import { Confirm } from "./dialog/confirm.ts";
 import { dialog } from "./dialog/dialog.ts";
@@ -19,6 +19,7 @@ export class Home extends Component<{}, {
   showOffcanvas: boolean,
   isClient: boolean,
   isHost: boolean,
+  connecting: boolean,
   dark: boolean,
   hostId: string | null,
   characters: Record<string, Character>,
@@ -39,6 +40,7 @@ export class Home extends Component<{}, {
       showOffcanvas: false,
       isClient: false,
       isHost: false,
+      connecting: false,
       dark: isDark(),
       hostId: null,
       characters
@@ -54,7 +56,7 @@ export class Home extends Component<{}, {
 
   private async onSwitchHost(value: boolean): Promise<void> {
     const id = await host(value);
-    this.setState({ isHost: value, hostId: id, isClient: false });
+    this.setState({ isHost: value, hostId: id, isClient: false, connecting: false });
   }
 
   private onCopyHostId(): void {
@@ -65,8 +67,14 @@ export class Home extends Component<{}, {
     const id = this.connectIdRef.current?.value.trim() ?? "";
 
     if (id.length > 0) {
-      await connect(id);
-      this.setState({ hostId: id, isClient: true });
+      this.setState({ connecting: true });
+
+      try {
+        await connect(id);
+        this.setState({ hostId: id, isClient: true, isHost: false, connecting: false });
+      } finally {
+        this.setState({ connecting: false });
+      }
     }
   }
 
@@ -148,9 +156,10 @@ export class Home extends Component<{}, {
                 as="textarea"
                 rows={2}
                 ref={this.connectIdRef}
+                disabled={this.state.connecting}
               />
-              <Button className="mt-2 w-100" onClick={async () => await this.onConnect()}>
-                {locale.connect}
+              <Button className="mt-2 w-100" disabled={this.state.connecting} onClick={async () => await this.onConnect()}>
+                {this.state.connecting ? <Spinner animation="border" size="sm" /> : locale.connect}
               </Button>
             </Form.Group>
           )}
