@@ -9,11 +9,10 @@ let clientConnection: DataConnection | undefined = undefined;
 export function host(value: boolean): Promise<string | null> {
   if (value) {
     return createPeer();
-  }
-  else if (peer) {
+  } else if (peer) {
     peer.destroy();
     peer = undefined;
-  } 
+  }
 
   return Promise.resolve(null);
 }
@@ -29,6 +28,7 @@ export async function connect(id: string): Promise<void> {
 
   return new Promise((resolve) => {
     clientConnection = peer!.connect(id);
+    clientConnection.on("data", onData);
 
     clientConnection.on("open", () => {
       resolve();
@@ -38,15 +38,13 @@ export async function connect(id: string): Promise<void> {
 
 export async function pushData(data: string): Promise<void> {
   if (clientConnection) {
-      await clientConnection.send(data);
-  }
-  else {
+    await clientConnection.send(data);
+  } else {
     for (const key in hostConnections) {
       const connection = hostConnections[key];
       if (connection.open) {
         await connection.send(data);
-      }
-      else {
+      } else {
         delete hostConnections[key];
       }
     }
@@ -57,6 +55,12 @@ export function observeCharacter(callback: (character: Character) => void) {
   observeCharacterCallback = callback;
 }
 
+function onData(data: unknown) {
+  if (observeCharacterCallback) {
+    observeCharacterCallback(JSON.parse(data as string));
+  }
+}
+
 function createPeer(): Promise<string | null> {
   return new Promise((resolve) => {
     peer = new Peer();
@@ -65,11 +69,7 @@ function createPeer(): Promise<string | null> {
 
     peer.on("connection", (connection) => {
       hostConnections[connection.connectionId] = connection;
-      connection.on("data", (data) => {
-        if (observeCharacterCallback) {
-          observeCharacterCallback(JSON.parse(data as string));
-        }
-      });
+      connection.on("data", onData);
     });
   });
 }
