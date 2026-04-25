@@ -4,6 +4,7 @@ import { basePt } from "../../i18n/pt.ts";
 
 export const pt: LocaleType & BaseLocaleType = Object.assign({
   name: "Nome",
+  connect: "Conectar",
   emptyCharacters: "Você ainda não tem personagens",
   addCharacters:
     "Adicione um para começar sua estória e acompanhar o progresso.",

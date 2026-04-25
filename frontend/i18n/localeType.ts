@@ -5,6 +5,7 @@ type OptionsLocale = {
 
 export type LocaleType = {
   name: string;
+  connect: string;
   emptyCharacters: string;
   addCharacters: string;
   health: string;

@@ -3,7 +3,7 @@
 
 import { Character, CharacterKind } from "../character.ts";
 import { keys } from "../utils.ts";
-import { Component } from "$react";
+import { Component, createRef } from "$react";
 import { Navigate } from "$react-router";
 import { Button, ButtonGroup, Card, Col, Container, Form, Nav, Navbar, NavDropdown, Offcanvas, Row } from "$react-bootstrap";
 import { Alert } from "./dialog/alert.ts";
@@ -13,7 +13,7 @@ import { format } from "./fields/common.tsx";
 import { locale } from "./i18n/locale.ts";
 import { allCharacters, getCharacter, myId, removeCharacter, saveCharacter } from "./services/characterService.ts";
 import { isDark, dark } from "./services/preferencesService.ts";
-import { host, observeCharacter } from "./services/peerjsService.ts";
+import { connect, host, observeCharacter } from "./services/peerjsService.ts";
 
 export class Home extends Component<{}, {
   showOffcanvas: boolean,
@@ -23,6 +23,8 @@ export class Home extends Component<{}, {
   characters: Record<string, Character>,
   redirect?: string,
 }> {
+  private connectIdRef = createRef<HTMLTextAreaElement>();
+
   constructor() {
     super({});
 
@@ -57,6 +59,14 @@ export class Home extends Component<{}, {
     navigator.clipboard.writeText(this.state.hostId!);
   }
 
+  private async onConnect(): Promise<void> {
+    const id = this.connectIdRef.current?.value.trim() ?? "";
+
+    if (id.length > 0) {
+      await connect(id);
+    }
+  }
+
   private onSwitchDark(value: boolean): void {
     dark(value);
     this.setState({ dark: value });
@@ -65,7 +75,7 @@ export class Home extends Component<{}, {
   private async onOwnership(character: Character, owner: boolean) {
     character.owner = myId;
     this.state.characters[character._id].owner = myId;
-    saveCharacter(character);
+    await saveCharacter(character);
     this.setState({ characters: this.state.characters });
     await dialog(new Alert(format(owner ? locale.takeOwnership : locale.leaveOwnership, character.name)));
   }
@@ -119,6 +129,18 @@ export class Home extends Component<{}, {
             <Button variant="outline-secondary" className="mb-2 w-100" onClick={() => this.onCopyHostId()}>
               {this.state.hostId}
             </Button>
+          )}
+          {this.state.hostId === null && (
+            <Form.Group className="mb-3">
+              <Form.Control
+                as="textarea"
+                rows={2}
+                ref={this.connectIdRef}
+              />
+              <Button className="mt-2 w-100" onClick={async () => await this.onConnect()}>
+                {locale.connect}
+              </Button>
+            </Form.Group>
           )}
           <div className="mt-auto border-top pt-3">
             <Form.Check className="mb-2" onChange={ async e => await this.onSwitchHost(e.target.checked)} defaultChecked={this.state.host}

@@ -49,13 +49,13 @@ export abstract class CharacterSheet extends Component<{}, { character: Characte
         });
     }
 
-    private updateEdit(edit: boolean) {
+    private async updateEdit(edit: boolean) {
         this.state.characterManager.edit = edit;
 
         this.setState({ characterManager: this.state.characterManager });
 
         if (!edit) {
-            saveCharacter(this.state.character);
+            await saveCharacter(this.state.character);
         }
     }
 
@@ -94,7 +94,7 @@ export abstract class CharacterSheet extends Component<{}, { character: Characte
                     {keys(CharacterMode).filter(item => Number(item) >= 0).map(key =>
                         <option selected={parseInt(key) == this.state.character.mode} value={key} key={`mode-${key}`}>{locale.mode[key as unknown as number]}</option>)}
                 </Form.Select>}
-                <Form.Check onChange={e => this.updateEdit(e.target.checked)} type="switch" />
+                <Form.Check onChange={async e => await this.updateEdit(e.target.checked)} type="switch" />
             </Nav>
         </Navbar>
             {this.sheet()}
