@@ -1,9 +1,10 @@
 import { Character } from "../../character.ts";
 import Peer, { DataConnection } from "$peerjs";
 
+let hostConnections: Record<string, DataConnection> = {};
 let observeCharacterCallback: ((character: Character) => void) | undefined;
 let peer: Peer | undefined = undefined;
-let connection: DataConnection | undefined = undefined;
+let clientConnection: DataConnection | undefined = undefined;
 
 export function host(value: boolean): Promise<string | null> {
   if (value) {
@@ -22,21 +23,34 @@ export async function connect(id: string): Promise<void> {
     await createPeer();
   }
 
-  if (connection) {
-    connection.close();
+  if (clientConnection) {
+    clientConnection.close();
   }
 
   return new Promise((resolve) => {
-    connection = peer!.connect(id);
+    clientConnection = peer!.connect(id);
 
-    connection.on("open", () => {
+    clientConnection.on("open", () => {
       resolve();
     });
   });
 }
 
 export async function pushData(data: string): Promise<void> {
-  await connection?.send(data);
+  if (clientConnection) {
+      await clientConnection.send(data);
+  }
+  else {
+    for (const key in hostConnections) {
+      const connection = hostConnections[key];
+      if (connection.open) {
+        await connection.send(data);
+      }
+      else {
+        delete hostConnections[key];
+      }
+    }
+  }
 }
 
 export function observeCharacter(callback: (character: Character) => void) {
@@ -50,6 +64,7 @@ function createPeer(): Promise<string | null> {
     peer.on("open", resolve);
 
     peer.on("connection", (connection) => {
+      hostConnections[connection.connectionId] = connection;
       connection.on("data", (data) => {
         if (observeCharacterCallback) {
           observeCharacterCallback(JSON.parse(data as string));
