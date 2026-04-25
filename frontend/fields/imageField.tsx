@@ -1,7 +1,7 @@
 /** @jsxImportSource $react */
 /** @jsxRuntime automatic */
 
-import { Character } from "../../../character.ts";
+import { Character } from "../../character.ts";
 import { CharacterManagerContext } from "../characterManager.ts";
 import { Component } from "$react";
 import { Image as BsImage, Form, Spinner, InputGroup } from "$react-bootstrap";

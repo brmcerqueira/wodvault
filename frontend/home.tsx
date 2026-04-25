@@ -1,8 +1,8 @@
 /** @jsxImportSource $react */
 /** @jsxRuntime automatic */
 
-import { Character, CharacterKind } from "../../character.ts";
-import { keys } from "../../utils.ts";
+import { Character, CharacterKind } from "../character.ts";
+import { keys } from "../utils.ts";
 import { Component } from "$react";
 import { Navigate } from "$react-router";
 import { Button, ButtonGroup, Card, Col, Container, Form, Nav, Navbar, NavDropdown, Offcanvas, Row } from "$react-bootstrap";

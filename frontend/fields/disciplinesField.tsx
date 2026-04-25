@@ -1,9 +1,9 @@
 /** @jsxImportSource $react */
 /** @jsxRuntime automatic */
 
-import { CharacterMode } from "../../../character.ts";
-import { DisciplineLevelLocale, LocaleType } from "../../../i18n/localeType.ts";
-import { keys } from "../../../utils.ts";
+import { CharacterMode } from "../../character.ts";
+import { DisciplineLevelLocale, LocaleType } from "../../i18n/localeType.ts";
+import { keys } from "../../utils.ts";
 import { CharacterManagerContext } from "../characterManager.ts";
 import { Component, createRef } from "$react";
 import { Button, Col, Container, Form, InputGroup, Row } from "$react-bootstrap";

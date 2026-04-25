@@ -1,4 +1,4 @@
-import { CharacterMode } from "../../character.ts";
+import { CharacterMode } from "../character.ts";
 import { createContext } from "$react";
 import { ExperienceField } from "./fields/experienceField.tsx";
 

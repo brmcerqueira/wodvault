@@ -1,6 +1,6 @@
 import { LocaleType } from "./localeType.ts";
-import { LocaleType as BaseLocaleType } from "../../../i18n/localeType.ts";
-import { basePt } from "../../../i18n/pt.ts";
+import { LocaleType as BaseLocaleType } from "../../i18n/localeType.ts";
+import { basePt } from "../../i18n/pt.ts";
 
 export const pt: LocaleType & BaseLocaleType = Object.assign({
   name: "Nome",

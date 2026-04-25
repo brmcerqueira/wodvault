@@ -2,8 +2,8 @@
 /** @jsxRuntime automatic */
 
 import { JSX } from "$react/jsx-runtime";
-import { CharacterMode } from "../../../character.ts";
-import { keys } from "../../../utils.ts";
+import { CharacterMode } from "../../character.ts";
+import { keys } from "../../utils.ts";
 import { CharacterManagerContext } from "../characterManager.ts";
 import { Component } from "$react";
 import { Button, Col, Form, InputGroup, Row } from "$react-bootstrap";

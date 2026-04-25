@@ -2,7 +2,7 @@ import {
   Character,
   CharacterKind,
   CharacterMode,
-} from "../../../character.ts";
+} from "../../character.ts";
 
 if (localStorage.getItem("myId") == null) {
   localStorage.setItem("myId", crypto.randomUUID());
