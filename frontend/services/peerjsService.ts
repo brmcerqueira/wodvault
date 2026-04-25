@@ -1,7 +1,7 @@
 import { Character } from "../../character.ts";
 import Peer, { DataConnection } from "$peerjs";
 
-let hostConnections: Record<string, DataConnection> = {};
+const hostConnections: Record<string, DataConnection> = {};
 let observeCharacterCallback: ((character: Character) => void) | undefined;
 let peer: Peer | undefined = undefined;
 let clientConnection: DataConnection | undefined = undefined;
