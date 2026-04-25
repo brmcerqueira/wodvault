@@ -17,7 +17,6 @@ export type LocaleType = {
   close: string;
   no: string;
   yes: string;
-  common: string;
   physical: string;
   social: string;
   mental: string;
@@ -29,13 +28,6 @@ export type LocaleType = {
   advantages: string;
   flaws: string;
   details: string;
-  importShareCode: string;
-  importShareCodeTitle: string;
-  shareCodeCopied: string;
-  shareCodeActivity: string;
-  discordSignIn: string;
-  discordSignOut: string;
-  confirmSignOut: string;
   takeOwnership: string;
   leaveOwnership: string;
   mode: string[];
@@ -61,7 +53,6 @@ export type LocaleType = {
   generation: string;
   bloodPotency: string;
   humanity: string;
-  stains: string;
   werewolf: string;
   createWerewolf: string;
   native: string;

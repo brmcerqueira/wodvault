@@ -17,7 +17,6 @@ export const pt: LocaleType & BaseLocaleType = Object.assign({
   close: "Fechar",
   no: "Não",
   yes: "Sim",
-  common: "Comuns",
   physical: "Físicos",
   social: "Sociais",
   mental: "Mentais",
@@ -29,15 +28,6 @@ export const pt: LocaleType & BaseLocaleType = Object.assign({
   advantages: "Vantagens",
   flaws: "Defeitos",
   details: "Detalhes",
-  importShareCode: "Importar",
-  importShareCodeTitle: "Importar Personagem",
-  shareCodeCopied:
-    "O código de compartilhamento do personagem '%s' foi copiado para área de transferência.",
-  shareCodeActivity:
-    "Copie o código '%s' para fazer o compartilhamento do personagem '%s'.",  
-  discordSignIn: "Entrar",
-  discordSignOut: "Sair",
-  confirmSignOut: "Deseja sair com esse usuário?",
   takeOwnership: "Você agora é dono do personagem '%s'.",
   leaveOwnership: "Você não é mais dono do personagem '%s'.",
   mode: [
@@ -107,7 +97,6 @@ export const pt: LocaleType & BaseLocaleType = Object.assign({
   generation: "Geração",
   bloodPotency: "Potência de Sangue",
   humanity: "Humanidade",
-  stains: "Máculas",
   werewolf: "Lobisomem",
   createWerewolf: "Criar um Lobisomem",
   native: "Inato",
