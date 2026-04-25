@@ -22,8 +22,8 @@ export function host(value: boolean): Promise<string | null> {
         }
       });
 
-      peer.on("connection", (conn) => {
-        conn.on("data", (data) => {
+      peer.on("connection", (connection) => {
+        connection.on("data", (data) => {
           console.log("Received:", data);
         });
       });
