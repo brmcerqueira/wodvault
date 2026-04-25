@@ -1,7 +1,8 @@
 /** @jsxImportSource $react */
 /** @jsxRuntime automatic */
 
-import { Button, Component, Modal } from "../deps.ts";
+import { Component } from "react";
+import { Button, Modal } from "react-bootstrap";
 import { DialogBody } from "./dialogBody.ts";
 
 export class DialogModal extends Component<{}, { 

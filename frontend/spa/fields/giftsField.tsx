@@ -4,7 +4,8 @@
 import { CharacterMode } from "../../../domain/character.ts";
 import { keys } from "../../../utils.ts";
 import { CharacterManagerContext } from "../characterManager.ts";
-import { Button, Col, Component, Form, InputGroup, Row } from "../deps.ts";
+import { Component } from "react";
+import { Button, Col, Form, InputGroup, Row } from "react-bootstrap";
 import { Confirm } from "../dialog/confirm.ts";
 import { dialog } from "../dialog/dialog.ts";
 import { locale } from "../i18n/locale.ts";

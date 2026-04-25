@@ -1,5 +1,5 @@
 import { discordClientId, DiscordToken, DiscordUser } from "../../../types.ts";
-import { DiscordSDK } from "../deps.ts";
+import { DiscordSDK } from "@discord/embedded-app-sdk";
 
 function isDiscordActivity(): boolean {
   if (globalThis.self === globalThis.top) return false;

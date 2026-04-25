@@ -2,7 +2,8 @@
 /** @jsxRuntime automatic */
 
 import { CharacterManagerContext } from "../characterManager.ts";
-import { Col, Component, Form, OverlayTrigger, Row, Tooltip } from "../deps.ts";
+import { Component } from "react";
+import { Col, Form, OverlayTrigger, Row, Tooltip } from "react-bootstrap";
 import { FieldProps } from "./common.tsx";
 
 export class TextField extends Component<FieldProps<string>> {

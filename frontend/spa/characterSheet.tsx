@@ -2,7 +2,8 @@
 /** @jsxRuntime automatic */
 
 import { Character, CharacterKind, CharacterMode } from "../../domain/character.ts";;
-import { Component, createRef, Form, Nav, Navbar } from "./deps.ts";
+import { Component, createRef } from "react";
+import { Form, Nav, Navbar } from "react-bootstrap";
 import { JSX } from "$react/jsx-runtime";
 import { buildCharacter, getCharacter, saveCharacter } from "./services/characterService.ts";
 import { observeCharacter } from "./services/webSocketService.ts";

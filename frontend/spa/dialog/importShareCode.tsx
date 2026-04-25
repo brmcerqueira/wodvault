@@ -1,7 +1,8 @@
 /** @jsxImportSource $react */
 /** @jsxRuntime automatic */
 
-import { Col, Container, createRef, Form, Row } from "../deps.ts";
+import { createRef } from "react";
+import { Col, Container, Form, Row } from "react-bootstrap";
 import { locale } from "../i18n/locale.ts";
 import { DialogBody } from "./dialogBody.ts";
 

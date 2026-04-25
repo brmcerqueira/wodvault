@@ -2,7 +2,8 @@
 /** @jsxRuntime automatic */
 
 import { CharacterManagerContext } from "../characterManager.ts";
-import { Button, Col, Component, Row } from "../deps.ts";
+import { Component } from "react";
+import { Button, Col, Row } from "react-bootstrap";
 import { locale } from "../i18n/locale.ts";
 import { GenericMeter, SquareSlash, Square, SquareFill } from "./common.tsx";
 

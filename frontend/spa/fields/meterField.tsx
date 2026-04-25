@@ -4,7 +4,8 @@
 import { JSX } from "$react/jsx-runtime";
 import { CharacterMode } from "../../../domain/character.ts";
 import { CharacterManagerContext } from "../characterManager.ts";
-import { Button, Component } from "../deps.ts";
+import { Component } from "react";
+import { Button } from "react-bootstrap";
 import { Meter, GetUpdateFieldProps, TotalFieldProps, calculateSpent } from "./common.tsx";
 
 export type MinFieldProps = { min?: number, multiplier?: number, open?: boolean };

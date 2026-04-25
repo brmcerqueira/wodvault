@@ -2,7 +2,7 @@
 /** @jsxRuntime automatic */
 
 import { JSX } from "$react/jsx-runtime";
-import { Col, Row } from "../deps.ts";
+import { Col, Row } from "react-bootstrap";
 import { Circle, CircleFill, FieldProps, TotalFieldProps } from "./common.tsx";
 import { MeterField, MinFieldProps } from "./meterField.tsx";
 

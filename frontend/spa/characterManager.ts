@@ -1,5 +1,5 @@
 import { CharacterMode } from "../../domain/character.ts";
-import { createContext } from "./deps.ts";
+import { createContext } from "react";
 import { ExperienceField } from "./fields/experienceField.tsx";
 
 export class CharacterManager {

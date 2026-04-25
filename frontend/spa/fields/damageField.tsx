@@ -3,7 +3,8 @@
 
 import { Damage } from "../../../domain/character.ts";
 import { CharacterManagerContext } from "../characterManager.ts";
-import { Button, Col, Component, Row } from "../deps.ts";
+import { Component } from "react";
+import { Button, Col, Row } from "react-bootstrap";
 import { GenericMeter, SquareX, SquareSlash, Square, NamedFieldProps, TotalFieldProps } from "./common.tsx";
 
 type State = { damage: Damage }

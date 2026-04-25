@@ -4,7 +4,9 @@
 import { Character, CharacterKind } from "../../domain/character.ts";
 import { DiscordUser } from "../../types.ts";
 import { keys } from "../../utils.ts";
-import { BsImage, Button, ButtonGroup, Card, Col, Component, Container, Form, Nav, Navbar, NavDropdown, Navigate, Offcanvas, Row } from "./deps.ts";
+import { Component } from "react";
+import { Navigate } from "react-router";
+import { Image as BsImage, Button, ButtonGroup, Card, Col, Container, Form, Nav, Navbar, NavDropdown, Offcanvas, Row } from "react-bootstrap";
 import { Alert } from "./dialog/alert.ts";
 import { Confirm } from "./dialog/confirm.ts";
 import { dialog } from "./dialog/dialog.ts";
