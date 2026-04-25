@@ -3,8 +3,12 @@ import {
   CharacterKind,
   CharacterMode,
 } from "../../../character.ts";
-import { webSocketId } from "./webSocketService.ts";
-import { authorizationHeaders } from "./discordService.ts";
+
+if (localStorage.getItem("myId") == null) {
+  localStorage.setItem("myId", crypto.randomUUID());
+}
+
+export const myId = localStorage.getItem("myId") as string;
 
 export function buildCharacter(kind: CharacterKind): Character {
   return {
@@ -137,62 +141,11 @@ export function getCharacter(id: string): Character {
   return JSON.parse(localStorage.getItem(localStorageCharacterKey(id))!);
 }
 
-export async function saveCharacter(
-  character: Character,
-  onlyLocalStorage?: boolean,
-) {
+export function saveCharacter(character: Character) {
   const body = JSON.stringify(character);
   localStorage.setItem(localStorageCharacterKey(character._id), body);
-  if (onlyLocalStorage === undefined || !onlyLocalStorage) {
-    fetch(`api/character/${webSocketId}`, {
-      method: "POST",
-      body: body,
-      headers: await authorizationHeaders(),
-    });
-  }
 }
 
-export async function removeCharacter(id: string) {
+export function removeCharacter(id: string) {
   localStorage.removeItem(localStorageCharacterKey(id));
-  fetch(`api/character/${webSocketId}/${id}`, {
-    method: "DELETE",
-    headers: await authorizationHeaders(),
-  });
-}
-
-async function updateCharacterByResponse(
-  response: Response,
-): Promise<Character | null> {
-  if (response.ok) {
-    const character: Character = await response.json();
-    localStorage.setItem(
-      localStorageCharacterKey(character._id),
-      JSON.stringify(character),
-    );
-    return character;
-  }
-  return null;
-}
-
-export async function ownership(
-  id: string,
-  owner: boolean,
-): Promise<string | null> {
-  const response = await fetch(`api/character/${webSocketId}/${id}`, {
-    method: "PUT",
-    body: JSON.stringify({ owner }),
-    headers: await authorizationHeaders(),
-  });
-
-  const character = await updateCharacterByResponse(response);
-
-  return character ? character.owner : null;
-}
-
-export async function importCharacter(code: string): Promise<Character | null> {
-  const response = await fetch(`api/character/${webSocketId}/${code}`, {
-    method: "GET",
-  });
-
-  return await updateCharacterByResponse(response);
 }

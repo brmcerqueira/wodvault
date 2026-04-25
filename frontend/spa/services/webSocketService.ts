@@ -21,7 +21,7 @@ function buildWebSocket() {
   socket.onmessage = (e) => {
     const message: WebSocketMessage<Character> = JSON.parse(e.data);
     if (message.kind == WebSocketMessageKind.Character) {
-      saveCharacter(message.data, true);
+      saveCharacter(message.data);
       if (observeCharacterCallback) {
         observeCharacterCallback(message.data);
       }

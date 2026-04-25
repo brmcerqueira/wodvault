@@ -5,18 +5,16 @@ import { Character, CharacterKind, CharacterMode } from "../../character.ts";;
 import { Component, createRef } from "$react";
 import { Form, Nav, Navbar } from "$react-bootstrap";
 import { JSX } from "$react/jsx-runtime";
-import { buildCharacter, getCharacter, saveCharacter } from "./services/characterService.ts";
+import { buildCharacter, getCharacter, myId, saveCharacter } from "./services/characterService.ts";
 import { observeCharacter } from "./services/webSocketService.ts";
-import { discordUser } from "./services/discordService.ts";
 import { CharacterManager, CharacterManagerContext } from "./characterManager.ts";
 import { ExperienceField } from "./fields/experienceField.tsx";
 import { locale } from "./i18n/locale.ts";
 import { characterTitle, keys } from "../../utils.ts";
 
 function updateCharacterManager(characterManager: CharacterManager, character: Character) {
-    const user = discordUser();
     characterManager.mode = character.mode;
-    characterManager.owner = user != null && character.owner != undefined && character.owner == user.id;
+    characterManager.owner = character.owner != undefined && character.owner == myId;
 }
 
 export abstract class CharacterSheet extends Component<{}, { character: Character, characterManager: CharacterManager }> {

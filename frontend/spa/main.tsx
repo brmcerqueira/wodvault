@@ -6,11 +6,8 @@ import { HashRouter, Route, Routes } from "$react-router";
 import { dialogRef } from "./dialog/dialog.ts";
 import { DialogModal } from "./dialog/dialogModal.tsx";
 import { Home } from "./home.tsx";
-import { readCookieAndSaveLocalStorage } from "./services/discordService.ts";
 import { Vampire } from "./vampire.tsx";
 import { Werewolf } from "./werewolf.tsx";
-
-readCookieAndSaveLocalStorage("discord:token", "discord:user");
 
 async function registerServiceWorker() {
   if ("serviceWorker" in navigator) {
