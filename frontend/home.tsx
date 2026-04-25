@@ -17,7 +17,8 @@ import { connect, host, observeCharacter } from "./services/peerjsService.ts";
 
 export class Home extends Component<{}, {
   showOffcanvas: boolean,
-  host: boolean,
+  isClient: boolean,
+  isHost: boolean,
   dark: boolean,
   hostId: string | null,
   characters: Record<string, Character>,
@@ -36,7 +37,8 @@ export class Home extends Component<{}, {
 
     this.state = {
       showOffcanvas: false,
-      host: false,
+      isClient: false,
+      isHost: false,
       dark: isDark(),
       hostId: null,
       characters
@@ -52,7 +54,7 @@ export class Home extends Component<{}, {
 
   private async onSwitchHost(value: boolean): Promise<void> {
     const id = await host(value);
-    this.setState({ host: value, hostId: id });
+    this.setState({ isHost: value, hostId: id, isClient: false });
   }
 
   private onCopyHostId(): void {
@@ -64,6 +66,7 @@ export class Home extends Component<{}, {
 
     if (id.length > 0) {
       await connect(id);
+      this.setState({ hostId: id, isClient: true });
     }
   }
 
@@ -126,9 +129,18 @@ export class Home extends Component<{}, {
         <Offcanvas.Header closeButton />
         <Offcanvas.Body className="d-flex flex-column">
           {this.state.hostId !== null && (
-            <Button variant="outline-secondary" className="mb-2 w-100" onClick={() => this.onCopyHostId()}>
-              {this.state.hostId}
-            </Button>
+            <>
+              <p className="mb-2 text-muted small">
+                {this.state.isClient ? locale.connectedToHost : locale.yourHostId}
+              </p>
+              <Button
+                variant={this.state.isClient ? "outline-primary" : "outline-secondary"}
+                className="mb-2 w-100"
+                onClick={() => this.onCopyHostId()}
+              >
+                {this.state.hostId}
+              </Button>
+            </>
           )}
           {this.state.hostId === null && (
             <Form.Group className="mb-3">
@@ -143,9 +155,9 @@ export class Home extends Component<{}, {
             </Form.Group>
           )}
           <div className="mt-auto border-top pt-3">
-            <Form.Check className="mb-2" onChange={ async e => await this.onSwitchHost(e.target.checked)} defaultChecked={this.state.host}
+            <Form.Check className="mb-2" onChange={ async e => await this.onSwitchHost(e.target.checked)} defaultChecked={this.state.isHost}
               type="switch"
-              label={<i className={`bi ${this.state.host ? "bi-broadcast" : "bi-broadcast-pin"}`} />}
+              label={<i className={`bi ${this.state.isHost ? "bi-broadcast" : "bi-broadcast-pin"}`} />}
             />
             <Form.Check className="mb-2" onChange={e => this.onSwitchDark(e.target.checked)} defaultChecked={this.state.dark}
               type="switch"
