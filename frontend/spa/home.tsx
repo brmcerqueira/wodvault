@@ -138,7 +138,7 @@ export class Home extends Component<{}, {
       </Nav>
       <Nav className="ms-auto">
         <Nav.Link onClick={() => this.setState({ showOffcanvas: true })}>
-          <i className="bi bi-person-badge" />
+          <i className="bi bi-list" />
         </Nav.Link>
       </Nav>
     </Navbar><Offcanvas show={this.state.showOffcanvas} placement="end" onHide={() => this.setState({ showOffcanvas: false })}>
