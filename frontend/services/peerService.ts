@@ -1,34 +1,32 @@
 import { Character } from "../../character.ts";
 import Peer, { DataConnection } from "$peerjs";
-import { allCharacters, getCharacter, myId, saveCharacter } from "./characterService.ts";
+import {
+  allCharacters,
+  getCharacter,
+  localStorageCharacterKey,
+  myId,
+  saveCharacter,
+} from "./characterService.ts";
 
 const hostConnections: Record<string, DataConnection> = {};
-let observeCharacterUpdateCallback:
-  | ((character: Character) => void)
+let observeCharactersUpdateCallback:
+  | ((characters: Character[]) => void)
   | undefined;
 let peer: Peer | undefined = undefined;
 let clientConnection: DataConnection | undefined = undefined;
-
-type PeerMessage = {
-  type: "characterUpdate";
-  character: Character;
-} | {
-  type: "characterAdds";
-  characters: Character[];
-};
 
 export async function sendCharacterUpdate(character: Character) {
   saveCharacter(character);
 
   if (clientConnection) {
-    await send(clientConnection, character);
+    await sendCharacters(clientConnection, character);
   } else if (character.owner === null || character.owner !== myId) {
     const keys = Object.keys(hostConnections);
     for (const key of keys) {
       const connection = hostConnections[key];
       if (connection.open) {
         if (character.owner === null || key === peerId(character.owner)) {
-          await send(connection, character);
+          await sendCharacters(connection, character);
         }
       } else {
         delete hostConnections[key];
@@ -37,12 +35,12 @@ export async function sendCharacterUpdate(character: Character) {
   }
 }
 
-async function send(
+async function sendCharacters(
   connection: DataConnection,
-  character: Character,
+  ...characters: Character[]
 ) {
   await connection.send(
-    JSON.stringify({ type: "characterUpdate", character }),
+    JSON.stringify(characters),
   );
 }
 
@@ -85,30 +83,23 @@ export async function connect(id: string): Promise<void> {
   });
 }
 
-export function observeCharacterUpdate(
-  callback: (character: Character) => void,
+export function observeCharactersUpdate(
+  callback: (characters: Character[]) => void,
 ) {
-  observeCharacterUpdateCallback = callback;
+  observeCharactersUpdateCallback = callback;
 }
 
 function onData(data: unknown) {
-  let message: PeerMessage;
-
-  try {
-    message = JSON.parse(data as string) as PeerMessage;
-  } catch (error) {
-    console.error("[PeerJS][onData:parseError]", { data, error });
-    return;
-  }
-
-  if (message.type === "characterUpdate") {
-    if (observeCharacterUpdateCallback) {
-      observeCharacterUpdateCallback(message.character);
-    }
-  } else if (message.type === "characterAdds") {
-    for (const character of message.characters) {
+  const characters = JSON.parse(data as string) as Character[];
+  const keys = allCharacters();
+  for (const character of characters) {
+    if (!keys.includes(localStorageCharacterKey(character._id))) {
       saveCharacter(character);
     }
+  }
+
+  if (observeCharactersUpdateCallback) {
+    observeCharactersUpdateCallback(characters);
   }
 }
 
@@ -169,9 +160,7 @@ function createPeer(host: boolean): Promise<void> {
           }
 
           try {
-            connection.send(
-              JSON.stringify({ type: "characterAdds", characters }),
-            );
+            sendCharacters(connection, ...characters);
           } catch (error) {
             console.error("[PeerJS][hostConnection:sendCharacterAddsError]", {
               peer: connection.peer,

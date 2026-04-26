@@ -12,7 +12,7 @@ import { dialog } from "./dialog/dialog.ts";
 import { format } from "./fields/common.tsx";
 import { locale } from "./i18n/locale.ts";
 import { allCharacters, getCharacter, myId, removeCharacter } from "./services/characterService.ts";
-import { connect, host, observeCharacterUpdate, sendCharacterUpdate } from "./services/peerService.ts";
+import { connect, host, observeCharactersUpdate, sendCharacterUpdate } from "./services/peerService.ts";
 import { isDark, dark } from "./services/preferencesService.ts";
 
 export class Home extends Component<{}, {
@@ -46,11 +46,12 @@ export class Home extends Component<{}, {
       characters
     }
 
-    observeCharacterUpdate(character => {
-      if (this.state.characters[character._id]) {
+    observeCharactersUpdate(characters => {
+      for (const character of characters) {
         this.state.characters[character._id] = character;
-        this.setState({ characters: this.state.characters });
       }
+
+      this.setState({ characters: this.state.characters });
     });
   }
 

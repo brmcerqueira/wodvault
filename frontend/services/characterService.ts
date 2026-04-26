@@ -116,7 +116,7 @@ export function buildCharacter(kind: CharacterKind): Character {
   };
 }
 
-function localStorageCharacterKey(id: string): string {
+export function localStorageCharacterKey(id: string): string {
   return `character:${id}`;
 }
 
