@@ -54,8 +54,8 @@ export class Home extends Component<{}, {
   }
 
   private async onSwitchHost(value: boolean): Promise<void> {
-    const id = await host(value);
-    this.setState({ isHost: value, hostId: id, isClient: false, connecting: false });
+    await host(value);
+    this.setState({ isHost: value, hostId: myId, isClient: false, connecting: false });
   }
 
   private onCopyHostId(): void {

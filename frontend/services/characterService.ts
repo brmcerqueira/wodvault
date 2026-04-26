@@ -193,15 +193,13 @@ export function removeCharacter(id: string) {
   localStorage.removeItem(localStorageCharacterKey(id));
 }
 
-export function host(value: boolean): Promise<string | null> {
+export async function host(value: boolean): Promise<void> {
   if (value) {
-    return createPeer(true);
+    await createPeer(true);
   } else if (peer) {
     peer.destroy();
     peer = undefined;
   }
-
-  return Promise.resolve(null);
 }
 
 export async function connect(id: string): Promise<void> {
@@ -216,6 +214,17 @@ export async function connect(id: string): Promise<void> {
   return new Promise((resolve) => {
     clientConnection = peer!.connect(peerId(id));
     clientConnection.on("data", onData);
+    clientConnection.on("error", (error) => {
+      console.error("[PeerJS][clientConnection:error]", {
+        target: peerId(id),
+        error,
+      });
+    });
+    clientConnection.on("close", () => {
+      console.error("[PeerJS][clientConnection:close]", {
+        target: peerId(id),
+      });
+    });
 
     clientConnection.on("open", () => {
       resolve();
@@ -230,7 +239,14 @@ export function observeCharacterUpdate(
 }
 
 function onData(data: unknown) {
-  const message = JSON.parse(data as string) as PeerMessage;
+  let message: PeerMessage;
+
+  try {
+    message = JSON.parse(data as string) as PeerMessage;
+  } catch (error) {
+    console.error("[PeerJS][onData:parseError]", { data, error });
+    return;
+  }
 
   if (message.type === "characterUpdate") {
     if (observeCharacterUpdateCallback) {
@@ -243,16 +259,41 @@ function onData(data: unknown) {
   }
 }
 
-function createPeer(host: boolean): Promise<string | null> {
+function createPeer(host: boolean): Promise<void> {
   return new Promise((resolve) => {
     peer = new Peer(peerId(myId));
 
-    peer.on("open", resolve);
+    peer.on("open", (id) => {
+      console.log("[PeerJS][peer:open]", { id, host });
+      resolve();
+    });
+    peer.on("error", (error) => {
+      console.error("[PeerJS][peer:error]", { host, myId: peerId(myId), error });
+    });
+    peer.on("disconnected", () => {
+      console.error("[PeerJS][peer:disconnected]", { host, myId: peerId(myId) });
+    });
+    peer.on("close", () => {
+      console.error("[PeerJS][peer:close]", { host, myId: peerId(myId) });
+    });
 
     if (host) {
       peer.on("connection", (connection) => {
         hostConnections[connection.peer] = connection;
+        console.log("[PeerJS][host:connection]", { peer: connection.peer });
         connection.on("data", onData);
+        connection.on("error", (error) => {
+          console.error("[PeerJS][hostConnection:error]", {
+            peer: connection.peer,
+            error,
+          });
+        });
+        connection.on("close", () => {
+          console.error("[PeerJS][hostConnection:close]", {
+            peer: connection.peer,
+          });
+          delete hostConnections[connection.peer];
+        });
 
         const characters: Character[] = [];
 
@@ -266,14 +307,21 @@ function createPeer(host: boolean): Promise<string | null> {
           }
         }
 
-        connection.send(
-          JSON.stringify({ type: "characterAdds", characters }),
-        );
+        try {
+          connection.send(
+            JSON.stringify({ type: "characterAdds", characters }),
+          );
+        } catch (error) {
+          console.error("[PeerJS][hostConnection:sendCharacterAddsError]", {
+            peer: connection.peer,
+            error,
+          });
+        }
       });
     }
   });
 }
 
 function peerId(id: string): string {
-  return `wodvault:${id}`;
+  return `wodvault-${id}`;
 }
