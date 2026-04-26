@@ -295,28 +295,30 @@ function createPeer(host: boolean): Promise<void> {
           delete hostConnections[connection.peer];
         });
 
-        const characters: Character[] = [];
+        connection.on("open", () => {
+          const characters: Character[] = [];
 
-        for (const key of allCharacters()) {
-          const character = getCharacter(key);
-          if (
-            character.owner === null ||
-            connection.peer === peerId(character.owner)
-          ) {
-            characters.push(character);
+          for (const key of allCharacters()) {
+            const character = getCharacter(key);
+            if (
+              character.owner === null ||
+              connection.peer === peerId(character.owner)
+            ) {
+              characters.push(character);
+            }
           }
-        }
 
-        try {
-          connection.send(
-            JSON.stringify({ type: "characterAdds", characters }),
-          );
-        } catch (error) {
-          console.error("[PeerJS][hostConnection:sendCharacterAddsError]", {
-            peer: connection.peer,
-            error,
-          });
-        }
+          try {
+            connection.send(
+              JSON.stringify({ type: "characterAdds", characters }),
+            );
+          } catch (error) {
+            console.error("[PeerJS][hostConnection:sendCharacterAddsError]", {
+              peer: connection.peer,
+              error,
+            });
+          }
+        });
       });
     }
   });
