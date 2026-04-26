@@ -166,6 +166,9 @@ function createPeer(host: boolean): Promise<void> {
 
           for (const key of allCharacters()) {
             const character = getCharacter(key);
+            if (character === null) {
+              continue;
+            }
             if (
               character.owner === null ||
               connection.peer === peerId(character.owner)

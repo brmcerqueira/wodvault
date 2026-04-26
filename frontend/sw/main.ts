@@ -39,6 +39,36 @@ self.addEventListener("fetch", (event: FetchEvent) => {
     return;
   }
 
+  const isAppShellRequest = APP_SHELL_FILES.includes(requestUrl.pathname);
+
+  if (isAppShellRequest) {
+    event.respondWith(
+      fetch(event.request)
+        .then((networkResponse) => {
+          const isCacheable =
+            networkResponse.status === 200 && networkResponse.type === "basic";
+
+          if (isCacheable) {
+            const responseClone = networkResponse.clone();
+            void caches
+              .open(CACHE_NAME)
+              .then((cache) => cache.put(event.request, responseClone));
+          }
+
+          return networkResponse;
+        })
+        .catch(async () => {
+          const cachedResponse = await caches.match(event.request);
+          if (cachedResponse) {
+            return cachedResponse;
+          }
+
+          throw new Error("Network unavailable and no cache entry found.");
+        }),
+    );
+    return;
+  }
+
   event.respondWith(
     caches.match(event.request).then((cachedResponse) => {
       if (cachedResponse) {

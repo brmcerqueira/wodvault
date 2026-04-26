@@ -39,7 +39,17 @@ export function dark(value: boolean) {
 
 function getBoolean(key: string): boolean {
   const value = localStorage.getItem(key);
-  return value ? JSON.parse(value) : false;
+
+  if (value === null) {
+    return false;
+  }
+
+  try {
+    return JSON.parse(value) === true;
+  } catch {
+    localStorage.removeItem(key);
+    return false;
+  }
 }
 
 function makeDark() {

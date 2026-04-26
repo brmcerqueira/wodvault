@@ -120,15 +120,43 @@ export function allCharacters(): string[] {
     const key = localStorage.key(index);
     if (key?.startsWith("character:")) {
       const [_, id] = key.split(":");
-      result.push(id.trim());
+
+      if (!id) {
+        localStorage.removeItem(key);
+        continue;
+      }
+
+      const character = getCharacter(id.trim());
+
+      if (character !== null) {
+        result.push(id.trim());
+      } else {
+        localStorage.removeItem(key);
+      }
     }
   }
 
   return result;
 }
 
-export function getCharacter(id: string): Character {
-  return JSON.parse(localStorage.getItem(localStorageCharacterKey(id))!);
+export function getCharacter(id: string): Character | null {
+  const value = localStorage.getItem(localStorageCharacterKey(id));
+
+  if (value === null) {
+    return null;
+  }
+
+  try {
+    const character = JSON.parse(value) as Character;
+
+    if (character && typeof character._id === "string") {
+      return character;
+    }
+
+    return null;
+  } catch {
+    return null;
+  }
 }
 
 export function saveCharacter(character: Character) {

@@ -31,7 +31,11 @@ export class Home extends Component<{}, {
     const characters: Record<string, Character> = {}
 
     for (const key of allCharacters()) {
-      characters[key] = getCharacter(key);
+      const character = getCharacter(key);
+
+      if (character !== null) {
+        characters[key] = character;
+      }
     }
 
     this.state = {
