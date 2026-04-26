@@ -1,9 +1,16 @@
-import {
-  Character,
-  CharacterKind,
-  CharacterMode,
-} from "../../character.ts";
-import { pushCharacterData } from "./peerjsService.ts";
+import { Character, CharacterKind, CharacterMode } from "../../character.ts";
+import Peer, { DataConnection } from "$peerjs";
+
+const hostConnections: Record<string, DataConnection> = {};
+let observeCharacterCallback: ((character: Character) => void) | undefined;
+let peer: Peer | undefined = undefined;
+let clientConnection: DataConnection | undefined = undefined;
+
+if (localStorage.getItem("myId") == null) {
+  localStorage.setItem("myId", crypto.randomUUID());
+}
+
+export const myId = localStorage.getItem("myId") as string;
 
 export function buildCharacter(kind: CharacterKind): Character {
   return {
@@ -139,9 +146,90 @@ export function getCharacter(id: string): Character {
 export async function saveCharacter(character: Character) {
   const data = JSON.stringify(character);
   localStorage.setItem(localStorageCharacterKey(character._id), data);
-  await pushCharacterData(data, character.owner);
+
+  if (clientConnection) {
+    await clientConnection.send(data);
+  } else if (character.owner === null || character.owner !== myId) {
+    const keys = Object.keys(hostConnections);
+    for (const key of keys) {
+      const connection = hostConnections[key];
+      if (connection.open) {
+        if (character.owner === null || key === peerId(character.owner)) {
+          await connection.send(data);
+        }
+      } else {
+        delete hostConnections[key];
+      }
+    }
+  }
 }
 
 export function removeCharacter(id: string) {
   localStorage.removeItem(localStorageCharacterKey(id));
+}
+
+export function host(value: boolean): Promise<string | null> {
+  if (value) {
+    return createPeer(true);
+  } else if (peer) {
+    peer.destroy();
+    peer = undefined;
+  }
+
+  return Promise.resolve(null);
+}
+
+export async function connect(id: string): Promise<void> {
+  if (peer === undefined) {
+    await createPeer(false);
+  }
+
+  if (clientConnection) {
+    clientConnection.close();
+  }
+
+  return new Promise((resolve) => {
+    clientConnection = peer!.connect(peerId(id));
+    clientConnection.on("data", onData);
+
+    clientConnection.on("open", () => {
+      resolve();
+    });
+  });
+}
+
+export function observeCharacter(callback: (character: Character) => void) {
+  observeCharacterCallback = callback;
+}
+
+function onData(data: unknown) {
+  if (observeCharacterCallback) {
+    observeCharacterCallback(JSON.parse(data as string));
+  }
+}
+
+function createPeer(host: boolean): Promise<string | null> {
+  return new Promise((resolve) => {
+    peer = new Peer(peerId(myId));
+
+    peer.on("open", resolve);
+
+    if (host) {
+      peer.on("connection", (connection) => {
+        hostConnections[connection.peer] = connection;
+        connection.on("data", onData);
+
+        for (const key of allCharacters()) {
+          const character = getCharacter(key);
+          if (character.owner === null || key === peerId(character.owner)) {
+            connection.send(JSON.stringify(character));
+          }
+        }
+      });
+    }
+  });
+}
+
+function peerId(id: string): string {
+  return `wodvault:${id}`;
 }

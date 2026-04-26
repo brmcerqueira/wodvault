@@ -11,9 +11,8 @@ import { Confirm } from "./dialog/confirm.ts";
 import { dialog } from "./dialog/dialog.ts";
 import { format } from "./fields/common.tsx";
 import { locale } from "./i18n/locale.ts";
-import { allCharacters, getCharacter, removeCharacter, saveCharacter } from "./services/characterService.ts";
+import { allCharacters, connect, getCharacter, host, myId, observeCharacter, removeCharacter, saveCharacter } from "./services/characterService.ts";
 import { isDark, dark } from "./services/preferencesService.ts";
-import { connect, host, myId, observeCharacter } from "./services/peerjsService.ts";
 
 export class Home extends Component<{}, {
   showOffcanvas: boolean,
