@@ -5,12 +5,13 @@ import { Character, CharacterKind, CharacterMode } from "../character.ts";;
 import { Component, createRef } from "$react";
 import { Form, Nav, Navbar } from "$react-bootstrap";
 import { JSX } from "$react/jsx-runtime";
-import { buildCharacter, getCharacter, myId } from "./services/characterService.ts";
+import { buildCharacter, getCharacter } from "./services/characterService.ts";
 import { observeCharactersUpdate, sendCharacterUpdate } from "./services/peerService.ts";
 import { CharacterManager, CharacterManagerContext } from "./characterManager.ts";
 import { ExperienceField } from "./fields/experienceField.tsx";
 import { locale } from "./i18n/locale.ts";
 import { characterTitle, keys } from "../utils.ts";
+import { myId } from "./services/preferencesService.ts";
 
 function updateCharacterManager(characterManager: CharacterManager, character: Character) {
     characterManager.mode = character.mode;

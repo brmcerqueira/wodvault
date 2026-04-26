@@ -4,9 +4,9 @@ import {
   allCharacters,
   getCharacter,
   localStorageCharacterKey,
-  myId,
   saveCharacter,
 } from "./characterService.ts";
+import { hostId, myId, setHostId } from "./preferencesService.ts";
 
 const hostConnections: Record<string, DataConnection> = {};
 let observeCharactersUpdateCallback:
@@ -47,10 +47,20 @@ async function sendCharacters(
 export async function host(value: boolean): Promise<void> {
   if (value) {
     await createPeer(true);
+    setHostId(myId);
   } else if (peer) {
     peer.destroy();
     peer = undefined;
+    setHostId(null);
   }
+}
+
+export function disconnect() {
+  if (clientConnection) {
+    clientConnection.close();
+    clientConnection = undefined;
+  }
+  setHostId(null);
 }
 
 export async function connect(id: string): Promise<void> {
@@ -78,6 +88,7 @@ export async function connect(id: string): Promise<void> {
     });
 
     clientConnection.on("open", () => {
+      setHostId(id);
       resolve();
     });
   });
@@ -171,6 +182,12 @@ function createPeer(host: boolean): Promise<void> {
       });
     }
   });
+}
+
+const id = hostId()
+
+if (id !== null && id !== myId) {
+  await connect(id);
 }
 
 function peerId(id: string): string {

@@ -1,3 +1,21 @@
+if (localStorage.getItem("myId") == null) {
+  localStorage.setItem("myId", crypto.randomUUID());
+}
+
+export const myId = localStorage.getItem("myId") as string;
+
+export function hostId(): string | null {
+  return localStorage.getItem("hostId");
+}
+
+export function setHostId(id: string | null): void {
+  if (id === null) {
+    localStorage.removeItem("hostId");
+  } else {
+    localStorage.setItem("hostId", id);
+  }
+}
+
 let _dark = getBoolean("dark");
 
 if (_dark) {

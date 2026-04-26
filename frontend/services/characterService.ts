@@ -1,11 +1,5 @@
 import { Character, CharacterKind, CharacterMode } from "../../character.ts";
 
-if (localStorage.getItem("myId") == null) {
-  localStorage.setItem("myId", crypto.randomUUID());
-}
-
-export const myId = localStorage.getItem("myId") as string;
-
 export function buildCharacter(kind: CharacterKind): Character {
   return {
     _id: crypto.randomUUID(),
