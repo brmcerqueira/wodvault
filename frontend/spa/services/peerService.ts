@@ -6,7 +6,7 @@ import {
   localStorageCharacterKey,
   saveCharacter,
 } from "./characterService.ts";
-import { hostId, myId, setHostId } from "./preferencesService.ts";
+import { myId, setHostId } from "./preferencesService.ts";
 
 const hostConnections: Record<string, DataConnection> = {};
 let observeCharactersUpdateCallback:
@@ -189,12 +189,6 @@ function createPeer(host: boolean): Promise<void> {
       });
     }
   });
-}
-
-const id = hostId()
-
-if (id !== null && id !== myId) {
-  await connect(id);
 }
 
 function peerId(id: string): string {

@@ -40,7 +40,7 @@ export class Home extends Component<{}, {
 
     this.state = {
       showOffcanvas: false,
-      host: hostId() === myId,
+      host: false,
       connecting: false,
       dark: isDark(),
       characters
@@ -166,6 +166,7 @@ export class Home extends Component<{}, {
               <Form.Control
                 as="textarea"
                 rows={2}
+                defaultValue={isClient ? hostIdValue : ""}
                 ref={this.connectIdRef}
                 disabled={this.state.connecting}
               />
