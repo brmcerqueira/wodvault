@@ -3,13 +3,7 @@ import {
   CharacterKind,
   CharacterMode,
 } from "../../character.ts";
-import { pushData } from "./peerjsService.ts";
-
-if (localStorage.getItem("myId") == null) {
-  localStorage.setItem("myId", crypto.randomUUID());
-}
-
-export const myId = localStorage.getItem("myId") as string;
+import { pushCharacterData } from "./peerjsService.ts";
 
 export function buildCharacter(kind: CharacterKind): Character {
   return {
@@ -143,9 +137,9 @@ export function getCharacter(id: string): Character {
 }
 
 export async function saveCharacter(character: Character) {
-  const body = JSON.stringify(character);
-  localStorage.setItem(localStorageCharacterKey(character._id), body);
-  await pushData(body);
+  const data = JSON.stringify(character);
+  localStorage.setItem(localStorageCharacterKey(character._id), data);
+  await pushCharacterData(data, character.owner);
 }
 
 export function removeCharacter(id: string) {

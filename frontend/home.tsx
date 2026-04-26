@@ -11,9 +11,9 @@ import { Confirm } from "./dialog/confirm.ts";
 import { dialog } from "./dialog/dialog.ts";
 import { format } from "./fields/common.tsx";
 import { locale } from "./i18n/locale.ts";
-import { allCharacters, getCharacter, myId, removeCharacter, saveCharacter } from "./services/characterService.ts";
+import { allCharacters, getCharacter, removeCharacter, saveCharacter } from "./services/characterService.ts";
 import { isDark, dark } from "./services/preferencesService.ts";
-import { connect, host, observeCharacter } from "./services/peerjsService.ts";
+import { connect, host, myId, observeCharacter } from "./services/peerjsService.ts";
 
 export class Home extends Component<{}, {
   showOffcanvas: boolean,
@@ -83,12 +83,14 @@ export class Home extends Component<{}, {
     this.setState({ dark: value });
   }
 
-  private async onOwnership(character: Character, owner: boolean) {
-    character.owner = myId;
-    this.state.characters[character._id].owner = myId;
+  private async onOwnership(character: Character) {
+    const takeOwnership = character.owner === null;
+    const id = takeOwnership ? myId : null;
+    character.owner = id;
+    this.state.characters[character._id].owner = id;
     await saveCharacter(character);
     this.setState({ characters: this.state.characters });
-    await dialog(new Alert(format(owner ? locale.takeOwnership : locale.leaveOwnership, character.name)));
+    await dialog(new Alert(format(takeOwnership ? locale.takeOwnership : locale.leaveOwnership, character.name)));
   }
 
   private async onRemove(character: Character): Promise<void> {
@@ -199,10 +201,10 @@ export class Home extends Component<{}, {
                   <Col className="text-start">{character.player}</Col>
                 </Row></Card.Text>
                 <ButtonGroup>
-                  <Button variant={character.owner === null ? "outline-secondary" : "secondary"} onClick={async e => {
+                  {(character.owner === null || character.owner === myId) && <Button variant={character.owner === null ? "outline-secondary" : "secondary"} onClick={async e => {
                     e.stopPropagation();
-                    await this.onOwnership(character, character.owner === null);
-                  }}><i className={`bi ${character.owner === null ? "bi-person-fill-lock" : "bi-person-fill-x"}`} /></Button>
+                    await this.onOwnership(character);
+                  }}><i className={`bi ${character.owner === null ? "bi-person-fill-lock" : "bi-person-fill-x"}`} /></Button>}
                   <Button variant="danger" onClick={async e => {
                     e.stopPropagation();
                     await this.onRemove(character);

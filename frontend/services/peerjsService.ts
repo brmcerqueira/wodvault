@@ -1,6 +1,12 @@
 import { Character } from "../../character.ts";
 import Peer, { DataConnection } from "$peerjs";
 
+if (localStorage.getItem("myId") == null) {
+  localStorage.setItem("myId", crypto.randomUUID());
+}
+
+export const myId = localStorage.getItem("myId") as string;
+
 const hostConnections: Record<string, DataConnection> = {};
 let observeCharacterCallback: ((character: Character) => void) | undefined;
 let peer: Peer | undefined = undefined;
@@ -8,7 +14,7 @@ let clientConnection: DataConnection | undefined = undefined;
 
 export function host(value: boolean): Promise<string | null> {
   if (value) {
-    return createPeer();
+    return createPeer(true);
   } else if (peer) {
     peer.destroy();
     peer = undefined;
@@ -19,7 +25,7 @@ export function host(value: boolean): Promise<string | null> {
 
 export async function connect(id: string): Promise<void> {
   if (peer === undefined) {
-    await createPeer();
+    await createPeer(false);
   }
 
   if (clientConnection) {
@@ -27,7 +33,7 @@ export async function connect(id: string): Promise<void> {
   }
 
   return new Promise((resolve) => {
-    clientConnection = peer!.connect(id);
+    clientConnection = peer!.connect(peerId(id));
     clientConnection.on("data", onData);
 
     clientConnection.on("open", () => {
@@ -36,14 +42,17 @@ export async function connect(id: string): Promise<void> {
   });
 }
 
-export async function pushData(data: string): Promise<void> {
+export async function pushCharacterData(data: string, owner: string | null = null): Promise<void> {
   if (clientConnection) {
     await clientConnection.send(data);
-  } else {
-    for (const key in hostConnections) {
+  } else if (owner === null || owner !== myId) {
+    const keys = Object.keys(hostConnections);
+    for (const key of keys) {
       const connection = hostConnections[key];
       if (connection.open) {
-        await connection.send(data);
+        if (owner === null || key === peerId(owner)) {
+          await connection.send(data);
+        }
       } else {
         delete hostConnections[key];
       }
@@ -61,15 +70,21 @@ function onData(data: unknown) {
   }
 }
 
-function createPeer(): Promise<string | null> {
+function createPeer(host: boolean): Promise<string | null> {
   return new Promise((resolve) => {
-    peer = new Peer();
+    peer = new Peer(peerId(myId));
 
     peer.on("open", resolve);
 
-    peer.on("connection", (connection) => {
-      hostConnections[connection.connectionId] = connection;
-      connection.on("data", onData);
-    });
+    if (host) {
+      peer.on("connection", (connection) => {
+        hostConnections[connection.peer] = connection;
+        connection.on("data", onData);
+      });
+    }
   });
+}
+
+function peerId(id: string): string {
+  return `wodvault:${id}`;
 }
