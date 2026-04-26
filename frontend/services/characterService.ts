@@ -2,9 +2,19 @@ import { Character, CharacterKind, CharacterMode } from "../../character.ts";
 import Peer, { DataConnection } from "$peerjs";
 
 const hostConnections: Record<string, DataConnection> = {};
-let observeCharacterCallback: ((character: Character) => void) | undefined;
+let observeCharacterUpdateCallback:
+  | ((character: Character) => void)
+  | undefined;
 let peer: Peer | undefined = undefined;
 let clientConnection: DataConnection | undefined = undefined;
+
+type PeerMessage = {
+  type: "characterUpdate";
+  character: Character;
+} | {
+  type: "characterAdds";
+  characters: Character[];
+};
 
 if (localStorage.getItem("myId") == null) {
   localStorage.setItem("myId", crypto.randomUUID());
@@ -144,24 +154,39 @@ export function getCharacter(id: string): Character {
 }
 
 export async function saveCharacter(character: Character) {
-  const data = JSON.stringify(character);
-  localStorage.setItem(localStorageCharacterKey(character._id), data);
+  saveCharacterInLocalStorage(character);
 
   if (clientConnection) {
-    await clientConnection.send(data);
+    await sendCharacterUpdate(clientConnection, character);
   } else if (character.owner === null || character.owner !== myId) {
     const keys = Object.keys(hostConnections);
     for (const key of keys) {
       const connection = hostConnections[key];
       if (connection.open) {
         if (character.owner === null || key === peerId(character.owner)) {
-          await connection.send(data);
+          await sendCharacterUpdate(connection, character);
         }
       } else {
         delete hostConnections[key];
       }
     }
   }
+}
+
+function saveCharacterInLocalStorage(character: Character) {
+  localStorage.setItem(
+    localStorageCharacterKey(character._id),
+    JSON.stringify(character),
+  );
+}
+
+async function sendCharacterUpdate(
+  connection: DataConnection,
+  character: Character,
+) {
+  await connection.send(
+    JSON.stringify({ type: "characterUpdate", character }),
+  );
 }
 
 export function removeCharacter(id: string) {
@@ -198,13 +223,23 @@ export async function connect(id: string): Promise<void> {
   });
 }
 
-export function observeCharacter(callback: (character: Character) => void) {
-  observeCharacterCallback = callback;
+export function observeCharacterUpdate(
+  callback: (character: Character) => void,
+) {
+  observeCharacterUpdateCallback = callback;
 }
 
 function onData(data: unknown) {
-  if (observeCharacterCallback) {
-    observeCharacterCallback(JSON.parse(data as string));
+  const message = JSON.parse(data as string) as PeerMessage;
+
+  if (message.type === "characterUpdate") {
+    if (observeCharacterUpdateCallback) {
+      observeCharacterUpdateCallback(message.character);
+    }
+  } else if (message.type === "characterAdds") {
+    for (const character of message.characters) {
+      saveCharacterInLocalStorage(character);
+    }
   }
 }
 
@@ -219,12 +254,21 @@ function createPeer(host: boolean): Promise<string | null> {
         hostConnections[connection.peer] = connection;
         connection.on("data", onData);
 
+        const characters: Character[] = [];
+
         for (const key of allCharacters()) {
           const character = getCharacter(key);
-          if (character.owner === null || key === peerId(character.owner)) {
-            connection.send(JSON.stringify(character));
+          if (
+            character.owner === null ||
+            connection.peer === peerId(character.owner)
+          ) {
+            characters.push(character);
           }
         }
+
+        connection.send(
+          JSON.stringify({ type: "characterAdds", characters }),
+        );
       });
     }
   });

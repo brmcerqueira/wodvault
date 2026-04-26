@@ -5,7 +5,7 @@ import { Character, CharacterKind, CharacterMode } from "../character.ts";;
 import { Component, createRef } from "$react";
 import { Form, Nav, Navbar } from "$react-bootstrap";
 import { JSX } from "$react/jsx-runtime";
-import { buildCharacter, getCharacter, myId, observeCharacter, saveCharacter } from "./services/characterService.ts";
+import { buildCharacter, getCharacter, myId, observeCharacterUpdate, saveCharacter } from "./services/characterService.ts";
 import { CharacterManager, CharacterManagerContext } from "./characterManager.ts";
 import { ExperienceField } from "./fields/experienceField.tsx";
 import { locale } from "./i18n/locale.ts";
@@ -40,7 +40,7 @@ export abstract class CharacterSheet extends Component<{}, { character: Characte
             character: character!
         }
 
-        observeCharacter(character => {
+        observeCharacterUpdate(character => {
             if (!this.state.characterManager.edit && character._id == this.state.character._id) {
                 updateCharacterManager(characterManager, character);
                 this.setState({ character });
