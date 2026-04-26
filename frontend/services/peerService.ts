@@ -48,12 +48,14 @@ export async function host(value: boolean): Promise<void> {
  if (peer) {
     peer.destroy();
     peer = undefined;
-    setHostId(null);
   }
 
   if (value) {
     await createPeer(true);
     setHostId(myId);
+  }
+  else {
+    setHostId(null);
   }
 }
 
