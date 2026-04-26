@@ -1,4 +1,4 @@
-import { Character } from "../../character.ts";
+import { Character } from "../../../character.ts";
 import Peer, { DataConnection } from "$peerjs";
 import {
   allCharacters,

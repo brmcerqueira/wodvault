@@ -1,4 +1,4 @@
-import { Character, CharacterKind, CharacterMode } from "../../character.ts";
+import { Character, CharacterKind, CharacterMode } from "../../../character.ts";
 
 export function buildCharacter(kind: CharacterKind): Character {
   return {

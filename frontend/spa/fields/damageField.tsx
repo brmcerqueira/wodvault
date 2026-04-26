@@ -1,7 +1,7 @@
 /** @jsxImportSource $react */
 /** @jsxRuntime automatic */
 
-import { Damage } from "../../character.ts";
+import { Damage } from "../../../character.ts";
 import { CharacterManagerContext } from "../characterManager.ts";
 import { Component } from "$react";
 import { Button, Col, Row } from "$react-bootstrap";

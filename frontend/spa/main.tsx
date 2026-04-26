@@ -16,3 +16,11 @@ createRoot(document.getElementById("root")!).render(<><DialogModal ref={dialogRe
     <Route path="/" element={<Home />} />
   </Routes>
 </HashRouter></>);
+
+if ("serviceWorker" in navigator) {
+  globalThis.addEventListener("load", () => {
+    navigator.serviceWorker.register("/serviceWorker.min.js").catch((error) => {
+      console.error("Service worker registration failed:", error);
+    });
+  });
+}
