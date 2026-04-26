@@ -11,7 +11,8 @@ import { Confirm } from "./dialog/confirm.ts";
 import { dialog } from "./dialog/dialog.ts";
 import { format } from "./fields/common.tsx";
 import { locale } from "./i18n/locale.ts";
-import { allCharacters, connect, getCharacter, host, myId, observeCharacterUpdate, removeCharacter, saveCharacter } from "./services/characterService.ts";
+import { allCharacters, getCharacter, myId, removeCharacter } from "./services/characterService.ts";
+import { connect, host, observeCharacterUpdate, sendCharacterUpdate } from "./services/peerService.ts";
 import { isDark, dark } from "./services/preferencesService.ts";
 
 export class Home extends Component<{}, {
@@ -87,7 +88,7 @@ export class Home extends Component<{}, {
     const id = takeOwnership ? myId : null;
     character.owner = id;
     this.state.characters[character._id].owner = id;
-    await saveCharacter(character);
+    await sendCharacterUpdate(character);
     this.setState({ characters: this.state.characters });
     await dialog(new Alert(format(takeOwnership ? locale.takeOwnership : locale.leaveOwnership, character.name)));
   }

@@ -5,7 +5,8 @@ import { Character, CharacterKind, CharacterMode } from "../character.ts";;
 import { Component, createRef } from "$react";
 import { Form, Nav, Navbar } from "$react-bootstrap";
 import { JSX } from "$react/jsx-runtime";
-import { buildCharacter, getCharacter, myId, observeCharacterUpdate, saveCharacter } from "./services/characterService.ts";
+import { buildCharacter, getCharacter, myId } from "./services/characterService.ts";
+import { observeCharacterUpdate, sendCharacterUpdate } from "./services/peerService.ts";
 import { CharacterManager, CharacterManagerContext } from "./characterManager.ts";
 import { ExperienceField } from "./fields/experienceField.tsx";
 import { locale } from "./i18n/locale.ts";
@@ -54,7 +55,7 @@ export abstract class CharacterSheet extends Component<{}, { character: Characte
         this.setState({ characterManager: this.state.characterManager });
 
         if (!edit) {
-            await saveCharacter(this.state.character);
+            await sendCharacterUpdate(this.state.character);
         }
     }
 
