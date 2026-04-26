@@ -1,17 +1,21 @@
 import { locale } from "./i18n/backend/locale.ts";
 
 const apiImage = "api/image/";
-const thumbs = "thumbs/";
-const pixhostThumbs = `https://t1.pixhost.to/${thumbs}`;
+const imgbbApiKey = Deno.env.get("IMGBB_API_KEY") ?? "";
+const imgbbUploadUrl = "https://api.imgbb.com/1/upload";
+const allowedImageHosts = new Set(["i.ibb.co"]);
 
 export async function uploadImage(image: File): Promise<string> {
+  if (!imgbbApiKey) {
+    throw new Error(locale.sendImageError);
+  }
+
   const form = new FormData();
 
-  form.append("img", image, image.name);
-  form.append("content_type", "0");
-  form.append("max_th_size", "420");
+  form.append("image", image, image.name);
+  form.append("name", image.name);
 
-  const response = await fetch("https://api.pixhost.to/images", {
+  const response = await fetch(`${imgbbUploadUrl}?key=${encodeURIComponent(imgbbApiKey)}`, {
     method: "POST",
     body: form,
     headers: {
@@ -20,14 +24,18 @@ export async function uploadImage(image: File): Promise<string> {
   });
 
   if (!response.ok) {
-    throw new Error(locale.sendPixhostError);
+    throw new Error(locale.sendImageError);
   }
 
   const result = await response.json();
+  const remoteUrl: string | undefined = result.data?.thumb?.url ??
+    result.data?.image?.url ?? result.data?.url;
 
-  const thumbnail: string = result.th_url;
+  if (!remoteUrl) {
+    throw new Error(locale.sendImageError);
+  }
 
-  return `${apiImage}${thumbnail.substring(thumbnail.indexOf(thumbs) + thumbs.length)}`;
+  return `${apiImage}${encodeURIComponent(remoteUrl)}`;
 }
 
 export async function getImage(
@@ -35,7 +43,16 @@ export async function getImage(
 ): Promise<
   { body: ReadableStream<Uint8Array<ArrayBuffer>> | null; contentType: string }
 > {
-  const response = await fetch(`${pixhostThumbs}/${path}`, {
+  const remoteUrl = new URL(decodeURIComponent(path));
+
+  if (
+    remoteUrl.protocol !== "https:" ||
+    !allowedImageHosts.has(remoteUrl.hostname)
+  ) {
+    throw new Error(locale.invalidFile);
+  }
+
+  const response = await fetch(remoteUrl, {
     headers: {
       "User-Agent": "Wodvault-Image-Proxy",
       Accept: "image/*",
@@ -56,16 +73,4 @@ export async function getImage(
     body: response.body,
     contentType,
   };
-}
-
-export async function getImageDataURL(path: string): Promise<string | ArrayBuffer | null> {
-  const response = await fetch(path.startsWith(apiImage) ? `${pixhostThumbs}/${path.substring(path.indexOf(apiImage) + apiImage.length)}` : path);
-  const blob = await response.blob();
-
-  return await new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onloadend = () => resolve(reader.result);
-    reader.onerror = reject;
-    reader.readAsDataURL(blob);
-  });
 }

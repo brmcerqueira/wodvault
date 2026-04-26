@@ -3,7 +3,7 @@ export type LocaleType = {
   characterNotFound: string;
   pageNotFound: string;
   invalidFormat: string;
-  sendPixhostError: string;
+  sendImageError: string;
   unsupportedMediaType: string;
   invalidFile: string;
 };
