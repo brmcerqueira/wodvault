@@ -5,6 +5,7 @@ import { basePt } from "../../../i18n/pt.ts";
 export const pt: LocaleType & BaseLocaleType = Object.assign({
   name: "Nome",
   connect: "Conectar",
+  disconnect: "Desconectar",
   host: "Hospedar",
   connectedToHost: "Conectado ao host",
   yourHostId: "Seu ID de host",

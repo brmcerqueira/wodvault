@@ -3,7 +3,7 @@
 
 import { Character, CharacterKind } from "../../character.ts";
 import { keys } from "../../utils.ts";
-import { Component, createRef } from "$react";
+import { Component, createRef, JSX } from "$react";
 import { Navigate } from "$react-router";
 import { Button, ButtonGroup, Card, Col, Container, Form, InputGroup, Nav, Navbar, NavDropdown, Offcanvas, Row, Spinner } from "$react-bootstrap";
 import { Alert } from "./dialog/alert.ts";
@@ -122,6 +122,17 @@ export class Home extends Component<{}, {
     return result
   }
 
+  private renderConnectButtonContent(): string | JSX.Element {
+    switch (this.state.connectionStatus) {
+      case ConnectionStatus.Connecting:
+        return <Spinner animation="border" size="sm" />;
+      case ConnectionStatus.Connected:
+        return locale.disconnect;
+      default:
+        return this.state.host ? locale.host : locale.connect;
+    }
+  }
+
   public override render() {
     if (this.state.redirect) {
       return <Navigate to={this.state.redirect} replace />;
@@ -145,33 +156,27 @@ export class Home extends Component<{}, {
       </Nav>
     </Navbar><Offcanvas show={this.state.showOffcanvas} placement="end" onHide={() => this.setState({ showOffcanvas: false })}>
         <Offcanvas.Header closeButton />
-        <Offcanvas.Body className="d-flex flex-column">
-          {this.state.host ? (              
+        <Offcanvas.Body className="d-flex flex-column"> 
             <Form.Group className="mb-3">
+              {this.state.host ? (  
               <InputGroup>
                 <Form.Control defaultValue={myId} disabled/>        
                 <Button variant="outline-secondary" onClick={() => this.onCopyMyIdInClipboard()}>
                   <i className="bi bi-copy" />
                 </Button>
               </InputGroup>
-              <Button className="mt-2 w-100" disabled={this.state.connectionStatus === ConnectionStatus.Connecting} onClick={async () => await this.onConnectOrDisconnect()}>
-                {this.state.connectionStatus === ConnectionStatus.Connecting ? <Spinner animation="border" size="sm" /> : locale.host}
-              </Button>
-            </Form.Group>
-          ) : (
-            <Form.Group className="mb-3">
-              <Form.Control
+              ) : (<Form.Control
                 as="textarea"
                 rows={2}
                 defaultValue={hostIdValue != null && hostIdValue != myId ? hostIdValue : ""}
                 ref={this.connectIdRef}
                 disabled={this.state.connectionStatus !== ConnectionStatus.Disconnected}
-              />
-              <Button className="mt-2 w-100" disabled={this.state.connectionStatus === ConnectionStatus.Connecting} onClick={async () => await this.onConnectOrDisconnect()}>
-                {this.state.connectionStatus === ConnectionStatus.Connecting ? <Spinner animation="border" size="sm" /> : locale.connect}
+              />)}
+              <Button className="mt-2 w-100" variant={this.state.connectionStatus === ConnectionStatus.Connected ? "danger" : "primary"} disabled={this.state.connectionStatus === ConnectionStatus.Connecting} 
+                onClick={async () => await this.onConnectOrDisconnect()}>
+                {this.renderConnectButtonContent()}
               </Button>
             </Form.Group>
-          )}
           <div className="mt-auto border-top pt-3">
             <Form.Check className="mb-2" onChange={ e => this.onSwitchHost(e.target.checked)} defaultChecked={this.state.host}
               type="switch"
