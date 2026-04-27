@@ -69,6 +69,7 @@ export class Home extends Component<{}, {
       disconnect();
     }
     else {
+      this.setState({ connectionStatus: ConnectionStatus.Connecting });
       if (this.state.host) {
         await host();
       }
@@ -76,7 +77,6 @@ export class Home extends Component<{}, {
         const id = this.connectIdRef.current?.value.trim() ?? "";
 
         if (id.length > 0) {
-          this.setState({ connectionStatus: ConnectionStatus.Connecting });
           await connect(id);
         }
       }
@@ -151,7 +151,7 @@ export class Home extends Component<{}, {
               <InputGroup>
                 <Form.Control defaultValue={myId} disabled/>        
                 <Button variant="outline-secondary" onClick={() => this.onCopyMyIdInClipboard()}>
-                  <i className="bi bi-clipboard" />
+                  <i className="bi bi-copy" />
                 </Button>
               </InputGroup>
               <Button className="mt-2 w-100" disabled={this.state.connectionStatus === ConnectionStatus.Connecting} onClick={async () => await this.onConnectOrDisconnect()}>
