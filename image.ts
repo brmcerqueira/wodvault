@@ -1,9 +1,6 @@
 import { locale } from "./i18n/backend/locale.ts";
 
-const apiImage = "api/image/";
 const imgbbApiKey = Deno.env.get("IMGBB_API_KEY") ?? "";
-const imgbbUploadUrl = "https://api.imgbb.com/1/upload";
-const allowedImageHosts = new Set(["i.ibb.co"]);
 
 export async function uploadImage(image: File): Promise<string> {
   if (!imgbbApiKey) {
@@ -15,7 +12,7 @@ export async function uploadImage(image: File): Promise<string> {
   form.append("image", image, image.name);
   form.append("name", image.name);
 
-  const response = await fetch(`${imgbbUploadUrl}?key=${encodeURIComponent(imgbbApiKey)}`, {
+  const response = await fetch(`https://api.imgbb.com/1/upload?key=${encodeURIComponent(imgbbApiKey)}`, {
     method: "POST",
     body: form,
     headers: {
@@ -35,7 +32,7 @@ export async function uploadImage(image: File): Promise<string> {
     throw new Error(locale.sendImageError);
   }
 
-  return `${apiImage}${encodeURIComponent(remoteUrl)}`;
+  return `api/image${new URL(remoteUrl).pathname}`;
 }
 
 export async function getImage(
@@ -43,16 +40,7 @@ export async function getImage(
 ): Promise<
   { body: ReadableStream<Uint8Array<ArrayBuffer>> | null; contentType: string }
 > {
-  const remoteUrl = new URL(decodeURIComponent(path));
-
-  if (
-    remoteUrl.protocol !== "https:" ||
-    !allowedImageHosts.has(remoteUrl.hostname)
-  ) {
-    throw new Error(locale.invalidFile);
-  }
-
-  const response = await fetch(remoteUrl, {
+  const response = await fetch(`https://i.ibb.co/${path}`, {
     headers: {
       "User-Agent": "Wodvault-Image-Proxy",
       Accept: "image/*",
