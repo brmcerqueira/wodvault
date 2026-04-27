@@ -173,7 +173,7 @@ export class Home extends Component<{}, {
                 disabled={this.state.connectionStatus !== ConnectionStatus.Disconnected}
               />)}
               <Button className="mt-2 w-100" variant={this.state.connectionStatus == ConnectionStatus.Connected ? "danger" : "primary"} 
-                disabled={this.state.connectionStatus === ConnectionStatus.Connecting} 
+                disabled={this.state.connectionStatus == ConnectionStatus.Connecting} 
                 onClick={async () => await this.onConnectOrDisconnect()}>
                 {this.renderConnectButtonContent()}
               </Button>
