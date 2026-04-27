@@ -16,6 +16,14 @@ export function setHostId(id: string | null): void {
   }
 }
 
+export function isHost(): boolean {
+  return getBoolean("host");
+}
+
+export function setHost(value: boolean) {
+  localStorage.setItem("host", JSON.stringify(value));
+}
+
 let _dark = getBoolean("dark");
 
 if (_dark) {
@@ -26,7 +34,7 @@ export function isDark(): boolean {
   return _dark;
 }
 
-export function dark(value: boolean) {
+export function setDark(value: boolean) {
   _dark = value;
   localStorage.setItem("dark", JSON.stringify(value));
 

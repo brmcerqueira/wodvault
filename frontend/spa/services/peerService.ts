@@ -15,6 +15,18 @@ let observeCharactersUpdateCallback:
 let peer: Peer | undefined = undefined;
 let clientConnection: DataConnection | undefined = undefined;
 
+export enum ConnectionStatus {
+ Disconnected,
+ Connecting,
+ Connected,
+}
+
+let _connectionStatus: ConnectionStatus = ConnectionStatus.Disconnected;
+
+export function connectionStatus(): ConnectionStatus {
+  return _connectionStatus;
+}
+
 export async function sendCharacterUpdate(character: Character) {
   saveCharacter(character);
 
@@ -44,18 +56,20 @@ async function sendCharacters(
   );
 }
 
-export async function host(value: boolean): Promise<void> {
+export async function host(): Promise<void> {
  if (peer) {
     peer.destroy();
     peer = undefined;
+    _connectionStatus = ConnectionStatus.Disconnected;
   }
 
-  if (value) {
+  if (_connectionStatus === ConnectionStatus.Disconnected) {
     await createPeer(true);
     setHostId(myId);
   }
   else {
     setHostId(null);
+    _connectionStatus = ConnectionStatus.Disconnected;
   }
 }
 
@@ -65,6 +79,7 @@ export function disconnect() {
     clientConnection = undefined;
   }
   setHostId(null);
+  _connectionStatus = ConnectionStatus.Disconnected;
 }
 
 export async function connect(id: string): Promise<void> {
@@ -86,12 +101,14 @@ export async function connect(id: string): Promise<void> {
       });
     });
     clientConnection.on("close", () => {
+      _connectionStatus = ConnectionStatus.Disconnected;
       console.error("[PeerJS][clientConnection:close]", {
         target: peerId(id),
       });
     });
 
     clientConnection.on("open", () => {
+      _connectionStatus = ConnectionStatus.Connected;
       setHostId(id);
       resolve();
     });
@@ -123,6 +140,9 @@ function createPeer(host: boolean): Promise<void> {
     peer = new Peer(peerId(myId));
 
     peer.on("open", (id) => {
+      if (host) {
+          _connectionStatus = ConnectionStatus.Connected;
+      }
       console.log("[PeerJS][peer:open]", { id, host });
       resolve();
     });
@@ -134,12 +154,14 @@ function createPeer(host: boolean): Promise<void> {
       });
     });
     peer.on("disconnected", () => {
+      _connectionStatus = ConnectionStatus.Disconnected;
       console.error("[PeerJS][peer:disconnected]", {
         host,
         myId: peerId(myId),
       });
     });
     peer.on("close", () => {
+      _connectionStatus = ConnectionStatus.Disconnected;
       console.error("[PeerJS][peer:close]", { host, myId: peerId(myId) });
     });
 

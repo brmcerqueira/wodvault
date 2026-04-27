@@ -5,20 +5,20 @@ import { Character, CharacterKind } from "../../character.ts";
 import { keys } from "../../utils.ts";
 import { Component, createRef } from "$react";
 import { Navigate } from "$react-router";
-import { Button, ButtonGroup, Card, Col, Container, Form, Nav, Navbar, NavDropdown, Offcanvas, Row, Spinner } from "$react-bootstrap";
+import { Button, ButtonGroup, Card, Col, Container, Form, InputGroup, Nav, Navbar, NavDropdown, Offcanvas, Row, Spinner } from "$react-bootstrap";
 import { Alert } from "./dialog/alert.ts";
 import { Confirm } from "./dialog/confirm.ts";
 import { dialog } from "./dialog/dialog.ts";
 import { format } from "./fields/common.tsx";
 import { locale } from "./i18n/locale.ts";
 import { allCharacters, getCharacter, removeCharacter } from "./services/characterService.ts";
-import { connect, disconnect, host, observeCharactersUpdate, sendCharacterUpdate } from "./services/peerService.ts";
-import { isDark, dark, myId, hostId } from "./services/preferencesService.ts";
+import { connect, connectionStatus, ConnectionStatus, disconnect, host, observeCharactersUpdate, sendCharacterUpdate } from "./services/peerService.ts";
+import { isDark, setDark, myId, hostId, isHost, setHost } from "./services/preferencesService.ts";
 
 export class Home extends Component<{}, {
   showOffcanvas: boolean,
   host: boolean,
-  connecting: boolean,
+  connectionStatus: ConnectionStatus,
   dark: boolean,
   characters: Record<string, Character>,
   redirect?: string,
@@ -40,8 +40,8 @@ export class Home extends Component<{}, {
 
     this.state = {
       showOffcanvas: false,
-      host: false,
-      connecting: false,
+      host: isHost(),
+      connectionStatus: connectionStatus(),
       dark: isDark(),
       characters
     }
@@ -55,38 +55,37 @@ export class Home extends Component<{}, {
     });
   }
 
-  private async onSwitchHost(value: boolean): Promise<void> {
-    await host(value);
-    this.setState({ host: value, connecting: false });
+  private onSwitchHost(value: boolean) {
+    setHost(value);
+    this.setState({ host: value });
   }
 
-  private onHostIdButton(id: string, isClient: boolean): void {
-    if (isClient) {
+  private onCopyMyIdInClipboard(): void {
+    navigator.clipboard.writeText(myId);
+  }
+
+  private async onConnectOrDisconnect(): Promise<void> {
+    if (this.state.connectionStatus == ConnectionStatus.Connected) {
       disconnect();
-      this.setState({ host: false, connecting: false });
     }
     else {
-      navigator.clipboard.writeText(id);
-    }
-  }
+      if (this.state.host) {
+        await host();
+      }
+      else {
+        const id = this.connectIdRef.current?.value.trim() ?? "";
 
-  private async onConnect(): Promise<void> {
-    const id = this.connectIdRef.current?.value.trim() ?? "";
-
-    if (id.length > 0) {
-      this.setState({ connecting: true });
-
-      try {
-        await connect(id);
-        this.setState({ host: false, connecting: false });
-      } finally {
-        this.setState({ connecting: false });
+        if (id.length > 0) {
+          this.setState({ connectionStatus: ConnectionStatus.Connecting });
+          await connect(id);
+        }
       }
     }
+    this.setState({ connectionStatus: connectionStatus() });
   }
 
   private onSwitchDark(value: boolean): void {
-    dark(value);
+    setDark(value);
     this.setState({ dark: value });
   }
 
@@ -131,7 +130,6 @@ export class Home extends Component<{}, {
     const array = keys(this.state.characters);
 
     const hostIdValue = hostId();
-    const isClient = hostIdValue !== null && hostIdValue !== myId;
 
     return <><Navbar expand className="bg-body-tertiary border-bottom">
       <Nav className="me-auto">
@@ -148,35 +146,34 @@ export class Home extends Component<{}, {
     </Navbar><Offcanvas show={this.state.showOffcanvas} placement="end" onHide={() => this.setState({ showOffcanvas: false })}>
         <Offcanvas.Header closeButton />
         <Offcanvas.Body className="d-flex flex-column">
-          {hostIdValue !== null ? (
-            <>
-              <p className="mb-2 text-muted small">
-                {isClient ? locale.connectedToHost : locale.yourHostId}
-              </p>
-              <Button
-                variant={isClient ? "outline-primary" : "outline-secondary"}
-                className="mb-2 w-100"
-                onClick={() => this.onHostIdButton(hostIdValue, isClient)}
-              >
-                {hostIdValue}
+          {this.state.host ? (              
+            <Form.Group className="mb-3">
+              <InputGroup>
+                <Form.Control defaultValue={myId} disabled/>        
+                <Button variant="outline-secondary" onClick={() => this.onCopyMyIdInClipboard()}>
+                  <i className="bi bi-clipboard" />
+                </Button>
+              </InputGroup>
+              <Button className="mt-2 w-100" disabled={this.state.connectionStatus === ConnectionStatus.Connecting} onClick={async () => await this.onConnectOrDisconnect()}>
+                {this.state.connectionStatus === ConnectionStatus.Connecting ? <Spinner animation="border" size="sm" /> : locale.host}
               </Button>
-            </>
+            </Form.Group>
           ) : (
             <Form.Group className="mb-3">
               <Form.Control
                 as="textarea"
                 rows={2}
-                defaultValue={isClient ? hostIdValue : ""}
+                defaultValue={hostIdValue != null && hostIdValue != myId ? hostIdValue : ""}
                 ref={this.connectIdRef}
-                disabled={this.state.connecting}
+                disabled={this.state.connectionStatus !== ConnectionStatus.Disconnected}
               />
-              <Button className="mt-2 w-100" disabled={this.state.connecting} onClick={async () => await this.onConnect()}>
-                {this.state.connecting ? <Spinner animation="border" size="sm" /> : locale.connect}
+              <Button className="mt-2 w-100" disabled={this.state.connectionStatus === ConnectionStatus.Connecting} onClick={async () => await this.onConnectOrDisconnect()}>
+                {this.state.connectionStatus === ConnectionStatus.Connecting ? <Spinner animation="border" size="sm" /> : locale.connect}
               </Button>
             </Form.Group>
           )}
           <div className="mt-auto border-top pt-3">
-            <Form.Check className="mb-2" onChange={ async e => await this.onSwitchHost(e.target.checked)} defaultChecked={this.state.host}
+            <Form.Check className="mb-2" onChange={ e => this.onSwitchHost(e.target.checked)} defaultChecked={this.state.host}
               type="switch"
               label={<i className={`bi ${this.state.host ? "bi-broadcast" : "bi-broadcast-pin"}`} />}
             />

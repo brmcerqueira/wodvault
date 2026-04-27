@@ -6,6 +6,7 @@ type OptionsLocale = {
 export type LocaleType = {
   name: string;
   connect: string;
+  host: string;
   connectedToHost: string;
   yourHostId: string;
   emptyCharacters: string;
