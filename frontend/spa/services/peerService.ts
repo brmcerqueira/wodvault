@@ -93,7 +93,7 @@ export async function connect(id: string): Promise<void> {
 
   return new Promise((resolve) => {
     clientConnection = peer!.connect(peerId(id));
-    clientConnection.on("data", onData);
+    clientConnection.on("data", incomingCharacters(clientConnection));
     clientConnection.on("error", (error) => {
       console.error("[PeerJS][clientConnection:error]", {
         target: peerId(id),
@@ -121,17 +121,35 @@ export function observeCharactersUpdate(
   observeCharactersUpdateCallback = callback;
 }
 
-function onData(data: unknown) {
-  const characters = JSON.parse(data as string) as Character[];
-  const keys = allCharacters();
-  for (const character of characters) {
-    if (!keys.includes(localStorageCharacterKey(character.id))) {
-      saveCharacter(character);
+function incomingCharacters(connection: DataConnection): (data: unknown) => void {
+  return (data) => {
+    const characters: Character[] = [];
+    const updateRemoteCharacters: Character[] = [];
+    const keys = allCharacters();
+    for (const remoteCharacter of (JSON.parse(data as string) as Character[])) {
+      if (keys.includes(localStorageCharacterKey(remoteCharacter.id))) {
+        const character = getCharacter(remoteCharacter.id)!;
+        if (character.timestamp < remoteCharacter.timestamp) {
+          saveCharacter(remoteCharacter);
+          characters.push(remoteCharacter);
+        }
+        else if (character.timestamp > remoteCharacter.timestamp) {
+          updateRemoteCharacters.push(character);
+        }
+      }
+      else {
+        saveCharacter(remoteCharacter);
+        characters.push(remoteCharacter);
+      }
     }
-  }
 
-  if (observeCharactersUpdateCallback) {
-    observeCharactersUpdateCallback(characters);
+    if (updateRemoteCharacters.length > 0) {
+      sendCharacters(connection, ...updateRemoteCharacters);
+    }
+
+    if (observeCharactersUpdateCallback) {
+      observeCharactersUpdateCallback(characters);
+    }
   }
 }
 
@@ -169,7 +187,7 @@ function createPeer(host: boolean): Promise<void> {
       peer.on("connection", (connection) => {
         hostConnections[connection.peer] = connection;
         console.log("[PeerJS][host:connection]", { peer: connection.peer });
-        connection.on("data", onData);
+        connection.on("data", incomingCharacters(connection));
         connection.on("error", (error) => {
           console.error("[PeerJS][hostConnection:error]", {
             peer: connection.peer,

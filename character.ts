@@ -17,6 +17,7 @@ export type Damage = {
 
 export type Character = {
   id: string;
+  timestamp: number;
   details: string;
   image: string;
   name: string;

@@ -3,6 +3,7 @@ import { Character, CharacterKind, CharacterMode } from "../../../character.ts";
 export function buildCharacter(kind: CharacterKind): Character {
   return {
     id: crypto.randomUUID(),
+    timestamp: Date.now(),
     details: "",
     image: "",
     name: "",
@@ -160,6 +161,7 @@ export function getCharacter(id: string): Character | null {
 }
 
 export function saveCharacter(character: Character) {
+  character.timestamp = Date.now();
   localStorage.setItem(
     localStorageCharacterKey(character.id),
     JSON.stringify(character),
