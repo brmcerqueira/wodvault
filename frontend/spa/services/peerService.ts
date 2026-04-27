@@ -125,7 +125,7 @@ function onData(data: unknown) {
   const characters = JSON.parse(data as string) as Character[];
   const keys = allCharacters();
   for (const character of characters) {
-    if (!keys.includes(localStorageCharacterKey(character._id))) {
+    if (!keys.includes(localStorageCharacterKey(character.id))) {
       saveCharacter(character);
     }
   }

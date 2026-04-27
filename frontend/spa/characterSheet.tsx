@@ -44,7 +44,7 @@ export abstract class CharacterSheet extends Component<{}, { character: Characte
 
         observeCharactersUpdate(characters => {
             if (!this.state.characterManager.edit) {
-                const character = characters.find(character => character._id == this.state.character._id)
+                const character = characters.find(character => character.id == this.state.character.id)
                 if (character) {
                     updateCharacterManager(characterManager, character);
                     this.setState({ character: character });

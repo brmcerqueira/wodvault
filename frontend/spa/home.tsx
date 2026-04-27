@@ -48,7 +48,7 @@ export class Home extends Component<{}, {
 
     observeCharactersUpdate(characters => {
       for (const character of characters) {
-        this.state.characters[character._id] = character;
+        this.state.characters[character.id] = character;
       }
 
       this.setState({ characters: this.state.characters });
@@ -93,7 +93,7 @@ export class Home extends Component<{}, {
     const takeOwnership = character.owner === null;
     const id = takeOwnership ? myId : null;
     character.owner = id;
-    this.state.characters[character._id].owner = id;
+    this.state.characters[character.id].owner = id;
     await sendCharacterUpdate(character);
     this.setState({ characters: this.state.characters });
     await dialog(new Alert(format(takeOwnership ? locale.takeOwnership : locale.leaveOwnership, character.name)));
@@ -101,8 +101,8 @@ export class Home extends Component<{}, {
 
   private async onRemove(character: Character): Promise<void> {
     if (await dialog(new Confirm(format(locale.onRemove.characters, character.name)))) {
-      removeCharacter(character._id);
-      delete this.state.characters[character._id];
+      removeCharacter(character.id);
+      delete this.state.characters[character.id];
       this.setState({ characters: this.state.characters });
     }
   }
@@ -201,8 +201,8 @@ export class Home extends Component<{}, {
           {array.map(key => {
             const character = this.state.characters[key];
             const path = this.parseKind(character.kind);
-            const characterKey = btoa(character._id);
-            return <Col lg={2} sm={2} xs={6} key={`character-${character._id}`}><Card className="h-100"
+            const characterKey = btoa(character.id);
+            return <Col lg={2} sm={2} xs={6} key={`character-${character.id}`}><Card className="h-100"
               onClick={() => this.setState({ redirect: `/${path}?key=${characterKey}` })}>
               <Card.Img variant="top" src={character.image} />
               <Card.Body>

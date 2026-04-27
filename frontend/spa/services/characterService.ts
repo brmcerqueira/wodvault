@@ -2,7 +2,7 @@ import { Character, CharacterKind, CharacterMode } from "../../../character.ts";
 
 export function buildCharacter(kind: CharacterKind): Character {
   return {
-    _id: crypto.randomUUID(),
+    id: crypto.randomUUID(),
     details: "",
     image: "",
     name: "",
@@ -149,7 +149,7 @@ export function getCharacter(id: string): Character | null {
   try {
     const character = JSON.parse(value) as Character;
 
-    if (character && typeof character._id === "string") {
+    if (character && typeof character.id === "string") {
       return character;
     }
 
@@ -161,7 +161,7 @@ export function getCharacter(id: string): Character | null {
 
 export function saveCharacter(character: Character) {
   localStorage.setItem(
-    localStorageCharacterKey(character._id),
+    localStorageCharacterKey(character.id),
     JSON.stringify(character),
   );
 }
