@@ -4,6 +4,7 @@
 import { Character, CharacterKind, CharacterMode } from "../../character.ts";;
 import { Component, createRef } from "$react";
 import { Form, Nav, Navbar } from "$react-bootstrap";
+import { Navigate } from "$react-router";
 import { JSX } from "$react/jsx-runtime";
 import { buildCharacter, getCharacter } from "./services/characterService.ts";
 import { observeCharactersUpdate, sendCharacterUpdate } from "./services/peerService.ts";
@@ -18,7 +19,7 @@ function updateCharacterManager(characterManager: CharacterManager, character: C
     characterManager.owner = character.owner != undefined && character.owner == myId;
 }
 
-export abstract class CharacterSheet extends Component<{}, { character: Character, characterManager: CharacterManager }> {
+export abstract class CharacterSheet extends Component<{}, { character: Character, characterManager: CharacterManager, redirect?: string }> {
     protected experienceFieldRef = createRef<ExperienceField>();
 
     constructor(kind: CharacterKind) {
@@ -42,8 +43,11 @@ export abstract class CharacterSheet extends Component<{}, { character: Characte
             character: character!
         }
 
-        observeCharactersUpdate(characters => {
-            if (!this.state.characterManager.edit) {
+        observeCharactersUpdate((characters, remove) => {
+            if (remove.includes(this.state.character.id)) {
+                this.setState({ redirect: "/" });
+            }
+            else if (!this.state.characterManager.edit) {
                 const character = characters.find(character => character.id == this.state.character.id)
                 if (character) {
                     updateCharacterManager(characterManager, character);
@@ -87,6 +91,10 @@ export abstract class CharacterSheet extends Component<{}, { character: Characte
     protected abstract sheet(): JSX.Element
 
     public override render() {
+        if (this.state.redirect) {
+            return <Navigate to={this.state.redirect} replace />;
+        }
+
         document.title = characterTitle(this.state.character);
 
         return <CharacterManagerContext.Provider value={this.state.characterManager}><Navbar expand className="bg-body-tertiary border-bottom fixed-top">

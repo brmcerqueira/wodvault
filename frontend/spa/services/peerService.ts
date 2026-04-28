@@ -11,7 +11,7 @@ import { myId, setHostId } from "./preferencesService.ts";
 
 const hostConnections: Record<string, DataConnection> = {};
 let observeCharactersUpdateCallback:
-  | ((characters: Character[]) => void)
+  | ((characters: Character[], remove: string[]) => void)
   | undefined;
 let peer: Peer | undefined = undefined;
 let clientConnection: DataConnection | undefined = undefined;
@@ -125,7 +125,7 @@ export async function connect(id: string): Promise<void> {
 }
 
 export function observeCharactersUpdate(
-  callback: (characters: Character[]) => void,
+  callback: (characters: Character[], remove: string[]) => void,
 ) {
   observeCharactersUpdateCallback = callback;
 }
@@ -134,6 +134,7 @@ function incomingCharacters(connection: DataConnection): (json: unknown) => void
   return (json) => {
     const data = JSON.parse(json as string) as SendCharactersData;
     const characters: Character[] = [];
+    const remove: string[] = [];
     const updateRemoteCharacters: Character[] = [];
     const keys = allCharacters();
     for (const remoteCharacter of data.characters) {
@@ -156,6 +157,7 @@ function incomingCharacters(connection: DataConnection): (json: unknown) => void
     for (const id of data.remove) {
       if (keys.includes(localStorageCharacterKey(id))) {
         removeCharacter(id);
+        remove.push(id);
       }
     }
 
@@ -164,7 +166,7 @@ function incomingCharacters(connection: DataConnection): (json: unknown) => void
     }
 
     if (observeCharactersUpdateCallback) {
-      observeCharactersUpdateCallback(characters);
+      observeCharactersUpdateCallback(characters, remove);
     }
   }
 }
