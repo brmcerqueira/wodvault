@@ -4,6 +4,7 @@ import {
   allCharacters,
   getCharacter,
   localStorageCharacterKey,
+  removeCharacter,
   saveCharacter,
 } from "./characterService.ts";
 import { myId, setHostId } from "./preferencesService.ts";
@@ -21,6 +22,11 @@ export enum ConnectionStatus {
  Connected,
 }
 
+type SendCharactersData = {
+  characters: Character[],
+  remove: string[],
+}
+
 let _connectionStatus: ConnectionStatus = ConnectionStatus.Disconnected;
 
 export function connectionStatus(): ConnectionStatus {
@@ -31,14 +37,17 @@ export async function sendCharacterUpdate(character: Character) {
   saveCharacter(character);
 
   if (clientConnection) {
-    await sendCharacters(clientConnection, character);
+    await sendCharacters(clientConnection, { characters: [character], remove: [] });
   } else if (character.owner === null || character.owner !== myId) {
     const keys = Object.keys(hostConnections);
     for (const key of keys) {
       const connection = hostConnections[key];
       if (connection.open) {
         if (character.owner === null || key === peerId(character.owner)) {
-          await sendCharacters(connection, character);
+          await sendCharacters(connection, { characters: [character], remove: [] });
+        }
+        else if (character.owner !== null && key !== peerId(character.owner)) {          
+          await sendCharacters(connection, { characters: [], remove: [character.id] });
         }
       } else {
         delete hostConnections[key];
@@ -49,10 +58,10 @@ export async function sendCharacterUpdate(character: Character) {
 
 async function sendCharacters(
   connection: DataConnection,
-  ...characters: Character[]
+  data: SendCharactersData
 ) {
   await connection.send(
-    JSON.stringify(characters),
+    JSON.stringify(data),
   );
 }
 
@@ -121,12 +130,13 @@ export function observeCharactersUpdate(
   observeCharactersUpdateCallback = callback;
 }
 
-function incomingCharacters(connection: DataConnection): (data: unknown) => void {
-  return (data) => {
+function incomingCharacters(connection: DataConnection): (json: unknown) => void {
+  return (json) => {
+    const data = JSON.parse(json as string) as SendCharactersData;
     const characters: Character[] = [];
     const updateRemoteCharacters: Character[] = [];
     const keys = allCharacters();
-    for (const remoteCharacter of (JSON.parse(data as string) as Character[])) {
+    for (const remoteCharacter of data.characters) {
       if (keys.includes(localStorageCharacterKey(remoteCharacter.id))) {
         const character = getCharacter(remoteCharacter.id)!;
         if (character.timestamp < remoteCharacter.timestamp) {
@@ -143,8 +153,14 @@ function incomingCharacters(connection: DataConnection): (data: unknown) => void
       }
     }
 
+    for (const id of data.remove) {
+      if (keys.includes(localStorageCharacterKey(id))) {
+        removeCharacter(id);
+      }
+    }
+
     if (updateRemoteCharacters.length > 0) {
-      sendCharacters(connection, ...updateRemoteCharacters);
+      sendCharacters(connection, { characters: updateRemoteCharacters, remove: [] });
     }
 
     if (observeCharactersUpdateCallback) {
@@ -218,7 +234,7 @@ function createPeer(host: boolean): Promise<void> {
           }
 
           try {
-            sendCharacters(connection, ...characters);
+            sendCharacters(connection, { characters, remove: [] });
           } catch (error) {
             console.error("[PeerJS][hostConnection:sendCharacterAddsError]", {
               peer: connection.peer,
