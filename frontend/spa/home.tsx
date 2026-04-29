@@ -46,9 +46,13 @@ export class Home extends Component<{}, {
       characters
     }
 
-    observeCharactersUpdate(characters => {
+    observeCharactersUpdate((characters, remove) => {
       for (const character of characters) {
         this.state.characters[character.id] = character;
+      }
+
+      for (const id of remove) {
+        delete this.state.characters[id];
       }
 
       this.setState({ characters: this.state.characters });
