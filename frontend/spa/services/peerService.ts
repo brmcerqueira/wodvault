@@ -35,21 +35,25 @@ export async function sendCharacterUpdate(character: Character) {
   if (clientConnection) {
     await sendCharacters(clientConnection, { characters: [character], remove: [] });
   } else if (character.owner === null || character.owner !== myId) {
-    const keys = Object.keys(hostConnections);
-    for (const key of keys) {
-      const connection = hostConnections[key];
-      if (connection.open) {
-        if (character.owner === null || 
-          isPeerKind(connection.peer, PeerKind.Bot) ||
-          key === peerId(character.owner, PeerKind.Client)) {
-          await sendCharacters(connection, { characters: [character], remove: [] });
-        }
-        else if (character.owner !== null && key !== peerId(character.owner, PeerKind.Client)) {          
-          await sendCharacters(connection, { characters: [], remove: [character.id] });
-        }
-      } else {
-        delete hostConnections[key];
+    await checkAndSendCharacterUpdate(character);
+  }
+}
+
+async function checkAndSendCharacterUpdate(character: Character) {
+  const keys = Object.keys(hostConnections);
+  for (const key of keys) {
+    const connection = hostConnections[key];
+    if (connection.open) {
+      if (character.owner === null ||
+        isPeerKind(connection.peer, PeerKind.Bot) ||
+        key === peerId(character.owner, PeerKind.Client)) {
+        await sendCharacters(connection, { characters: [character], remove: [] });
       }
+      else if (character.owner !== null && key !== peerId(character.owner, PeerKind.Client)) {
+        await sendCharacters(connection, { characters: [], remove: [character.id] });
+      }
+    } else {
+      delete hostConnections[key];
     }
   }
 }
@@ -122,6 +126,7 @@ export function observeCharactersUpdate(
 }
 
 function incomingCharacters(connection: DataConnection): (json: unknown) => void {
+  const isBot = isPeerKind(connection.peer, PeerKind.Bot);
   return (json) => {
     const data = JSON.parse(json as string) as SendCharactersData;
     const characters: Character[] = [];
@@ -142,6 +147,10 @@ function incomingCharacters(connection: DataConnection): (json: unknown) => void
       else {
         saveCharacter(remoteCharacter);
         characters.push(remoteCharacter);
+      }
+
+      if (isBot) {
+        checkAndSendCharacterUpdate(remoteCharacter);
       }
     }
 
