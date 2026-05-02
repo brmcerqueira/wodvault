@@ -8,6 +8,7 @@ import {
   saveCharacter,
 } from "./characterService.ts";
 import { myId, setHostId } from "./preferencesService.ts";
+import { isPeerKind, peerId, PeerKind, sendCharacters, SendCharactersData } from "../../../utils.ts";
 
 const hostConnections: Record<string, DataConnection> = {};
 let observeCharactersUpdateCallback:
@@ -20,11 +21,6 @@ export enum ConnectionStatus {
  Disconnected,
  Connecting,
  Connected,
-}
-
-type SendCharactersData = {
-  characters: Character[],
-  remove: string[],
 }
 
 let _connectionStatus: ConnectionStatus = ConnectionStatus.Disconnected;
@@ -43,10 +39,12 @@ export async function sendCharacterUpdate(character: Character) {
     for (const key of keys) {
       const connection = hostConnections[key];
       if (connection.open) {
-        if (character.owner === null || key === peerId(character.owner)) {
+        if (character.owner === null || 
+          isPeerKind(connection.peer, PeerKind.Bot) ||
+          key === peerId(character.owner, PeerKind.Client)) {
           await sendCharacters(connection, { characters: [character], remove: [] });
         }
-        else if (character.owner !== null && key !== peerId(character.owner)) {          
+        else if (character.owner !== null && key !== peerId(character.owner, PeerKind.Client)) {          
           await sendCharacters(connection, { characters: [], remove: [character.id] });
         }
       } else {
@@ -54,15 +52,6 @@ export async function sendCharacterUpdate(character: Character) {
       }
     }
   }
-}
-
-async function sendCharacters(
-  connection: DataConnection,
-  data: SendCharactersData
-) {
-  await connection.send(
-    JSON.stringify(data),
-  );
 }
 
 export async function host(): Promise<void> {
@@ -100,19 +89,21 @@ export async function connect(id: string): Promise<void> {
     clientConnection.close();
   }
 
+  const clientPeerId = peerId(id, PeerKind.Client);
+
   return new Promise((resolve) => {
-    clientConnection = peer!.connect(peerId(id));
+    clientConnection = peer!.connect(clientPeerId);
     clientConnection.on("data", incomingCharacters(clientConnection));
     clientConnection.on("error", (error) => {
       console.error("[PeerJS][clientConnection:error]", {
-        target: peerId(id),
+        target: clientPeerId,
         error,
       });
     });
     clientConnection.on("close", () => {
       _connectionStatus = ConnectionStatus.Disconnected;
       console.error("[PeerJS][clientConnection:close]", {
-        target: peerId(id),
+        target: clientPeerId,
       });
     });
 
@@ -173,7 +164,7 @@ function incomingCharacters(connection: DataConnection): (json: unknown) => void
 
 function createPeer(host: boolean): Promise<void> {
   return new Promise((resolve) => {
-    peer = new Peer(peerId(myId));
+    peer = new Peer(peerId(myId, host ? PeerKind.Host : PeerKind.Client));
 
     peer.on("open", (id) => {
       if (host) {
@@ -185,7 +176,6 @@ function createPeer(host: boolean): Promise<void> {
     peer.on("error", (error) => {
       console.error("[PeerJS][peer:error]", {
         host,
-        myId: peerId(myId),
         error,
       });
     });
@@ -193,28 +183,27 @@ function createPeer(host: boolean): Promise<void> {
       _connectionStatus = ConnectionStatus.Disconnected;
       console.error("[PeerJS][peer:disconnected]", {
         host,
-        myId: peerId(myId),
       });
     });
     peer.on("close", () => {
       _connectionStatus = ConnectionStatus.Disconnected;
-      console.error("[PeerJS][peer:close]", { host, myId: peerId(myId) });
+      console.error("[PeerJS][peer:close]", { host });
     });
 
     if (host) {
       peer.on("connection", (connection) => {
         hostConnections[connection.peer] = connection;
-        console.log("[PeerJS][host:connection]", { peer: connection.peer });
+        console.log("[PeerJS][host:connection]", { id: connection.peer });
         connection.on("data", incomingCharacters(connection));
         connection.on("error", (error) => {
           console.error("[PeerJS][hostConnection:error]", {
-            peer: connection.peer,
+            id: connection.peer,
             error,
           });
         });
         connection.on("close", () => {
           console.error("[PeerJS][hostConnection:close]", {
-            peer: connection.peer,
+            id: connection.peer,
           });
           delete hostConnections[connection.peer];
         });
@@ -228,8 +217,9 @@ function createPeer(host: boolean): Promise<void> {
               continue;
             }
             if (
-              character.owner === null ||
-              connection.peer === peerId(character.owner)
+              character.owner === null || 
+              isPeerKind(connection.peer, PeerKind.Bot) ||
+              connection.peer === peerId(character.owner, PeerKind.Client)
             ) {
               characters.push(character);
             }
@@ -239,7 +229,7 @@ function createPeer(host: boolean): Promise<void> {
             sendCharacters(connection, { characters, remove: [] });
           } catch (error) {
             console.error("[PeerJS][hostConnection:sendCharacterAddsError]", {
-              peer: connection.peer,
+              id: connection.peer,
               error,
             });
           }
@@ -247,8 +237,4 @@ function createPeer(host: boolean): Promise<void> {
       });
     }
   });
-}
-
-function peerId(id: string): string {
-  return `wodvault-${id}`;
 }
