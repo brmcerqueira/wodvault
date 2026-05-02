@@ -1,0 +1,9 @@
+{
+  "tasks": {
+    "run": "deno run -A --unstable-kv main.ts"
+  },
+  "imports": {
+    "$harmony/": "https://deno.land/x/harmony@v2.9.1/",
+    "$std/": "https://deno.land/std@0.216.0/"
+  }
+}
