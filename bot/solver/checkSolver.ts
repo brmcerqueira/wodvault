@@ -12,7 +12,6 @@ import { locale } from "../i18n/locale.ts";
 import { Guild } from "../guild.ts";
 import { saveCharacter } from "../persistence.ts";
 import { check } from "../diceRoll.ts";
-import { notify } from "../../services/broadcastService.ts";
 
 export async function checkSolver(
   interaction: Interaction,
@@ -36,7 +35,6 @@ export async function checkSolver(
   if (failed) {
     character.hungerOrRage += 1;
     await saveCharacter(character);
-    notify(character);
     fields.push({
       name: locale.hunger,
       value: `**${character.hungerOrRage}**`,

@@ -11,7 +11,6 @@ import { reRoll } from "../diceRoll.ts";
 import { locale } from "../i18n/locale.ts";
 import { saveCharacter } from "../persistence.ts";
 import { CharacterKind } from "../../character.ts";
-import { notify } from "../../services/broadcastService.ts";
 
 export async function reRollSolver(
   interaction: Interaction,
@@ -47,7 +46,6 @@ export async function reRollSolver(
     if (character) {
       character.willpower.superficial += 1;
       await saveCharacter(character);
-      notify(character);
     }
   } else {
     throw new InteractionResponseError(locale.unauthorized);
