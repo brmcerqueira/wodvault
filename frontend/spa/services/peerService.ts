@@ -18,9 +18,9 @@ let peer: Peer | undefined = undefined;
 let clientConnection: DataConnection | undefined = undefined;
 
 export enum ConnectionStatus {
- Disconnected,
- Connecting,
- Connected,
+  Disconnected,
+  Connecting,
+  Connected,
 }
 
 let _connectionStatus: ConnectionStatus = ConnectionStatus.Disconnected;

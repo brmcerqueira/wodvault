@@ -12,6 +12,8 @@
     "https://esm.sh/node/events.mjs": "4c6150b88c1444aa1fe9331013e3f37eda9836206f629f7f3ae8f3743dd90fa8",
     "https://esm.sh/node/process.mjs": "79e7646e87709989f575ea4ce02e0877bc9303081567b1c0d412527917ae9e91",
     "https://esm.sh/node/tty.mjs": "c66ff4b406bad449bfb2ced355f15badf16f4d9e035d2d300e33b5aeee64e3be",
+    "https://esm.sh/peerjs@1.5.4/es2022/peerjs.bundle.mjs": "760df8dbc05394b8f4184edabed98776c36ab19a4bf0d4595144bac972d8f891",
+    "https://esm.sh/peerjs@1.5.4?target=es2022&bundle": "1ce71710584e133174d0197c88e2c424cef570d24abedea4aeb7ee6d6e2398a8",
     "https://esm.sh/react-bootstrap@3.0.0-beta.2/X-ZHJlYWN0LWRvbUAxOS4xLjAscmVhY3RAMTkuMS4w/es2022/react-bootstrap.bundle.mjs": "a7b40d11993dc534169e22dadcfe6f5e0d197c27a803fd20ca9ecb631d9248e1",
     "https://esm.sh/react-bootstrap@3.0.0-beta.2?target=es2022&bundle&deps=react@19.1.0,react-dom@19.1.0": "c41c4d5c66b3c8a3e7adf9d57056b62cffe04d198145bbec028d8dfff635c0b7",
     "https://esm.sh/react-dom@19.1.0/X-ZHJlYWN0QDE5LjEuMA/es2022/react-dom.mjs": "cfc180a7296bcfde70241e71c7d72692ccc5526303d43c986056417bc5f7c2c4",
@@ -19,9 +21,11 @@
     "https://esm.sh/react-dom@19.1.0/es2022/client.bundle.mjs": "f70b45c131b35955221b5fb149335395f4e31131fe9ae357000734ce6ca63a7d",
     "https://esm.sh/react-router@7.13.0/X-ZHJlYWN0LWRvbUAxOS4xLjAscmVhY3RAMTkuMS4w/es2022/react-router.bundle.mjs": "ebc29f2d777e0a42d7e11e3ba7bcfac7ea16a8d7b6e870d5698e52d0191559a0",
     "https://esm.sh/react-router@7.13.0?target=es2022&bundle&deps=react@19.1.0,react-dom@19.1.0": "926e1809a9ddcc35eaf1af33aa2963bd7d840f3fe03eaeb5388608345fe0e7bb",
+    "https://esm.sh/react@19.1.0/denonext/jsx-runtime.mjs": "fbd3137c02ae8733d3bfaf434884aada41253c9074bdd3baf598879de24fe70b",
     "https://esm.sh/react@19.1.0/es2022/jsx-runtime.mjs": "fbd3137c02ae8733d3bfaf434884aada41253c9074bdd3baf598879de24fe70b",
     "https://esm.sh/react@19.1.0/es2022/react.bundle.mjs": "2804111482f3e1d443ed0c17b15f821cc25dea7e0682ab631527c476a90f83a8",
     "https://esm.sh/react@19.1.0/es2022/react.mjs": "4ae29c429a7d0a61a039f96985bef5a0a9c141ae8b0df3d65ffd17382f62b881",
+    "https://esm.sh/react@19.1.0/jsx-runtime": "8c80348342f0448fbf5499e9f357ab3f678db3b7fbf782f8899fc88bb0a182c3",
     "https://esm.sh/react@19.1.0?target=es2022&bundle": "43ed9be51da0600ef21ecccbac6b9a6060ecd9411e3935dc95e0ff416df02e56"
   }
 }

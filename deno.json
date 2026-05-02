@@ -8,7 +8,7 @@
     "build": "deno run -A dev.ts build",
     "preview": "deno run -A main.ts",
     "update": "deno run -A -r https://fresh.deno.dev/update .",
-    "build-spa": "deno bundle --import-map ./frontend/spa/importMap.json --minify --platform browser --output ./static/main.min.js ./frontend/spa/main.tsx",
+    "build-spa": "deno bundle --config ./frontend/spa/deno.json --minify --platform browser --output ./static/main.min.js ./frontend/spa/main.tsx",
     "build-frontend": "deno task build-spa && deno task build-sw",
     "build-sw": "deno bundle --minify --platform browser --output ./static/serviceWorker.min.js ./frontend/sw/main.ts",
     "start-all": "deno task build-spa --watch --sourcemap=inline & deno task start",
