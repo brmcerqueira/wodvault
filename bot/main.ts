@@ -17,7 +17,6 @@ import { encodeBase64 } from "$std/encoding/base64.ts";
 import { interactionCustomId } from "./actions/module.ts";
 import { locale } from "./i18n/locale.ts";
 import { CreateEmojiPayload } from "$harmony/src/types/mod.ts";
-import { getGuild } from "./persistence.ts";
 
 // deno-lint-ignore no-unused-vars
 async function cleanCommands(
@@ -126,17 +125,16 @@ client.on("ready", async () => {
       if (!interaction.guild) {
         throw new InteractionResponseError(locale.unauthorized);
       }
-      const guild = await getGuild(interaction.guild!.id);
       if (
         interaction.type == InteractionType.MESSAGE_COMPONENT ||
         interaction.type == InteractionType.MODAL_SUBMIT
       ) {
-        await interactionCustomId(interaction, guild);
+        await interactionCustomId(interaction);
       } else if (
         interaction.type == InteractionType.APPLICATION_COMMAND ||
         interaction.type == InteractionType.AUTOCOMPLETE
       ) {
-        await interactionCommand(interaction, guild);
+        await interactionCommand(interaction);
       }
     }
   } catch (error) {

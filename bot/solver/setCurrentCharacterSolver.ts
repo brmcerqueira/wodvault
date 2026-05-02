@@ -1,7 +1,5 @@
 import { locale } from "../i18n/locale.ts";
-import { getCharacter } from "../persistence.ts";
-import { Guild } from "../guild.ts";
-import { saveGuild } from "../persistence.ts";
+import { getCharacter, setCurrentCharacterId } from "../persistence.ts";
 import {
   autocompleteCharacters,
   colors,
@@ -11,7 +9,6 @@ import { Interaction, InteractionResponseType } from "$harmony/mod.ts";
 
 export async function setCurrentCharacterSolver(
   interaction: Interaction,
-  guild: Guild,
   input: {
     character: {
       value?: string;
@@ -28,9 +25,7 @@ export async function setCurrentCharacterSolver(
   } else {
     const character = await getCharacter(input.character.value!);
 
-    guild.currentCharacterId = input.character.value!;
-
-    await saveGuild(guild);
+    await setCurrentCharacterId(input.character.value!);
 
     await interaction.respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,

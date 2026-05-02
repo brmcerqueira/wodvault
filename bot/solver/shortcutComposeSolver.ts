@@ -4,7 +4,6 @@ import {
   InteractionResponseType,
   MessageComponentType,
 } from "$harmony/mod.ts";
-import { Guild } from "../guild.ts";
 import { AttributeType, colors, ComposeInput } from "../utils.ts";
 import { composeButton } from "../actions/module.ts";
 import { locale } from "../i18n/locale.ts";
@@ -12,7 +11,6 @@ import { LocaleType } from "../../i18n/localeType.ts";
 
 export async function shortcutComposeSolver(
   interaction: Interaction,
-  _guild: Guild,
   input: ComposeInput,
 ) {
   const description: string[] = [];

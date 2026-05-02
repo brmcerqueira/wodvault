@@ -1,13 +1,10 @@
 import { Interaction, InteractionResponseType } from "$harmony/mod.ts";
-import { Guild } from "../guild.ts";
 import { autocompleteCharacters, colors, InteractionResponseError } from "../utils.ts";
 import { locale } from "../i18n/locale.ts";
-import { saveGuild } from "../persistence.ts";
-import { getCharacter } from "../persistence.ts";
+import { getCharacter, getStorytellerId, setCharacterIdByUserId } from "../persistence.ts";
 
 export async function setCharacterToUserSolver(
   interaction: Interaction,
-  guild: Guild,
   input: {
     player: string;
     character: {
@@ -16,18 +13,16 @@ export async function setCharacterToUserSolver(
     };
   },
 ) {
-  if (guild.storytellerId != interaction.user.id) {
+  if (await getStorytellerId() != interaction.user.id) {
     throw new InteractionResponseError(locale.unauthorized);
   }
 
   if (input.character.focused) {
     await autocompleteCharacters(interaction, input.character.value);
   } else {
+    await setCharacterIdByUserId(input.player, input.character.value!);
+
     const character = await getCharacter(input.character.value!);
-
-    guild.characters[input.player] = input.character.value!;
-
-    await saveGuild(guild);
 
     await interaction.respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,

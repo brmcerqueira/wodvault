@@ -1,16 +1,21 @@
 import { ButtonStyle, Interaction, InteractionResponseType, MessageComponentData, MessageComponentType } from "$harmony/mod.ts";
 import { colors } from "./utils.ts";
-import { saveGuild } from "./persistence.ts";
-import { Guild } from "./guild.ts";
 import { Character, CharacterKind } from "../character.ts";
 import { roll } from "./diceRoll.ts";
 import { buildRollMessage } from "./buildRollMessage.ts";
 import { reRollButton } from "./actions/module.ts";
 import { locale } from "./i18n/locale.ts";
+import {
+  getDifficulty,
+  getModifier,
+  getRollChannelId,
+  setDifficulty,
+  setLastRoll,
+  setModifier,
+} from "./persistence.ts";
 
 export async function sendRoll(
   interaction: Interaction,
-  guild: Guild,
   dices: number,
   hunger: number,
   difficulty: number,
@@ -20,14 +25,16 @@ export async function sendRoll(
 ): Promise<void> {
   const authorId = interaction.user.id;
 
-  if (guild.difficulty) {
-    difficulty = guild.difficulty;
-    guild.difficulty = null;
+  const persistedDifficulty = await getDifficulty();
+  if (persistedDifficulty !== null) {
+    difficulty = persistedDifficulty;
+    await setDifficulty(null);
   }
 
-  if (guild.modifier) {
-    modifier += guild.modifier;
-    guild.modifier = null;
+  const persistedModifier = await getModifier();
+  if (persistedModifier !== null) {
+    modifier += persistedModifier;
+    await setModifier(null);
   }
 
   dices += modifier;
@@ -80,15 +87,15 @@ export async function sendRoll(
     }];
   }
 
-  guild.lastRolls[character ? character.id : authorId] = {
+  await setLastRoll(character ? character.id : authorId, {
     content: message.content,
     result,
-  };
+  });
 
-  await saveGuild(guild);
+  const rollChannelId = await getRollChannelId();
 
   if (
-    guild.rollChannelId && interaction.channel && interaction.channel.id !== guild.rollChannelId
+    rollChannelId && interaction.channel && interaction.channel.id !== rollChannelId
   ) {
     await interaction.respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
@@ -99,7 +106,7 @@ export async function sendRoll(
       ephemeral: true,
     });
 
-    interaction.client.channels.sendMessage(guild.rollChannelId, {
+    interaction.client.channels.sendMessage(rollChannelId, {
       content: message.content,
       embeds: [message.embed],
       components,

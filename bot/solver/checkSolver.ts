@@ -9,16 +9,14 @@ import {
   InteractionResponseError,
 } from "../utils.ts";
 import { locale } from "../i18n/locale.ts";
-import { Guild } from "../guild.ts";
 import { saveCharacter } from "../persistence.ts";
 import { check } from "../diceRoll.ts";
 
 export async function checkSolver(
   interaction: Interaction,
-  guild: Guild,
   input?: { dices: number },
 ) {
-  const character = await getCharacterByUserId(guild, interaction.user.id);
+  const character = await getCharacterByUserId(interaction.user.id);
 
   if (character === undefined) {
     throw new InteractionResponseError(locale.characterNotFound);

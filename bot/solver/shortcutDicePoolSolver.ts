@@ -3,14 +3,12 @@ import {
   InteractionResponseType,
   MessageComponentType,
 } from "$harmony/mod.ts";
-import { Guild } from "../guild.ts";
 import { autocompleteDicePools, DicePoolInput } from "../utils.ts";
 import { dicePoolButton } from "../actions/module.ts";
 import { locale } from "../i18n/locale.ts";
 
 export async function shortcutDicePoolSolver(
   interaction: Interaction,
-  _guild: Guild,
   input: DicePoolInput,
 ) {
   if (input.name.focused) {

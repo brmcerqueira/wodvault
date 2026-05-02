@@ -1,17 +1,15 @@
 // deno-lint-ignore-file no-explicit-any
 import { Interaction } from "$harmony/mod.ts";
 import { Character } from "../../character.ts";
-import { Guild } from "../guild.ts";
 import { AttributeType, ComposeInput, getCharacterByUserId, InteractionResponseError } from "../utils.ts";
 import { sendRoll } from "../sendRoll.ts";
 import { locale } from "../i18n/locale.ts";
 
 export async function composeSolver(
   interaction: Interaction,
-  guild: Guild,
   input: ComposeInput,
 ) {
-  const character = await getCharacterByUserId(guild, interaction.user.id);
+  const character = await getCharacterByUserId(interaction.user.id);
 
   if (character === undefined) {
     throw new InteractionResponseError(locale.characterNotFound);
@@ -64,7 +62,6 @@ export async function composeSolver(
 
   await sendRoll(
     interaction,
-    guild,
     dices,
     character.hungerOrRage,
     input.difficulty || 1,

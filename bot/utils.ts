@@ -4,12 +4,11 @@ import {
   Interaction,
   InteractionResponseType,
 } from "$harmony/mod.ts";
-import { Guild } from "./guild.ts";
 import { Character } from "../character.ts";
 import { characterTitle } from "../utils.ts";
 import { dicePools } from "./dicePools.ts";
 import { locale } from "./i18n/locale.ts";
-import { getCharacter, getCharactersByOwnerId } from "./persistence.ts";
+import { getCharacter, getCharacterIdByUserId, getCharactersByOwnerId, getCurrentCharacterId, getStorytellerId } from "./persistence.ts";
 
 export const separator = "^";
 
@@ -79,24 +78,23 @@ export type DicePoolInput = {
 
 export type Solver<T = any> = (
   interaction: Interaction,
-  guild: Guild,
   input?: T,
 ) => Promise<void>;
 
 export async function getCharacterByUserId(
-  guild: Guild,
   id: string,
 ): Promise<Character | undefined> {
   let characterId: string | null | undefined;
 
-  if (guild.storytellerId === id) {
-    characterId = guild.currentCharacterId;
+  const storytellerId = await getStorytellerId();
+  if (storytellerId === id) {
+    characterId = await getCurrentCharacterId();
   } else {
-    characterId = guild.characters[id];
+    characterId = await getCharacterIdByUserId(id);
   }
 
   if (characterId) {
-    return await getCharacter(characterId);
+    return await getCharacter(characterId) ?? undefined;
   }
 
   return undefined;

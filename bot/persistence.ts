@@ -1,36 +1,97 @@
 import { Character } from "../character.ts";
-import { Guild } from "./guild.ts";
+import { RollResult } from "./diceRoll.ts";
 
 const kvPromise = Deno.openKv();
 
 const character = "character";
-const guildKey = (id: string) => ["guild", id] as const;
 const characterKey = (id: string) => [character, id] as const;
+const userIdCharacterIdKey = (id: string) => ["userId_characterId", id] as const;
+const lastRollKey = (id: string) => ["lastRoll", id] as const;
+const storytellerIdKey = ["storytellerId"] as const;
+const rollChannelIdKey = ["rollChannelId"] as const;
+const difficultyKey = ["difficulty"] as const;
+const modifierKey = ["modifier"] as const;
+const currentCharacterIdKey = ["currentCharacterId"] as const;
 
-export async function getGuild(id: string): Promise<Guild> {
+export type LastRoll = {
+  content: string;
+  result: RollResult;
+};
+
+async function setNullableValue<T>(key: Deno.KvKey, value: T | null) {
   const kv = await kvPromise;
-  const result = await kv.get<Guild>(guildKey(id));
-  return result.value ?? {
-    id: id,
-    currentCharacterId: null,
-    storytellerId: null,
-    difficulty: null,
-    modifier: null,
-    rollChannelId: null,
-    characters: {},
-    lastRolls: {},
-  };
+  if (value === null) {
+    await kv.delete(key);
+  }
+  else {
+    await kv.set(key, value);
+  }
 }
 
-export async function saveGuild(guild: Guild) {
+async function getNullableValue<T>(key: Deno.KvKey): Promise<T | null> {
   const kv = await kvPromise;
-  await kv.set(guildKey(guild.id), guild);
+  const result = await kv.get<T>(key);
+  return result.value ?? null;
 }
 
-export async function getCharacter(id: string): Promise<Character | undefined> {
-  const kv = await kvPromise;
-  const result = await kv.get<Character>(characterKey(id));
-  return result.value ?? undefined;
+export async function getStorytellerId(): Promise<string | null> {
+  return await getNullableValue(storytellerIdKey);
+}
+
+export async function getRollChannelId(): Promise<string | null> {
+  return await getNullableValue(rollChannelIdKey);
+}
+
+export async function getDifficulty(): Promise<number | null> {
+  return await getNullableValue(difficultyKey);
+}
+
+export async function getModifier(): Promise<number | null> {
+  return await getNullableValue(modifierKey);
+}
+
+export async function getCurrentCharacterId(): Promise<string | null> {
+  return await getNullableValue(currentCharacterIdKey);
+}
+
+export async function setStorytellerId(id: string | null) {
+  await setNullableValue(storytellerIdKey, id);
+}
+
+export async function setRollChannelId(value: string | null) {
+  await setNullableValue(rollChannelIdKey, value);
+}
+
+export async function setDifficulty(value: number | null) {
+  await setNullableValue(difficultyKey, value);
+}
+
+export async function setModifier(value: number | null) {
+  await setNullableValue(modifierKey, value);
+}
+
+export async function setCurrentCharacterId(value: string | null) {
+  await setNullableValue(currentCharacterIdKey, value);
+}
+
+export async function setCharacterIdByUserId(id: string, value: string | null) {
+  await setNullableValue(userIdCharacterIdKey(id), value);
+}
+
+export async function getCharacter(id: string): Promise<Character | null> {
+  return await getNullableValue(characterKey(id));
+}
+
+export async function getCharacterIdByUserId(id: string): Promise<string | null> {
+  return await getNullableValue(userIdCharacterIdKey(id));
+}
+
+export async function setLastRoll(id: string, value: LastRoll | null) {
+  await setNullableValue(lastRollKey(id), value);
+}
+
+export async function getLastRoll(id: string): Promise<LastRoll | null> {
+  return await getNullableValue(lastRollKey(id));
 }
 
 export async function getCharactersByOwnerId(

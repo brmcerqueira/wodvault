@@ -10,8 +10,6 @@ import {
   TextInputStyle,
 } from "$harmony/mod.ts";
 import { separator, Solver } from "../utils.ts";
-import { Guild } from "../guild.ts";
-
 
 type Parse = (context: string[], interaction?: Interaction) => any
 
@@ -82,8 +80,7 @@ function modalParse(
 }
 
 export async function interactionCustomId(
-  interaction: Interaction,
-  guild: Guild,
+  interaction: Interaction
 ) {
   const data = interaction.data as InteractionMessageComponentData
     | InteractionModalSubmitData;
@@ -95,7 +92,6 @@ export async function interactionCustomId(
       const action = custom[index];
       await action.solve(
         interaction,
-        guild,
         action.parse(array.slice(1), interaction),
       );
     }
@@ -121,7 +117,6 @@ export function button<T>(
 export function modal<T>(
   build: (
     interaction: Interaction,
-    guild: Guild,
     context: any[],
     input: T,
   ) => ModalOptions | Promise<ModalOptions>,
@@ -130,12 +125,11 @@ export function modal<T>(
   const id = generateId(modalParse as Parse, solve);
   return async (
     interaction: Interaction,
-    guild: Guild,
     input: T,
   ) => {
     const context: any[] = [];
 
-    const options = await build(interaction, guild, context, input);
+    const options = await build(interaction, context, input);
 
     await interaction.respond({
       type: InteractionResponseType.MODAL,

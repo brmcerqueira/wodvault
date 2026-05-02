@@ -1,21 +1,18 @@
 import { locale } from "../i18n/locale.ts";
-import { Guild } from "../guild.ts";
-import { saveGuild } from "../persistence.ts";
 import { colors, InteractionResponseError } from "../utils.ts";
 import { Interaction, InteractionResponseType } from "$harmony/mod.ts";
+import { setStorytellerId } from "../persistence.ts";
 
 export async function setStorytellerSolver(
   interaction: Interaction,
-  guild: Guild,
   input: { user: string },
 ) {
   if (interaction.guild!.ownerID != interaction.user.id) {
     throw new InteractionResponseError(locale.unauthorized);
   }
 
-  guild.storytellerId = input.user;
-  
-  await saveGuild(guild);
+  await setStorytellerId(input.user);
+
   await interaction.respond({
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     embeds: [{

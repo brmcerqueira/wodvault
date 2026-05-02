@@ -4,22 +4,19 @@ import {
   getCharacterByUserId,
   InteractionResponseError,
 } from "../utils.ts";
-import { saveGuild } from "../persistence.ts";
-import { Guild } from "../guild.ts";
 import { sprintf } from "$std/fmt/printf.ts";
 import { reRoll } from "../diceRoll.ts";
 import { locale } from "../i18n/locale.ts";
-import { saveCharacter } from "../persistence.ts";
+import { getLastRoll, saveCharacter, setLastRoll } from "../persistence.ts";
 import { CharacterKind } from "../../character.ts";
 
 export async function reRollSolver(
   interaction: Interaction,
-  guild: Guild,
   dices: number,
 ) {
-  const character = await getCharacterByUserId(guild, interaction.user.id);
+  const character = await getCharacterByUserId(interaction.user.id);
   const id = character ? character.id : interaction.user.id;
-  const roll = guild.lastRolls[id];
+  const roll = await getLastRoll(id);
   if (roll && (roll.result.amount - roll.result.hunger) > 0) {
     await interaction.respond({
       type: InteractionResponseType.UPDATE_MESSAGE,
@@ -35,9 +32,7 @@ export async function reRollSolver(
       character,
     );
 
-    delete guild.lastRolls[id];
-
-    await saveGuild(guild);
+    await setLastRoll(id, null);
 
     interaction.message!.reply({
       content: message.content,

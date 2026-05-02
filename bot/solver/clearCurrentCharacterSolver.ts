@@ -1,20 +1,17 @@
 import { Interaction, InteractionResponseType } from "$harmony/mod.ts";
 import { locale } from "../i18n/locale.ts";
-import { Guild } from "../guild.ts";
-import { saveGuild } from "../persistence.ts";
 import { colors, InteractionResponseError } from "../utils.ts";
+import { getStorytellerId, setCurrentCharacterId } from "../persistence.ts";
 
 export async function clearCurrentCharacterSolver(
-  interaction: Interaction,
-  guild: Guild,
+  interaction: Interaction
 ) {
-  if (guild.storytellerId != interaction.user.id) {
+  const storytellerId = await getStorytellerId();
+  if (storytellerId != interaction.user.id) {
     throw new InteractionResponseError(locale.unauthorized);
   }
 
-  guild.currentCharacterId = null;
-
-  await saveGuild(guild);
+  await setCurrentCharacterId(null);
   await interaction.respond({
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
     embeds: [{

@@ -10,7 +10,6 @@ import {
   RESTEndpoints,
 } from "$harmony/mod.ts";
 import { Solver } from "../utils.ts";
-import { Guild } from "../guild.ts";
 import { logger } from "../logger.ts";
 import { keys } from "../../utils.ts";
 
@@ -147,8 +146,7 @@ function parseCommandOptions(
 }
 
 export async function interactionCommand(
-  interaction: Interaction,
-  guild: Guild,
+  interaction: Interaction
 ) {
   const data = interaction.data as InteractionApplicationCommandData;
   for (const command of commands) {
@@ -166,7 +164,6 @@ export async function interactionCommand(
 
       await command.solve(
         interaction,
-        guild,
         input,
       );
 
