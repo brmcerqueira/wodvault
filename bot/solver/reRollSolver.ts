@@ -9,7 +9,7 @@ import { reRoll } from "../diceRoll.ts";
 import { locale } from "../i18n/locale.ts";
 import { getLastRoll, setLastRoll } from "../persistence.ts";
 import { CharacterKind } from "../../character.ts";
-import { sendCharacterUpdate } from "../peerService.ts";
+import { sendCharacterUpdate } from "../webSocketService.ts";
 
 export async function reRollSolver(
   interaction: Interaction,

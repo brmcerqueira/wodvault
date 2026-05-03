@@ -2,7 +2,6 @@ import { Interaction, InteractionResponseType } from "$harmony/mod.ts";
 import { colors, InteractionResponseError } from "../utils.ts";
 import { locale } from "../i18n/locale.ts";
 import { getStorytellerId, setHostId } from "../persistence.ts";
-import { connect } from "../peerService.ts";
 
 export async function setHostIdSolver(
   interaction: Interaction,
@@ -14,8 +13,6 @@ export async function setHostIdSolver(
   }
 
   await setHostId(input.value);
-
-  await connect(input.value);
 
   await interaction.respond({
     type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,

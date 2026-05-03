@@ -10,7 +10,7 @@ import {
 } from "../utils.ts";
 import { locale } from "../i18n/locale.ts";
 import { check } from "../diceRoll.ts";
-import { sendCharacterUpdate } from "../peerService.ts";
+import { sendCharacterUpdate } from "../webSocketService.ts";
 
 export async function checkSolver(
   interaction: Interaction,
