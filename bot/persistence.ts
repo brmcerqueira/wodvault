@@ -1,11 +1,12 @@
 import { Character } from "../character.ts";
 import { RollResult } from "./diceRoll.ts";
 
-const kv = await Deno.openKv();
+const kv = await Deno.openKv("./database/bot.db");
 
 const character = "character";
 const characterKey = (id: string) => [character, id] as const;
-const userIdCharacterIdKey = (id: string) => ["userId_characterId", id] as const;
+const userIdCharacterIdKey = (id: string) =>
+  ["userId_characterId", id] as const;
 const lastRollKey = (id: string) => ["lastRoll", id] as const;
 const storytellerIdKey = ["storytellerId"] as const;
 const rollChannelIdKey = ["rollChannelId"] as const;
@@ -23,8 +24,7 @@ export type LastRoll = {
 async function setNullableValue<T>(key: Deno.KvKey, value: T | null) {
   if (value === null) {
     await kv.delete(key);
-  }
-  else {
+  } else {
     await kv.set(key, value);
   }
 }
@@ -104,7 +104,9 @@ export async function getCharacter(id: string): Promise<Character | null> {
   return await getNullableValue(characterKey(id));
 }
 
-export async function getCharacterIdByUserId(id: string): Promise<string | null> {
+export async function getCharacterIdByUserId(
+  id: string,
+): Promise<string | null> {
   return await getNullableValue(userIdCharacterIdKey(id));
 }
 
@@ -127,7 +129,7 @@ export async function allCharacters(): Promise<Record<string, Character>> {
 export async function getCharactersByOwnerId(
   id: string,
   limit: number,
-  term?: string
+  term?: string,
 ): Promise<Character[]> {
   const characters: Character[] = [];
   const termNormalized = term?.trim().toLowerCase();
