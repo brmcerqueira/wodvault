@@ -40,8 +40,8 @@ export function start(port: number): void {
           logger.info("[WS] client disconnected");
         };
 
-        socket.onerror = (event) => {
-          logger.error("[WS] client error %v", event);
+        socket.onerror = (error) => {
+          logger.error(error);
         };
 
         return upgrade.response;
@@ -78,6 +78,7 @@ async function incomingCharacters(
   this: WebSocket,
   event: MessageEvent<string>,
 ) {
+    logger.info("[WS] Incoming Characters %v", event.data);
     const data = JSON.parse(event.data) as SendCharactersData;
     const updateRemoteCharacters: Character[] = [];
     const characters = await allCharacters();

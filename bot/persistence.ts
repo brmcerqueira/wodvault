@@ -1,5 +1,6 @@
 import { Character } from "../character.ts";
 import { RollResult } from "./diceRoll.ts";
+import { logger } from "./logger.ts";
 
 const kv = await Deno.openKv("./database/bot.db");
 
@@ -21,14 +22,17 @@ export type LastRoll = {
 
 async function setNullableValue<T>(key: Deno.KvKey, value: T | null) {
   if (value === null) {
+    logger.debug("[KV] delete %v", key);
     await kv.delete(key);
   } else {
+    logger.debug("[KV] set %v = %v", key, value);
     await kv.set(key, value);
   }
 }
 
 async function getNullableValue<T>(key: Deno.KvKey): Promise<T | null> {
   const result = await kv.get<T>(key);
+  logger.debug("[KV] get %v = %v", key, result.value);
   return result.value ?? null;
 }
 
@@ -99,6 +103,7 @@ export async function allCharacters(): Promise<Record<string, Character>> {
   for await (const entry of kv.list<Character>({ prefix: [character] })) {
     characters[entry.value.id] = entry.value;
   }
+  logger.debug("[KV] list characters = %v", Object.keys(characters).length);
   return characters;
 }
 
@@ -131,9 +136,11 @@ export async function getCharactersByOwnerId(
     }
   }
 
+  logger.debug("[KV] getCharactersByOwnerId id=%v term=%v = %v", id, term, characters.length);
   return characters;
 }
 
 export async function saveCharacter(character: Character) {
+  logger.debug("[KV] saveCharacter %v", character.id);
   await kv.set(characterKey(character.id), character);
 }
