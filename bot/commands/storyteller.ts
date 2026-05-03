@@ -167,5 +167,20 @@ command({
         },
       },
     },
+    setHostId: {
+      name: locale.commands.storyteller.setHostId.name,
+      description: locale.commands.storyteller.setHostId.description,
+      type: ApplicationCommandOptionType.SUB_COMMAND,
+      options: {
+        value: {
+          name: locale.commands.storyteller.setHostId.value.name,
+          description:
+            locale.commands.storyteller.setHostId.value.description,
+          type: ApplicationCommandOptionType.STRING,
+          required: true,
+          min_length: 3,
+        },
+      },
+    },
   },
 });
