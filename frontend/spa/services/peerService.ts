@@ -8,7 +8,18 @@ import {
   saveCharacter,
 } from "./characterService.ts";
 import { myId, setHostId } from "./preferencesService.ts";
-import { ConnectionStatus, isPeerKind, peerId, PeerKind, sendCharacters, SendCharactersData } from "../../../utils.ts";
+import { sendCharacters, SendCharactersData } from "../../../utils.ts";
+
+export enum ConnectionStatus {
+  Disconnected,
+  Connecting,
+  Connected,
+}
+
+export enum PeerKind {
+  Host,
+  Client
+}
 
 const hostConnections: Record<string, DataConnection> = {};
 let observeCharactersUpdateCallback:
@@ -17,6 +28,10 @@ let observeCharactersUpdateCallback:
 let peer: Peer | undefined = undefined;
 let clientConnection: DataConnection | undefined = undefined;
 let _connectionStatus: ConnectionStatus = ConnectionStatus.Disconnected;
+
+export function peerId(id: string, kind: PeerKind): string {
+  return `wodvault-${PeerKind[kind].toLowerCase()}-${id}`;
+}
 
 export function connectionStatus(): ConnectionStatus {
   return _connectionStatus;
@@ -38,7 +53,7 @@ async function checkAndSendCharacterUpdate(character: Character) {
     const connection = hostConnections[key];
     if (connection.open) {
       if (character.owner === null ||
-        isPeerKind(connection.peer, PeerKind.Bot) ||
+        //isPeerKind(connection.peer, PeerKind.Bot) ||
         key === peerId(character.owner, PeerKind.Client)) {
         await sendCharacters(connection, { characters: [character], remove: [] });
       }
@@ -119,7 +134,6 @@ export function observeCharactersUpdate(
 }
 
 function incomingCharacters(connection: DataConnection): (json: unknown) => void {
-  const isBot = isPeerKind(connection.peer, PeerKind.Bot);
   return (json) => {
     const data = JSON.parse(json as string) as SendCharactersData;
     const characters: Character[] = [];
@@ -141,10 +155,10 @@ function incomingCharacters(connection: DataConnection): (json: unknown) => void
         saveCharacter(remoteCharacter);
         characters.push(remoteCharacter);
       }
-
+      /*
       if (isBot) {
         checkAndSendCharacterUpdate(remoteCharacter);
-      }
+      }*/
     }
 
     for (const id of data.remove) {
@@ -220,7 +234,7 @@ function createPeer(host: boolean): Promise<void> {
             }
             if (
               character.owner === null || 
-              isPeerKind(connection.peer, PeerKind.Bot) ||
+              //isPeerKind(connection.peer, PeerKind.Bot) ||
               connection.peer === peerId(character.owner, PeerKind.Client)
             ) {
               characters.push(character);
