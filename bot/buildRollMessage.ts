@@ -1,7 +1,7 @@
 import { EmbedPayload, EmojiPayload } from "$harmony/mod.ts";
 import { Character } from "../character.ts";
 import { RollResult, RollStatus } from "./diceRoll.ts";
-import { colors, emojis } from "./utils.ts";
+import { colors, emojis, host } from "./utils.ts";
 import { locale } from "./i18n/locale.ts";
 
 export function buildRollMessage(
@@ -19,7 +19,7 @@ export function buildRollMessage(
 
   if (character) {
     embed.thumbnail = {
-      url: character.image,
+      url: host(character.image),
     };
   }
 

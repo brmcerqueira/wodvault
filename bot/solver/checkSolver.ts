@@ -6,6 +6,7 @@ import {
 import {
   colors,
   getCharacterByUserId,
+  host,
   InteractionResponseError,
 } from "../utils.ts";
 import { locale } from "../i18n/locale.ts";
@@ -45,7 +46,7 @@ export async function checkSolver(
     embeds: [{
       title: failed ? locale.characterCheckFailed : locale.characterCheck,
       thumbnail: {
-        url: character.image,
+        url: host(character.image),
       },
       color: failed ? colors.red : colors.green,
       fields,

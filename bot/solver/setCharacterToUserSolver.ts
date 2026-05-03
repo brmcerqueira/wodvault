@@ -1,5 +1,10 @@
 import { Interaction, InteractionResponseType } from "$harmony/mod.ts";
-import { autocompleteCharacters, colors, InteractionResponseError } from "../utils.ts";
+import {
+  autocompleteCharacters,
+  colors,
+  host,
+  InteractionResponseError,
+} from "../utils.ts";
 import { locale } from "../i18n/locale.ts";
 import { getCharacter, getStorytellerId, setCharacterIdByUserId } from "../persistence.ts";
 
@@ -39,7 +44,7 @@ export async function setCharacterToUserSolver(
           inline: true,
         }],
         thumbnail: {
-          url: character!.image,
+          url: host(character!.image),
         },
       }],
     });

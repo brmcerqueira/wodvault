@@ -3,6 +3,7 @@ import { getCharacter, setCurrentCharacterId } from "../persistence.ts";
 import {
   autocompleteCharacters,
   colors,
+  host,
   InteractionResponseError,
 } from "../utils.ts";
 import { Interaction, InteractionResponseType } from "$harmony/mod.ts";
@@ -38,7 +39,7 @@ export async function setCurrentCharacterSolver(
           inline: true,
         }],
         thumbnail: {
-          url: character!.image,
+          url: host(character!.image),
         },
       }],
     });

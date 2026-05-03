@@ -150,3 +150,7 @@ export async function autocompleteDicePools(
     choices,
   });
 }
+
+export function host(path: string) {
+  return `https://wodvault.wod.deno.net/${path}`;
+}
