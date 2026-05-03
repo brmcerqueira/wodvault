@@ -18,7 +18,6 @@ import { interactionCustomId } from "./actions/module.ts";
 import { locale } from "./i18n/locale.ts";
 import { CreateEmojiPayload } from "$harmony/src/types/mod.ts";
 
-// deno-lint-ignore no-unused-vars
 async function cleanCommands(
   discordCommands: ApplicationCommandPayload[],
   ...keys: string[]
@@ -79,7 +78,11 @@ client.on("ready", async () => {
       client.applicationID!,
     );
 
-    //await cleanCommands(discordCommands);
+    const cleanFlagIndex = Deno.args.indexOf("-c");
+    if (cleanFlagIndex > -1) {
+      const cleanCommandKeys = Deno.args.slice(cleanFlagIndex + 1);
+      await cleanCommands(discordCommands, ...cleanCommandKeys);
+    }
 
     await createMissingCommands(
       client.applicationID!,
