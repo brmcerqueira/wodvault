@@ -19,14 +19,14 @@ export function start(port: number): void {
       port,
       signal: abortController.signal,
       onListen: ({ port }) =>
-        logger.info("[WS] endpoint listening on :%v", port),
+        logger.info("[WS] endpoint listening on %v", port),
     },
     (request) => {
       const url = new URL(request.url);
 
       if (url.pathname === "/ws") {
         const upgrade = Deno.upgradeWebSocket(request);
-        
+
         socket = upgrade.socket;
 
         socket.onopen = () => {

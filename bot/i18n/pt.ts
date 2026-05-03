@@ -193,15 +193,7 @@ export const pt: LocaleType & BaseLocaleType = Object.assign({
           name: "valor",
           description: "Valor do novo modificador",
         },
-      },
-      setHostId: {
-        name: "servidor",
-        description: "Servidor determinado pelo narrador",
-        value: {
-          name: "id",
-          description: "ID do novo servidor",
-        },
-      },
+      }
     },
   },
   dicePools: [

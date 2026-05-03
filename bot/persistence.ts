@@ -13,8 +13,6 @@ const rollChannelIdKey = ["rollChannelId"] as const;
 const difficultyKey = ["difficulty"] as const;
 const modifierKey = ["modifier"] as const;
 const currentCharacterIdKey = ["currentCharacterId"] as const;
-const myIdKey = ["myId"] as const;
-const hostIdKey = ["hostId"] as const;
 
 export type LastRoll = {
   content: string;
@@ -32,28 +30,6 @@ async function setNullableValue<T>(key: Deno.KvKey, value: T | null) {
 async function getNullableValue<T>(key: Deno.KvKey): Promise<T | null> {
   const result = await kv.get<T>(key);
   return result.value ?? null;
-}
-
-async function getOrCreateMyId(): Promise<string> {
-  const value = await getNullableValue<string>(myIdKey);
-
-  if (value !== null) {
-    return value;
-  }
-
-  const newValue = crypto.randomUUID();
-  await kv.set(myIdKey, newValue);
-  return newValue;
-}
-
-export const myId = await getOrCreateMyId();
-
-export async function getHostId(): Promise<string | null> {
-  return await getNullableValue(hostIdKey);
-}
-
-export async function setHostId(id: string | null): Promise<void> {
-  await setNullableValue(hostIdKey, id);
 }
 
 export async function getStorytellerId(): Promise<string | null> {

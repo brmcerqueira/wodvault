@@ -10,7 +10,6 @@ import { clearRollChannelSolver } from "../solver/clearRollChannelSolver.ts";
 import { setRollChannelSolver } from "../solver/setRollChannelSolver.ts";
 import { clearCurrentCharacterSolver } from "../solver/clearCurrentCharacterSolver.ts";
 import { setCurrentCharacterSolver } from "../solver/setCurrentCharacterSolver.ts";
-import { setHostIdSolver } from "../solver/setHostIdSolver.ts";
 
 command({
   name: locale.commands.storyteller.name,
@@ -28,7 +27,6 @@ command({
     setStoryteller: setStorytellerSolver,
     setDifficulty: setDifficultySolver,
     setModifier: setModifierSolver,
-    setHostId: setHostIdSolver,
   }),
   options: {
     character: {
@@ -164,21 +162,6 @@ command({
           required: true,
           min_value: -10,
           max_value: 10,
-        },
-      },
-    },
-    setHostId: {
-      name: locale.commands.storyteller.setHostId.name,
-      description: locale.commands.storyteller.setHostId.description,
-      type: ApplicationCommandOptionType.SUB_COMMAND,
-      options: {
-        value: {
-          name: locale.commands.storyteller.setHostId.value.name,
-          description:
-            locale.commands.storyteller.setHostId.value.description,
-          type: ApplicationCommandOptionType.STRING,
-          required: true,
-          min_length: 3,
         },
       },
     },
