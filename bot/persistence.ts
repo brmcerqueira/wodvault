@@ -107,8 +107,7 @@ export async function allCharacters(): Promise<Record<string, Character>> {
   return characters;
 }
 
-export async function getCharactersByOwnerId(
-  id: string,
+export async function getCharactersByTerm(
   limit: number,
   term?: string,
 ): Promise<Character[]> {
@@ -117,10 +116,6 @@ export async function getCharactersByOwnerId(
 
   for await (const entry of kv.list<Character>({ prefix: [character] })) {
     const item = entry.value;
-
-    if (item.owner !== id) {
-      continue;
-    }
 
     if (
       termNormalized &&
@@ -136,7 +131,7 @@ export async function getCharactersByOwnerId(
     }
   }
 
-  logger.debug("[KV] getCharactersByOwnerId id=%v term=%v = %v", id, term, characters.length);
+  logger.debug("[KV] getCharactersByTerm term=%v = %v", term, characters.length);
   return characters;
 }
 

@@ -8,7 +8,7 @@ import { Character } from "../character.ts";
 import { characterTitle } from "../utils.ts";
 import { dicePools } from "./dicePools.ts";
 import { locale } from "./i18n/locale.ts";
-import { getCharacter, getCharacterIdByUserId, getCharactersByOwnerId, getCurrentCharacterId, getStorytellerId } from "./persistence.ts";
+import { getCharacter, getCharacterIdByUserId, getCharactersByTerm, getCurrentCharacterId, getStorytellerId } from "./persistence.ts";
 
 export const separator = "^";
 
@@ -104,8 +104,7 @@ export async function autocompleteCharacters(
   interaction: Interaction,
   term?: string,
 ) {
-  const characters = await getCharactersByOwnerId(
-    interaction.user.id,
+  const characters = await getCharactersByTerm(
     25,
     term?.toLowerCase(),
   );
