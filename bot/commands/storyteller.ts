@@ -10,6 +10,7 @@ import { clearRollChannelSolver } from "../solver/clearRollChannelSolver.ts";
 import { setRollChannelSolver } from "../solver/setRollChannelSolver.ts";
 import { clearCurrentCharacterSolver } from "../solver/clearCurrentCharacterSolver.ts";
 import { setCurrentCharacterSolver } from "../solver/setCurrentCharacterSolver.ts";
+import { setHostIdSolver } from "../solver/setHostIdSolver.ts";
 
 command({
   name: locale.commands.storyteller.name,
@@ -27,6 +28,7 @@ command({
     setStoryteller: setStorytellerSolver,
     setDifficulty: setDifficultySolver,
     setModifier: setModifierSolver,
+    setHostId: setHostIdSolver,
   }),
   options: {
     character: {

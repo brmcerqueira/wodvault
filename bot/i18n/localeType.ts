@@ -87,6 +87,9 @@ export type LocaleType = {
       setModifier: {
         value: CommandOption;
       } & CommandOption;
+      setHostId: {
+        value: CommandOption;
+      } & CommandOption;
     } & CommandOption;
   };
   dicePools: string[];
