@@ -502,4 +502,5 @@ export const pt: LocaleType & BaseLocaleType = Object.assign({
       riteOfTheWinterWolf: "Ritual do Lobo do Inverno",
     },
   },
+  webSocketPort: "Porta do Bot",
 }, basePt);

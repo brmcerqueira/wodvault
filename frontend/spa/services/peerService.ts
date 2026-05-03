@@ -7,8 +7,12 @@ import {
   removeCharacter,
   saveCharacter,
 } from "./characterService.ts";
-import { myId, setHostId } from "./preferencesService.ts";
-import { ConnectionType, sendCharacters, SendCharactersData } from "../../../utils.ts";
+import { myId, setHostId, webSocketPort } from "./preferencesService.ts";
+import {
+  ConnectionType,
+  sendCharacters,
+  SendCharactersData,
+} from "../../../utils.ts";
 
 export enum ConnectionStatus {
   Disconnected,
@@ -21,7 +25,6 @@ export enum PeerKind {
   Client,
 }
 
-const webSocketPort = 8787;
 const hostConnections: Record<string, DataConnection> = {};
 let observeCharactersUpdateCallback:
   | ((characters: Character[], remove: string[]) => void)
@@ -224,37 +227,43 @@ function createPeer(host: boolean): Promise<void> {
 }
 
 function buildWebSocket() {
-  const socket = new WebSocket(`ws://localhost:${webSocketPort}/webSocket`);
+  const port = webSocketPort();
+  if (port) {
+    const socket = new WebSocket(`ws://localhost:${port}/webSocket`);
 
-  socket.onopen = () => {
-    console.info("✅ Websocket connection opened.");
-    const characters: Character[] = [];
+    socket.onopen = () => {
+      console.info("✅ Websocket connection opened.");
+      const characters: Character[] = [];
 
-    for (const key of allCharacters()) {
-      const character = getCharacter(key);
-      if (character === null) {
-        continue;
+      for (const key of allCharacters()) {
+        const character = getCharacter(key);
+        if (character === null) {
+          continue;
+        }
+        characters.push(character);
       }
-      characters.push(character);
-    }
 
-    sendCharacters(socket, { characters, remove: [] });
-  };
+      sendCharacters(socket, { characters, remove: [] });
+    };
 
-  const incomingCharactersByBot = incomingCharacters(socket, true);
+    const incomingCharactersByBot = incomingCharacters(socket, true);
 
-  socket.onmessage = (event) => incomingCharactersByBot(event.data);
+    socket.onmessage = (event) => incomingCharactersByBot(event.data);
 
-  socket.onclose = (e) => {
-    console.warn(
-      "⚠️ Websocket connection closed. Reconnecting in 3s...",
-      e.reason,
-    );
-    setTimeout(buildWebSocket, 3000);
-  };
+    socket.onclose = (e) => {
+      console.warn(
+        "⚠️ Websocket connection closed. Reconnecting in 3s...",
+        e.reason,
+      );
+      setTimeout(buildWebSocket, 3000);
+    };
+  }
 }
 
-function incomingCharacters(connection: ConnectionType, isBot?: boolean): (json: unknown) => void {
+function incomingCharacters(
+  connection: ConnectionType,
+  isBot?: boolean,
+): (json: unknown) => void {
   return (json) => {
     const data = JSON.parse(json as string) as SendCharactersData;
     const characters: Character[] = [];
@@ -274,7 +283,7 @@ function incomingCharacters(connection: ConnectionType, isBot?: boolean): (json:
         saveCharacter(remoteCharacter);
         characters.push(remoteCharacter);
       }
-      
+
       if (isBot) {
         checkAndSendCharacterUpdate(remoteCharacter);
       }

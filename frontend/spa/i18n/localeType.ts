@@ -418,4 +418,5 @@ export type LocaleType = {
       riteOfTheWinterWolf: string;
     };
   };
+  webSocketPort: string;
 }

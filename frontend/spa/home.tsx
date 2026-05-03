@@ -13,7 +13,7 @@ import { format } from "./fields/common.tsx";
 import { locale } from "./i18n/locale.ts";
 import { allCharacters, getCharacter, removeCharacter } from "./services/characterService.ts";
 import { connect, ConnectionStatus, connectionStatus, disconnect, host, observeCharactersUpdate, sendCharacterUpdate } from "./services/peerService.ts";
-import { isDark, setDark, myId, hostId, isHost, setHost } from "./services/preferencesService.ts";
+import { isDark, setDark, myId, hostId, isHost, setHost, webSocketPort, setWebSocketPort } from "./services/preferencesService.ts";
 
 export class Home extends Component<{}, {
   showOffcanvas: boolean,
@@ -24,6 +24,7 @@ export class Home extends Component<{}, {
   redirect?: string,
 }> {
   private connectIdRef = createRef<HTMLTextAreaElement>();
+  private webSocketPortRef = createRef<HTMLInputElement>();
 
   constructor() {
     super({});
@@ -75,6 +76,8 @@ export class Home extends Component<{}, {
     else {
       this.setState({ connectionStatus: ConnectionStatus.Connecting });
       if (this.state.host) {
+        const webSocketPortValue = this.webSocketPortRef.current?.value.trim() ?? "";
+        await setWebSocketPort(webSocketPortValue === "" ? null : parseInt(webSocketPortValue));
         await host();
       }
       else {
@@ -162,14 +165,22 @@ export class Home extends Component<{}, {
         <Offcanvas.Header closeButton />
         <Offcanvas.Body className="d-flex flex-column"> 
             <Form.Group className="mb-3">
-              {this.state.host ? (  
-              <InputGroup>
-                <Form.Control defaultValue={myId} disabled/>        
-                <Button variant="outline-secondary" onClick={() => this.onCopyMyIdInClipboard()}>
-                  <i className="bi bi-copy" />
-                </Button>
-              </InputGroup>
-              ) : (<Form.Control
+              {this.state.host ? (<>  
+                  <InputGroup>
+                    <Form.Control defaultValue={myId} disabled/>        
+                    <Button variant="outline-secondary" onClick={() => this.onCopyMyIdInClipboard()}>
+                      <i className="bi bi-copy" />
+                    </Button>
+                  </InputGroup>
+                  <Form.Group className="mb-3">
+                    <Form.Label><i className="bi bi-router" /> {locale.webSocketPort}</Form.Label>
+                    <Form.Control
+                      type="number"
+                      defaultValue={webSocketPort() ?? ""}
+                      ref={this.webSocketPortRef}
+                    />
+                  </Form.Group>
+                </>) : (<Form.Control
                 as="textarea"
                 rows={2}
                 defaultValue={hostIdValue != null && hostIdValue != myId ? hostIdValue : ""}
