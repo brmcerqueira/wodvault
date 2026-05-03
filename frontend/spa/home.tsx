@@ -172,7 +172,7 @@ export class Home extends Component<{}, {
                       <i className="bi bi-copy" />
                     </Button>
                   </InputGroup>
-                  <Form.Group className="mb-3">
+                  <Form.Group className="mt-3 mb-3">
                     <Form.Label><i className="bi bi-router" /> {locale.webSocketPort}</Form.Label>
                     <Form.Control
                       type="number"
