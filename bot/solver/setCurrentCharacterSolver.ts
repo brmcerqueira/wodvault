@@ -1,5 +1,9 @@
 import { locale } from "../i18n/locale.ts";
-import { getCharacter, setCurrentCharacterId } from "../persistence.ts";
+import {
+  getCharacter,
+  getStorytellerId,
+  setCurrentCharacterId,
+} from "../persistence.ts";
 import {
   autocompleteCharacters,
   colors,
@@ -17,7 +21,8 @@ export async function setCurrentCharacterSolver(
     };
   },
 ) {
-  if (interaction.guild!.ownerID != interaction.user.id) {
+  const storytellerId = await getStorytellerId();
+  if (storytellerId != interaction.user.id) {
     throw new InteractionResponseError(locale.unauthorized);
   }
 

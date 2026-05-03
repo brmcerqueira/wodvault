@@ -18,7 +18,8 @@ export async function setCharacterToUserSolver(
     };
   },
 ) {
-  if (await getStorytellerId() != interaction.user.id) {
+  const storytellerId = await getStorytellerId();
+  if (storytellerId != interaction.user.id) {
     throw new InteractionResponseError(locale.unauthorized);
   }
 
