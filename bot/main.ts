@@ -156,6 +156,6 @@ client.on("ready", async () => {
   }
 });
 
-await start(8787);
+await start(parseInt(Deno.env.get("WEBSOCKET_PORT")!));
 
 await client.connect();
