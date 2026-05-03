@@ -224,7 +224,7 @@ function createPeer(host: boolean): Promise<void> {
 }
 
 function buildWebSocket() {
-  const socket = new WebSocket(`ws://localhost:${webSocketPort}/webSocket/`);
+  const socket = new WebSocket(`ws://localhost:${webSocketPort}/webSocket`);
 
   socket.onopen = () => {
     console.info("✅ Websocket connection opened.");
