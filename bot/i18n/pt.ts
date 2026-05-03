@@ -36,6 +36,7 @@ export const pt: LocaleType & BaseLocaleType = Object.assign({
   storytellerClearCurrentCharacter:
     "O narrador não tem mais um personagem atribuído a ele.",
   hostId: "Servidor",
+  notFound: "Não encontrado",
   commands: {
     check: {
       name: "checagem",

@@ -1,6 +1,7 @@
 import { Character } from "../character.ts";
 import { sendCharacters, SendCharactersData } from "../utils.ts";
 import { logger } from "./logger.ts";
+import { locale } from "./i18n/locale.ts";
 import { allCharacters, saveCharacter } from "./persistence.ts";
 
 let socket: WebSocket | undefined = undefined;
@@ -46,7 +47,7 @@ export function start(port: number): void {
         return upgrade.response;
       }
 
-      return new Response("Not found", { status: 404 });
+      return new Response(locale.notFound, { status: 404 });
     },
   );
 }

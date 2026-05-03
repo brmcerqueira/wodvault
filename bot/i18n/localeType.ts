@@ -35,6 +35,7 @@ export type LocaleType = {
   storytellerClearRollChannel: string;
   storytellerClearCurrentCharacter: string;
   hostId: string;
+  notFound: string;
   commands: {
     check: {
       dices: CommandOption;
