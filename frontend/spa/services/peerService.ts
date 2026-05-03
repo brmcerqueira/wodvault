@@ -8,7 +8,7 @@ import {
   saveCharacter,
 } from "./characterService.ts";
 import { myId, setHostId } from "./preferencesService.ts";
-import { isPeerKind, peerId, PeerKind, sendCharacters, SendCharactersData } from "../../../utils.ts";
+import { ConnectionStatus, isPeerKind, peerId, PeerKind, sendCharacters, SendCharactersData } from "../../../utils.ts";
 
 const hostConnections: Record<string, DataConnection> = {};
 let observeCharactersUpdateCallback:
@@ -16,13 +16,6 @@ let observeCharactersUpdateCallback:
   | undefined;
 let peer: Peer | undefined = undefined;
 let clientConnection: DataConnection | undefined = undefined;
-
-export enum ConnectionStatus {
-  Disconnected,
-  Connecting,
-  Connected,
-}
-
 let _connectionStatus: ConnectionStatus = ConnectionStatus.Disconnected;
 
 export function connectionStatus(): ConnectionStatus {
@@ -59,7 +52,7 @@ async function checkAndSendCharacterUpdate(character: Character) {
 }
 
 export async function host(): Promise<void> {
- if (peer) {
+  if (peer) {
     peer.destroy();
     peer = undefined;
     _connectionStatus = ConnectionStatus.Disconnected;

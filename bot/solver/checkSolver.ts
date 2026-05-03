@@ -9,8 +9,8 @@ import {
   InteractionResponseError,
 } from "../utils.ts";
 import { locale } from "../i18n/locale.ts";
-import { saveCharacter } from "../persistence.ts";
 import { check } from "../diceRoll.ts";
+import { sendCharacterUpdate } from "../peerService.ts";
 
 export async function checkSolver(
   interaction: Interaction,
@@ -32,7 +32,7 @@ export async function checkSolver(
 
   if (failed) {
     character.hungerOrRage += 1;
-    await saveCharacter(character);
+    await sendCharacterUpdate(character);
     fields.push({
       name: locale.hunger,
       value: `**${character.hungerOrRage}**`,

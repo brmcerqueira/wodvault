@@ -1,7 +1,7 @@
 import { Character } from "../character.ts";
 import { RollResult } from "./diceRoll.ts";
 
-const kvPromise = Deno.openKv();
+const kv = await Deno.openKv();
 
 const character = "character";
 const characterKey = (id: string) => [character, id] as const;
@@ -12,6 +12,8 @@ const rollChannelIdKey = ["rollChannelId"] as const;
 const difficultyKey = ["difficulty"] as const;
 const modifierKey = ["modifier"] as const;
 const currentCharacterIdKey = ["currentCharacterId"] as const;
+const myIdKey = ["myId"] as const;
+const hostIdKey = ["hostId"] as const;
 
 export type LastRoll = {
   content: string;
@@ -19,7 +21,6 @@ export type LastRoll = {
 };
 
 async function setNullableValue<T>(key: Deno.KvKey, value: T | null) {
-  const kv = await kvPromise;
   if (value === null) {
     await kv.delete(key);
   }
@@ -29,9 +30,30 @@ async function setNullableValue<T>(key: Deno.KvKey, value: T | null) {
 }
 
 async function getNullableValue<T>(key: Deno.KvKey): Promise<T | null> {
-  const kv = await kvPromise;
   const result = await kv.get<T>(key);
   return result.value ?? null;
+}
+
+async function getOrCreateMyId(): Promise<string> {
+  const value = await getNullableValue<string>(myIdKey);
+
+  if (value !== null) {
+    return value;
+  }
+
+  const newValue = crypto.randomUUID();
+  await kv.set(myIdKey, newValue);
+  return newValue;
+}
+
+export const myId = await getOrCreateMyId();
+
+export async function getHostId(): Promise<string | null> {
+  return await getNullableValue(hostIdKey);
+}
+
+export async function setHostId(id: string | null): Promise<void> {
+  await setNullableValue(hostIdKey, id);
 }
 
 export async function getStorytellerId(): Promise<string | null> {
@@ -94,12 +116,19 @@ export async function getLastRoll(id: string): Promise<LastRoll | null> {
   return await getNullableValue(lastRollKey(id));
 }
 
+export async function allCharacters(): Promise<Record<string, Character>> {
+  const characters: Record<string, Character> = {};
+  for await (const entry of kv.list<Character>({ prefix: [character] })) {
+    characters[entry.value.id] = entry.value;
+  }
+  return characters;
+}
+
 export async function getCharactersByOwnerId(
   id: string,
   limit: number,
   term?: string
 ): Promise<Character[]> {
-  const kv = await kvPromise;
   const characters: Character[] = [];
   const termNormalized = term?.trim().toLowerCase();
 
@@ -128,6 +157,5 @@ export async function getCharactersByOwnerId(
 }
 
 export async function saveCharacter(character: Character) {
-  const kv = await kvPromise;
   await kv.set(characterKey(character.id), character);
 }

@@ -7,8 +7,9 @@ import {
 import { sprintf } from "$std/fmt/printf.ts";
 import { reRoll } from "../diceRoll.ts";
 import { locale } from "../i18n/locale.ts";
-import { getLastRoll, saveCharacter, setLastRoll } from "../persistence.ts";
+import { getLastRoll, setLastRoll } from "../persistence.ts";
 import { CharacterKind } from "../../character.ts";
+import { sendCharacterUpdate } from "../peerService.ts";
 
 export async function reRollSolver(
   interaction: Interaction,
@@ -40,7 +41,7 @@ export async function reRollSolver(
     });
     if (character) {
       character.willpower.superficial += 1;
-      await saveCharacter(character);
+      await sendCharacterUpdate(character);
     }
   } else {
     throw new InteractionResponseError(locale.unauthorized);

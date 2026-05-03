@@ -8,6 +8,12 @@ export function characterTitle(character: Character): string {
   return `${character.name}${character.player != "" ? ` - ${character.player}` : ""}`;
 }
 
+export enum ConnectionStatus {
+  Disconnected,
+  Connecting,
+  Connected,
+}
+
 export enum PeerKind {
   Host,
   Client,

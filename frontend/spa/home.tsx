@@ -2,7 +2,7 @@
 /** @jsxRuntime automatic */
 
 import { Character, CharacterKind } from "../../character.ts";
-import { keys } from "../../utils.ts";
+import { ConnectionStatus, keys } from "../../utils.ts";
 import { Component, createRef, JSX } from "$react";
 import { Navigate } from "$react-router";
 import { Button, ButtonGroup, Card, Col, Container, Form, InputGroup, Nav, Navbar, NavDropdown, Offcanvas, Row, Spinner } from "$react-bootstrap";
@@ -12,7 +12,7 @@ import { dialog } from "./dialog/dialog.ts";
 import { format } from "./fields/common.tsx";
 import { locale } from "./i18n/locale.ts";
 import { allCharacters, getCharacter, removeCharacter } from "./services/characterService.ts";
-import { connect, connectionStatus, ConnectionStatus, disconnect, host, observeCharactersUpdate, sendCharacterUpdate } from "./services/peerService.ts";
+import { connect, connectionStatus, disconnect, host, observeCharactersUpdate, sendCharacterUpdate } from "./services/peerService.ts";
 import { isDark, setDark, myId, hostId, isHost, setHost } from "./services/preferencesService.ts";
 
 export class Home extends Component<{}, {

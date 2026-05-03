@@ -110,6 +110,12 @@
       "integrity": "sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A=="
     }
   },
+  "redirects": {
+    "https://esm.sh/@msgpack/msgpack@^2.8.0?target=denonext": "https://esm.sh/@msgpack/msgpack@2.8.0?target=denonext",
+    "https://esm.sh/peerjs-js-binarypack@^2.1.0?target=denonext": "https://esm.sh/peerjs-js-binarypack@2.1.0?target=denonext",
+    "https://esm.sh/sdp@^3.2.0?target=denonext": "https://esm.sh/sdp@3.2.2?target=denonext",
+    "https://esm.sh/webrtc-adapter@^9.0.0?target=denonext": "https://esm.sh/webrtc-adapter@9.0.5?target=denonext"
+  },
   "remote": {
     "https://deno.land/std@0.216.0/assert/assert.ts": "bec068b2fccdd434c138a555b19a2c2393b71dfaada02b7d568a01541e67cdc5",
     "https://deno.land/std@0.216.0/assert/assertion_error.ts": "9f689a101ee586c4ce92f52fa7ddd362e86434ffdf1f848e45987dc7689976b8",
@@ -315,6 +321,16 @@
     "https://deno.land/x/harmony@v2.9.1/src/utils/permissions.ts": "d093e29839df3fed526e64a7fc4bc3c75cb62aec154d288a0f0cdf321c35fb4f",
     "https://deno.land/x/harmony@v2.9.1/src/utils/snakeCase.ts": "e634296601f4fe5b09e43ed3b491e3bac46dba5403622369cd47e4f79c0816d3",
     "https://deno.land/x/harmony@v2.9.1/src/utils/snowflake.ts": "a3715de195998b05fc9934a3db2017b6961ba57dd78b442c468763afd971fb2b",
-    "https://deno.land/x/harmony@v2.9.1/src/utils/userFlags.ts": "71ed6753d17aad3e36dee9ada7b48159b17b5151f7a2bdb75a27b352e3b01c4b"
+    "https://deno.land/x/harmony@v2.9.1/src/utils/userFlags.ts": "71ed6753d17aad3e36dee9ada7b48159b17b5151f7a2bdb75a27b352e3b01c4b",
+    "https://esm.sh/@msgpack/msgpack@2.8.0/denonext/msgpack.mjs": "369a9baee476a00f355657ebe8689eeb2112f1a2bdc0c3e6d0b8d0a41ed17566",
+    "https://esm.sh/@msgpack/msgpack@2.8.0?target=denonext": "cfb12fb3e876cff37bfb447ef6d1595b8ae97c42cbdc6c3c46f43380176f2f7f",
+    "https://esm.sh/peerjs-js-binarypack@2.1.0/denonext/peerjs-js-binarypack.mjs": "119288d0b35c57b5382b207318bc02576eab8eda4cadcb13b6011971ed622a7f",
+    "https://esm.sh/peerjs-js-binarypack@2.1.0?target=denonext": "81b45288bebd4fb84ca4ea716e586ee28dd40604ac80d39558e0455744e5b06b",
+    "https://esm.sh/peerjs@1.5.4": "957f5f161cad870bdf980254860715932d37c47885b2767dd0c5439b8437b996",
+    "https://esm.sh/peerjs@1.5.4/denonext/peerjs.mjs": "88f22c7831a16ba22a057070c08c078f53351d66fa67b60d205d3232ac451b67",
+    "https://esm.sh/sdp@3.2.2/denonext/sdp.mjs": "3c2099a7c42f79974b2b72e3790b60f1eb057bc35768fd4c9b77efd7bfc46c6c",
+    "https://esm.sh/sdp@3.2.2?target=denonext": "f7129fc27ba3e23dd9e992a1a36b198faaed7af26f0ec34433b6dbbb9f560d04",
+    "https://esm.sh/webrtc-adapter@9.0.5/denonext/webrtc-adapter.mjs": "7c79afcf418a625eb62fd9a0143f2afc46fbc7908744936a65b8e1560ecefee5",
+    "https://esm.sh/webrtc-adapter@9.0.5?target=denonext": "cd0580e78dd44076d9b1e9269786587cbdc952e8c236483535052248e4896172"
   }
 }

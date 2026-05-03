@@ -4,6 +4,7 @@
   },
   "imports": {
     "$harmony/": "https://deno.land/x/harmony@v2.9.1/",
+    "$peerjs": "https://esm.sh/peerjs@1.5.4",
     "$std/": "https://deno.land/std@0.216.0/"
   }
 }
