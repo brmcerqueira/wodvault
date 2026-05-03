@@ -17,6 +17,7 @@ import { encodeBase64 } from "$std/encoding/base64.ts";
 import { interactionCustomId } from "./actions/module.ts";
 import { locale } from "./i18n/locale.ts";
 import { CreateEmojiPayload } from "$harmony/src/types/mod.ts";
+import { start } from "./webSocketService.ts";
 
 async function cleanCommands(
   discordCommands: ApplicationCommandPayload[],
@@ -154,5 +155,7 @@ client.on("ready", async () => {
     }
   }
 });
+
+await start(8787);
 
 await client.connect();
