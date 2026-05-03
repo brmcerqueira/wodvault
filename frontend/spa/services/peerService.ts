@@ -8,7 +8,7 @@ import {
   saveCharacter,
 } from "./characterService.ts";
 import { myId, setHostId } from "./preferencesService.ts";
-import { sendCharacters, SendCharactersData } from "../../../utils.ts";
+import { ConnectionType, sendCharacters, SendCharactersData } from "../../../utils.ts";
 
 export enum ConnectionStatus {
   Disconnected,
@@ -18,9 +18,10 @@ export enum ConnectionStatus {
 
 export enum PeerKind {
   Host,
-  Client
+  Client,
 }
 
+const webSocketPort = 8787;
 const hostConnections: Record<string, DataConnection> = {};
 let observeCharactersUpdateCallback:
   | ((characters: Character[], remove: string[]) => void)
@@ -41,7 +42,10 @@ export async function sendCharacterUpdate(character: Character) {
   saveCharacter(character);
 
   if (clientConnection) {
-    await sendCharacters(clientConnection, { characters: [character], remove: [] });
+    await sendCharacters(clientConnection, {
+      characters: [character],
+      remove: [],
+    });
   } else if (character.owner === null || character.owner !== myId) {
     await checkAndSendCharacterUpdate(character);
   }
@@ -52,13 +56,22 @@ async function checkAndSendCharacterUpdate(character: Character) {
   for (const key of keys) {
     const connection = hostConnections[key];
     if (connection.open) {
-      if (character.owner === null ||
-        //isPeerKind(connection.peer, PeerKind.Bot) ||
-        key === peerId(character.owner, PeerKind.Client)) {
-        await sendCharacters(connection, { characters: [character], remove: [] });
-      }
-      else if (character.owner !== null && key !== peerId(character.owner, PeerKind.Client)) {
-        await sendCharacters(connection, { characters: [], remove: [character.id] });
+      if (
+        character.owner === null ||
+        key === peerId(character.owner, PeerKind.Client)
+      ) {
+        await sendCharacters(connection, {
+          characters: [character],
+          remove: [],
+        });
+      } else if (
+        character.owner !== null &&
+        key !== peerId(character.owner, PeerKind.Client)
+      ) {
+        await sendCharacters(connection, {
+          characters: [],
+          remove: [character.id],
+        });
       }
     } else {
       delete hostConnections[key];
@@ -76,8 +89,7 @@ export async function host(): Promise<void> {
   if (_connectionStatus === ConnectionStatus.Disconnected) {
     await createPeer(true);
     setHostId(myId);
-  }
-  else {
+  } else {
     setHostId(null);
     _connectionStatus = ConnectionStatus.Disconnected;
   }
@@ -133,58 +145,13 @@ export function observeCharactersUpdate(
   observeCharactersUpdateCallback = callback;
 }
 
-function incomingCharacters(connection: DataConnection): (json: unknown) => void {
-  return (json) => {
-    const data = JSON.parse(json as string) as SendCharactersData;
-    const characters: Character[] = [];
-    const remove: string[] = [];
-    const updateRemoteCharacters: Character[] = [];
-    const keys = allCharacters();
-    for (const remoteCharacter of data.characters) {
-      if (keys.includes(localStorageCharacterKey(remoteCharacter.id))) {
-        const character = getCharacter(remoteCharacter.id)!;
-        if (character.timestamp < remoteCharacter.timestamp) {
-          saveCharacter(remoteCharacter);
-          characters.push(remoteCharacter);
-        }
-        else if (character.timestamp > remoteCharacter.timestamp) {
-          updateRemoteCharacters.push(character);
-        }
-      }
-      else {
-        saveCharacter(remoteCharacter);
-        characters.push(remoteCharacter);
-      }
-      /*
-      if (isBot) {
-        checkAndSendCharacterUpdate(remoteCharacter);
-      }*/
-    }
-
-    for (const id of data.remove) {
-      if (keys.includes(localStorageCharacterKey(id))) {
-        removeCharacter(id);
-        remove.push(id);
-      }
-    }
-
-    if (updateRemoteCharacters.length > 0) {
-      sendCharacters(connection, { characters: updateRemoteCharacters, remove: [] });
-    }
-
-    if (observeCharactersUpdateCallback) {
-      observeCharactersUpdateCallback(characters, remove);
-    }
-  }
-}
-
 function createPeer(host: boolean): Promise<void> {
   return new Promise((resolve) => {
     peer = new Peer(peerId(myId, host ? PeerKind.Host : PeerKind.Client));
 
     peer.on("open", (id) => {
       if (host) {
-          _connectionStatus = ConnectionStatus.Connected;
+        _connectionStatus = ConnectionStatus.Connected;
       }
       console.log("[PeerJS][peer:open]", { id, host });
       resolve();
@@ -207,6 +174,8 @@ function createPeer(host: boolean): Promise<void> {
     });
 
     if (host) {
+      buildWebSocket();
+
       peer.on("connection", (connection) => {
         hostConnections[connection.peer] = connection;
         console.log("[PeerJS][host:connection]", { id: connection.peer });
@@ -233,8 +202,7 @@ function createPeer(host: boolean): Promise<void> {
               continue;
             }
             if (
-              character.owner === null || 
-              //isPeerKind(connection.peer, PeerKind.Bot) ||
+              character.owner === null ||
               connection.peer === peerId(character.owner, PeerKind.Client)
             ) {
               characters.push(character);
@@ -253,4 +221,81 @@ function createPeer(host: boolean): Promise<void> {
       });
     }
   });
+}
+
+function buildWebSocket() {
+  const socket = new WebSocket(`ws://localhost:${webSocketPort}/webSocket/`);
+
+  socket.onopen = () => {
+    console.info("✅ Websocket connection opened.");
+    const characters: Character[] = [];
+
+    for (const key of allCharacters()) {
+      const character = getCharacter(key);
+      if (character === null) {
+        continue;
+      }
+      characters.push(character);
+    }
+
+    sendCharacters(socket, { characters, remove: [] });
+  };
+
+  const incomingCharactersByBot = incomingCharacters(socket, true);
+
+  socket.onmessage = (event) => incomingCharactersByBot(event.data);
+
+  socket.onclose = (e) => {
+    console.warn(
+      "⚠️ Websocket connection closed. Reconnecting in 3s...",
+      e.reason,
+    );
+    setTimeout(buildWebSocket, 3000);
+  };
+}
+
+function incomingCharacters(connection: ConnectionType, isBot?: boolean): (json: unknown) => void {
+  return (json) => {
+    const data = JSON.parse(json as string) as SendCharactersData;
+    const characters: Character[] = [];
+    const remove: string[] = [];
+    const updateRemoteCharacters: Character[] = [];
+    const keys = allCharacters();
+    for (const remoteCharacter of data.characters) {
+      if (keys.includes(localStorageCharacterKey(remoteCharacter.id))) {
+        const character = getCharacter(remoteCharacter.id)!;
+        if (character.timestamp < remoteCharacter.timestamp) {
+          saveCharacter(remoteCharacter);
+          characters.push(remoteCharacter);
+        } else if (character.timestamp > remoteCharacter.timestamp) {
+          updateRemoteCharacters.push(character);
+        }
+      } else {
+        saveCharacter(remoteCharacter);
+        characters.push(remoteCharacter);
+      }
+      
+      if (isBot) {
+        checkAndSendCharacterUpdate(remoteCharacter);
+      }
+    }
+
+    for (const id of data.remove) {
+      if (keys.includes(localStorageCharacterKey(id))) {
+        removeCharacter(id);
+        remove.push(id);
+      }
+    }
+
+    if (updateRemoteCharacters.length > 0) {
+      sendCharacters(connection, {
+        characters: updateRemoteCharacters,
+        remove: [],
+      });
+    }
+
+    if (observeCharactersUpdateCallback) {
+      observeCharactersUpdateCallback(characters, remove);
+    }
+  };
 }

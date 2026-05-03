@@ -8,13 +8,15 @@ export function characterTitle(character: Character): string {
   return `${character.name}${character.player != "" ? ` - ${character.player}` : ""}`;
 }
 
+export type ConnectionType = { send: (data: string) => void | Promise<void> }
+
 export type SendCharactersData = {
   characters: Character[],
   remove: string[],
 }
 
 export async function sendCharacters(
-  connection: { send: (data: string) => void | Promise<void> },
+  connection: ConnectionType,
   data: SendCharactersData
 ) {
   await connection.send(

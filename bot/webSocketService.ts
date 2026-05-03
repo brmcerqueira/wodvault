@@ -25,7 +25,7 @@ export function start(port: number): void {
     (request) => {
       const url = new URL(request.url);
 
-      if (url.pathname === "/ws") {
+      if (url.pathname === "/webSocket") {
         const upgrade = Deno.upgradeWebSocket(request);
 
         socket = upgrade.socket;
