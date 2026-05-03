@@ -29,11 +29,13 @@ export const pt: LocaleType & BaseLocaleType = Object.assign({
   storytellerSetCurrentCharacter: "O personagem foi atribuído ao narrador...",
   storytellerChangeDifficulty: "O narrador mudou a dificuldade.",
   storytellerChangeModifier: "O narrador mudou o modificador.",
+  storytellerChangeHostId: "O narrador mudou o servidor.",
   storytellerChangeRollChannel: "O narrador mudou o canal de rolagem.",
   storytellerClearRollChannel:
     "O narrador limpou a seleção do canal de rolagem.",
   storytellerClearCurrentCharacter:
     "O narrador não tem mais um personagem atribuído a ele.",
+  hostId: "Servidor",
   commands: {
     check: {
       name: "checagem",

@@ -30,9 +30,11 @@ export type LocaleType = {
   storytellerSetCurrentCharacter: string;
   storytellerChangeDifficulty: string;
   storytellerChangeModifier: string;
+  storytellerChangeHostId: string;
   storytellerChangeRollChannel: string;
   storytellerClearRollChannel: string;
   storytellerClearCurrentCharacter: string;
+  hostId: string;
   commands: {
     check: {
       dices: CommandOption;
