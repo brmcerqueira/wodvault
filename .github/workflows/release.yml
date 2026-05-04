@@ -1,0 +1,33 @@
+name: Release Bot
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: Build executables
+        working-directory: bot
+        run: deno task build:executables
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            bot/dist/wodvault-bot-linux
+            bot/dist/wodvault-bot-windows.exe
+          generate_release_notes: true
