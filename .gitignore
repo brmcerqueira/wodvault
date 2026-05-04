@@ -1,3 +1,4 @@
 _fresh/
 .env
 database/
+bot/dist/

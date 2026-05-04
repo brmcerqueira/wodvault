@@ -1,6 +1,9 @@
 {
   "tasks": {
-    "run": "deno run -A --unstable-kv --env-file=.env main.ts"
+    "run": "deno run -A --unstable-kv --env-file=.env main.ts",
+    "build:linux": "deno compile -A --unstable-kv --output ./dist/wodvault-bot-linux main.ts",
+    "build:windows": "deno compile -A --unstable-kv --target x86_64-pc-windows-msvc --output ./dist/wodvault-bot-windows.exe main.ts",
+    "build:executables": "deno task build:linux && deno task build:windows"
   },
   "imports": {
     "$harmony/": "https://deno.land/x/harmony@v2.9.1/",
