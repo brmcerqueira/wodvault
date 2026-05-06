@@ -152,5 +152,5 @@ export async function autocompleteDicePools(
 }
 
 export function host(path: string) {
-  return `${globalThis.hostApi}/${path}`;
+  return `${globalThis.hostApi!}/${path}`;
 }

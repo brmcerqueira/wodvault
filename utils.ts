@@ -1,12 +1,12 @@
 import { Character } from "./character.ts";
 
 declare global {
-  var hostApi: string;
+  var hostApi: string | undefined;
 }
 
 const beforeTime = Date.now();
 
-const responseTime = await fetch(`${globalThis.hostApi}/api/time`);
+const responseTime = await fetch(`${globalThis.hostApi ?? ""}/api/time`);
 const datetime = new Date(await responseTime.json()).getTime();
 
 const afterTime = Date.now();

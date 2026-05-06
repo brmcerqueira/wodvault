@@ -9,8 +9,6 @@ import { Home } from "./home.tsx";
 import { Vampire } from "./vampire.tsx";
 import { Werewolf } from "./werewolf.tsx";
 
-globalThis.hostApi = "";
-
 createRoot(document.getElementById("root")!).render(<><DialogModal ref={dialogRef} /><HashRouter>
   <Routes>
     <Route path="/vampire" element={<Vampire />} />
