@@ -45,37 +45,37 @@ export async function sendCharacterUpdate(character: Character) {
   saveCharacter(character);
 
   if (clientConnection) {
-    await sendCharacters(clientConnection, {
-      characters: [character],
-      remove: [],
-    });
+    if (character.owner === null || clientConnection.peer === peerId(character.owner, PeerKind.Host)) {
+      await sendCharacters(clientConnection, {
+        characters: [character],
+        remove: [],
+      });
+    }
+    else if (
+        character.owner !== null &&
+        clientConnection.peer !== peerId(character.owner, PeerKind.Host)
+      ) {
+      await sendCharacters(clientConnection, {
+        characters: [],
+        remove: [character.id],
+      });
+    }
   } else if (character.owner === null || character.owner !== myId) {
-    await checkAndSendCharacterUpdate(character);
+    await sendCharacterUpdateToPlayer(character);
   }
 }
 
-async function checkAndSendCharacterUpdate(character: Character) {
+async function sendCharacterUpdateToPlayer(character: Character) {
   const keys = Object.keys(hostConnections);
   for (const key of keys) {
     const connection = hostConnections[key];
     if (connection.open) {
-      if (
-        character.owner === null ||
-        key === peerId(character.owner, PeerKind.Client)
-      ) {
+      if (key === peerId(character.playerId, PeerKind.Client)) {
         await sendCharacters(connection, {
           characters: [character],
           remove: [],
         });
-      } else if (
-        character.owner !== null &&
-        key !== peerId(character.owner, PeerKind.Client)
-      ) {
-        await sendCharacters(connection, {
-          characters: [],
-          remove: [character.id],
-        });
-      }
+      } 
     } else {
       delete hostConnections[key];
     }
@@ -288,7 +288,7 @@ function incomingCharacters(
       }
 
       if (isBot) {
-        checkAndSendCharacterUpdate(remoteCharacter);
+        sendCharacterUpdateToPlayer(remoteCharacter);
       }
     }
 

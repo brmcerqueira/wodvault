@@ -1,5 +1,6 @@
 import { Character, CharacterKind, CharacterMode } from "../../../character.ts";
 import { timestamp } from "../../../utils.ts";
+import { myId } from "./preferencesService.ts";
 
 export function buildCharacter(kind: CharacterKind): Character {
   return {
@@ -9,6 +10,7 @@ export function buildCharacter(kind: CharacterKind): Character {
     image: "",
     name: "",
     player: "",
+    playerId: myId,
     owner: null,
     deleted: false,
     mode: CharacterMode.Opened,

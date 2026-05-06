@@ -22,6 +22,7 @@ export type Character = {
   image: string;
   name: string;
   player: string;
+  playerId: string;
   owner: string | null;
   deleted?: boolean;
   mode: CharacterMode;
