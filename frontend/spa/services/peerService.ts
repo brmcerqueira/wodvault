@@ -208,8 +208,7 @@ function createPeer(host: boolean): Promise<void> {
               continue;
             }
             if (
-              character.owner === null ||
-              connection.peer === peerId(character.owner, PeerKind.Client)
+              connection.peer === peerId(character.playerId, PeerKind.Client)
             ) {
               characters.push(character);
             }
