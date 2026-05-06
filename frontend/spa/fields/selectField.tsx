@@ -2,7 +2,7 @@
 /** @jsxImportSource $react */
 /** @jsxRuntime automatic */
 
-import { CharacterManagerContext } from "../characterManager.ts";
+import { CharacterBagContext } from "../characterBag.ts";
 import { Component } from "$react";
 import { Col, Form, Row } from "$react-bootstrap";
 import { FieldProps } from "./common.tsx";
@@ -10,8 +10,8 @@ import { FieldProps } from "./common.tsx";
 type Option = { value: string, name: string }
 
 export class SelectField extends Component<{ options: (string | Option)[], canEmpty?: boolean, open?: boolean } & FieldProps<string>> {
-  static override contextType = CharacterManagerContext
-  declare context: React.ContextType<typeof CharacterManagerContext>
+  static override contextType = CharacterBagContext
+  declare context: React.ContextType<typeof CharacterBagContext>
 
   public override render() {
     return <Row className="align-items-center mb-1">

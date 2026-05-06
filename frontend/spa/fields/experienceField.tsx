@@ -1,7 +1,7 @@
 /** @jsxImportSource $react */
 /** @jsxRuntime automatic */
 
-import { CharacterManagerContext } from "../characterManager.ts";
+import { CharacterBagContext } from "../characterBag.ts";
 import { Component, createRef } from "$react";
 import { Col, Form, Row } from "$react-bootstrap";
 import { locale } from "../i18n/locale.ts";
@@ -14,8 +14,8 @@ type State = {
 }
 
 export class ExperienceField extends Component<State, State> {
-    static override contextType = CharacterManagerContext
-    declare context: React.ContextType<typeof CharacterManagerContext>
+    static override contextType = CharacterBagContext
+    declare context: React.ContextType<typeof CharacterBagContext>
     private spentRef = createRef<HTMLInputElement>();
 
     constructor(props: State) {

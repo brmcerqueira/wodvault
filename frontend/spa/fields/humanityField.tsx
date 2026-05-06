@@ -1,7 +1,7 @@
 /** @jsxImportSource $react */
 /** @jsxRuntime automatic */
 
-import { CharacterManagerContext } from "../characterManager.ts";
+import { CharacterBagContext } from "../characterBag.ts";
 import { Component } from "$react";
 import { Button, Col, Row } from "$react-bootstrap";
 import { locale } from "../i18n/locale.ts";
@@ -17,8 +17,8 @@ type State = {
 }
 
 export class HumanityField extends Component<State, State> {
-    static override contextType = CharacterManagerContext
-    declare context: React.ContextType<typeof CharacterManagerContext>
+    static override contextType = CharacterBagContext
+    declare context: React.ContextType<typeof CharacterBagContext>
 
     constructor(props: State) {
         super(props);

@@ -4,7 +4,7 @@
 import { CharacterMode } from "../../../character.ts";
 import { DisciplineLevelLocale, LocaleType } from "../../../i18n/localeType.ts";
 import { keys } from "../../../utils.ts";
-import { CharacterManagerContext } from "../characterManager.ts";
+import { CharacterBagContext } from "../characterBag.ts";
 import { Component, createRef } from "$react";
 import { Button, Col, Container, Form, InputGroup, Row } from "$react-bootstrap";
 import { Confirm } from "../dialog/confirm.ts";
@@ -23,8 +23,8 @@ function buildDisciplineKey(level: string, discipline: string): string {
 }
 
 export class DisciplinesField extends Component<Props, State> {
-    static override contextType = CharacterManagerContext
-    declare context: React.ContextType<typeof CharacterManagerContext>
+    static override contextType = CharacterBagContext
+    declare context: React.ContextType<typeof CharacterBagContext>
     private selectRef = createRef<HTMLSelectElement>();
 
     constructor(props: Props) {

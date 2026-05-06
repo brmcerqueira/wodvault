@@ -61,7 +61,7 @@ export class Werewolf extends CharacterSheet {
             <DamageField name={locale.health} total={this.state.character.attributes.physical.stamina +
               this.state.character.health.start}
               damage={this.state.character.health}>
-              {this.state.characterManager.canUpdate && <Row className="align-items-center mt-1">
+              {this.state.characterBag.canUpdate && <Row className="align-items-center mt-1">
                 <Col className="text-start"><Form.Control size="sm" type="number" step={1} min={0}
                   defaultValue={this.state.character.health.start} onChange={e => this.update<number>((c, v) => c.health.start = v)(parseInt(e.target.value))} /></Col>
               </Row>}

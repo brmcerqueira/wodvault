@@ -2,7 +2,7 @@ import { CharacterMode } from "../../character.ts";
 import { createContext } from "$react";
 import { ExperienceField } from "./fields/experienceField.tsx";
 
-export class CharacterManager {
+export class CharacterBag {
   constructor(private ref: React.RefObject<ExperienceField | null>) {
   }
 
@@ -47,6 +47,6 @@ export class CharacterManager {
   }
 }
 
-export const CharacterManagerContext = createContext<
-  CharacterManager | undefined
->(undefined) as React.Context<CharacterManager>;
+export const CharacterBagContext = createContext<
+  CharacterBag | undefined
+>(undefined) as React.Context<CharacterBag>;

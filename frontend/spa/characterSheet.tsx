@@ -8,38 +8,38 @@ import { Navigate } from "$react-router";
 import { JSX } from "$react/jsx-runtime";
 import { buildCharacter, getCharacter } from "./services/characterService.ts";
 import { observeCharactersUpdate, sendCharacterUpdate } from "./services/peerService.ts";
-import { CharacterManager, CharacterManagerContext } from "./characterManager.ts";
+import { CharacterBag, CharacterBagContext } from "./characterBag.ts";
 import { ExperienceField } from "./fields/experienceField.tsx";
 import { locale } from "./i18n/locale.ts";
 import { characterTitle, keys } from "../../utils.ts";
 import { myId } from "./services/preferencesService.ts";
 
-function updateCharacterManager(characterManager: CharacterManager, character: Character) {
-    characterManager.mode = character.mode;
-    characterManager.owner = character.owner != undefined && character.owner == myId;
+function updateCharacterBag(characterBag: CharacterBag, character: Character) {
+    characterBag.mode = character.mode;
+    characterBag.owner = character.owner != undefined && character.owner == myId;
 }
 
-export abstract class CharacterSheet extends Component<{}, { character: Character, characterManager: CharacterManager, redirect?: string }> {
+export abstract class CharacterSheet extends Component<{}, { character: Character, characterBag: CharacterBag, redirect?: string }> {
     protected experienceFieldRef = createRef<ExperienceField>();
 
     constructor(kind: CharacterKind) {
         super({});
 
-        const characterManager = new CharacterManager(this.experienceFieldRef);
+        const characterBag = new CharacterBag(this.experienceFieldRef);
 
         const params = new URLSearchParams(globalThis.location.hash.includes('?') ? globalThis.location.hash.split('?')[1] : '');
 
         let character = params.has("key") ? getCharacter(atob(params.get("key")!)) : null;
 
         if (character) {
-            updateCharacterManager(characterManager, character);
+            updateCharacterBag(characterBag, character);
         }
         else {
             character = buildCharacter(kind);
         }
 
         this.state = {
-            characterManager,
+            characterBag,
             character: character!
         }
 
@@ -47,10 +47,10 @@ export abstract class CharacterSheet extends Component<{}, { character: Characte
             if (remove.includes(this.state.character.id)) {
                 this.setState({ redirect: "/" });
             }
-            else if (!this.state.characterManager.edit) {
+            else if (!this.state.characterBag.edit) {
                 const character = characters.find(character => character.id == this.state.character.id)
                 if (character) {
-                    updateCharacterManager(characterManager, character);
+                    updateCharacterBag(characterBag, character);
                     this.setState({ character: character });
                 } 
             }
@@ -58,9 +58,9 @@ export abstract class CharacterSheet extends Component<{}, { character: Characte
     }
 
     private async updateEdit(edit: boolean) {
-        this.state.characterManager.edit = edit;
+        this.state.characterBag.edit = edit;
 
-        this.setState({ characterManager: this.state.characterManager });
+        this.setState({ characterBag: this.state.characterBag });
 
         if (!edit) {
             await sendCharacterUpdate(this.state.character);
@@ -68,9 +68,9 @@ export abstract class CharacterSheet extends Component<{}, { character: Characte
     }
 
     private onChangeMode(mode: CharacterMode): void {
-        this.state.characterManager.mode = mode;
+        this.state.characterBag.mode = mode;
         this.state.character.mode = mode;
-        this.setState({ character: this.state.character, characterManager: this.state.characterManager });
+        this.setState({ character: this.state.character, characterBag: this.state.characterBag });
     }
 
     protected get<T>(callback: (character: Character) => T): () => T {
@@ -97,12 +97,12 @@ export abstract class CharacterSheet extends Component<{}, { character: Characte
 
         document.title = characterTitle(this.state.character);
 
-        return <CharacterManagerContext.Provider value={this.state.characterManager}><Navbar expand className="bg-body-tertiary border-bottom fixed-top">
+        return <CharacterBagContext.Provider value={this.state.characterBag}><Navbar expand className="bg-body-tertiary border-bottom fixed-top">
             <Nav className="me-auto">
                 <Nav.Link href="/#"><i className="bi bi-arrow-left" /></Nav.Link>
             </Nav>
             <Nav className="ms-auto">
-                {this.state.characterManager.owner && this.state.characterManager.edit && <Form.Select className="w-auto me-2" onChange={e => this.onChangeMode(parseInt(e.target.value))}>
+                {this.state.characterBag.owner && this.state.characterBag.edit && <Form.Select className="w-auto me-2" onChange={e => this.onChangeMode(parseInt(e.target.value))}>
                     {keys(CharacterMode).filter(item => Number(item) >= 0).map(key =>
                         <option selected={parseInt(key) == this.state.character.mode} value={key} key={`mode-${key}`}>{locale.mode[key as unknown as number]}</option>)}
                 </Form.Select>}
@@ -110,6 +110,6 @@ export abstract class CharacterSheet extends Component<{}, { character: Characte
             </Nav>
         </Navbar>
             {this.sheet()}
-        </CharacterManagerContext.Provider>;
+        </CharacterBagContext.Provider>;
     }
 }

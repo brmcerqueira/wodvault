@@ -1,14 +1,14 @@
 /** @jsxImportSource $react */
 /** @jsxRuntime automatic */
 
-import { CharacterManagerContext } from "../characterManager.ts";
+import { CharacterBagContext } from "../characterBag.ts";
 import { Component } from "$react";
 import { Col, Form, OverlayTrigger, Row, Tooltip } from "$react-bootstrap";
 import { FieldProps } from "./common.tsx";
 
 export class TextField extends Component<FieldProps<string>> {
-  static override contextType = CharacterManagerContext
-  declare context: React.ContextType<typeof CharacterManagerContext>
+  static override contextType = CharacterBagContext
+  declare context: React.ContextType<typeof CharacterBagContext>
 
   private onBlur(target: HTMLInputElement) {
     this.props.update(target.value);

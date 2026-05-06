@@ -2,7 +2,7 @@
 /** @jsxRuntime automatic */
 
 import { Damage } from "../../../character.ts";
-import { CharacterManagerContext } from "../characterManager.ts";
+import { CharacterBagContext } from "../characterBag.ts";
 import { Component } from "$react";
 import { Button, Col, Row } from "$react-bootstrap";
 import { GenericMeter, SquareX, SquareSlash, Square, NamedFieldProps, TotalFieldProps } from "./common.tsx";
@@ -11,8 +11,8 @@ type State = { damage: Damage }
 type Props = { children?: React.ReactNode } & TotalFieldProps & NamedFieldProps & State
 
 export class DamageField extends Component<Props, State> {
-    static override contextType = CharacterManagerContext
-    declare context: React.ContextType<typeof CharacterManagerContext>
+    static override contextType = CharacterBagContext
+    declare context: React.ContextType<typeof CharacterBagContext>
 
     constructor(props: Props) {
         super(props);

@@ -3,7 +3,7 @@
 
 import { CharacterMode } from "../../../character.ts";
 import { keys } from "../../../utils.ts";
-import { CharacterManagerContext } from "../characterManager.ts";
+import { CharacterBagContext } from "../characterBag.ts";
 import { Component } from "$react";
 import { Button, Col, Form, InputGroup, Row } from "$react-bootstrap";
 import { Confirm } from "../dialog/confirm.ts";
@@ -25,8 +25,8 @@ type State = { specialties: Record<string, string[]> }
 type Props = State & SmFieldProps
 
 export class SpecialtiesField extends Component<Props, State> {
-    static override contextType = CharacterManagerContext
-    declare context: React.ContextType<typeof CharacterManagerContext>
+    static override contextType = CharacterBagContext
+    declare context: React.ContextType<typeof CharacterBagContext>
 
     constructor(props: Props) {
         super(props);

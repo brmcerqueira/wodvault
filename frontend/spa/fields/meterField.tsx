@@ -3,7 +3,7 @@
 
 import { JSX } from "$react/jsx-runtime";
 import { CharacterMode } from "../../../character.ts";
-import { CharacterManagerContext } from "../characterManager.ts";
+import { CharacterBagContext } from "../characterBag.ts";
 import { Component } from "$react";
 import { Button } from "$react-bootstrap";
 import { Meter, GetUpdateFieldProps, TotalFieldProps, calculateSpent } from "./common.tsx";
@@ -11,8 +11,8 @@ import { Meter, GetUpdateFieldProps, TotalFieldProps, calculateSpent } from "./c
 export type MinFieldProps = { min?: number, multiplier?: number, open?: boolean };
 
 export abstract class MeterField<T extends MinFieldProps & TotalFieldProps & GetUpdateFieldProps<number>> extends Component<T, { value: number }> {
-    static override contextType = CharacterManagerContext
-    declare context: React.ContextType<typeof CharacterManagerContext>
+    static override contextType = CharacterBagContext
+    declare context: React.ContextType<typeof CharacterBagContext>
 
     constructor(props: T) {
         super(props);

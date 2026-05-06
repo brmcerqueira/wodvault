@@ -2,15 +2,15 @@
 /** @jsxRuntime automatic */
 
 import { Character } from "../../../character.ts";
-import { CharacterManagerContext } from "../characterManager.ts";
+import { CharacterBagContext } from "../characterBag.ts";
 import { Component } from "$react";
 import { Image as BsImage, Form, Spinner, InputGroup } from "$react-bootstrap";
 
 type Props = { character: Character }
 
 export class ImageField extends Component<Props, { image: string, loading: boolean }> {
-    static override contextType = CharacterManagerContext
-    declare context: React.ContextType<typeof CharacterManagerContext>
+    static override contextType = CharacterBagContext
+    declare context: React.ContextType<typeof CharacterBagContext>
 
     constructor(props: Props) {
         super(props);
