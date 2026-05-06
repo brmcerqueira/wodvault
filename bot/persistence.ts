@@ -1,4 +1,5 @@
 import { Character } from "../character.ts";
+import { timestamp } from "../utils.ts";
 import { RollResult } from "./diceRoll.ts";
 import { logger } from "./logger.ts";
 
@@ -136,6 +137,7 @@ export async function getCharactersByTerm(
 }
 
 export async function saveCharacter(character: Character) {
+  character.timestamp = timestamp();
   logger.debug("[KV] saveCharacter %v", character.id);
   await kv.set(characterKey(character.id), character);
 }
