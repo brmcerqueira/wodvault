@@ -12,12 +12,7 @@ import { CharacterBag, CharacterBagContext } from "./characterBag.ts";
 import { ExperienceField } from "./fields/experienceField.tsx";
 import { locale } from "./i18n/locale.ts";
 import { characterTitle, keys } from "../../utils.ts";
-import { myId } from "./services/preferencesService.ts";
 
-function updateCharacterBag(characterBag: CharacterBag, character: Character) {
-    characterBag.mode = character.mode;
-    characterBag.owner = character.owner != undefined && character.owner == myId;
-}
 
 export abstract class CharacterSheet extends Component<{}, { character: Character, characterBag: CharacterBag, redirect?: string }> {
     protected experienceFieldRef = createRef<ExperienceField>();
@@ -32,7 +27,7 @@ export abstract class CharacterSheet extends Component<{}, { character: Characte
         let character = params.has("key") ? getCharacter(atob(params.get("key")!)) : null;
 
         if (character) {
-            updateCharacterBag(characterBag, character);
+            characterBag.adjustFields(character);
         }
         else {
             character = buildCharacter(kind);
@@ -50,7 +45,7 @@ export abstract class CharacterSheet extends Component<{}, { character: Characte
             else if (!this.state.characterBag.edit) {
                 const character = characters.find(character => character.id == this.state.character.id)
                 if (character) {
-                    updateCharacterBag(characterBag, character);
+                    this.state.characterBag.adjustFields(character);
                     this.setState({ character: character });
                 } 
             }

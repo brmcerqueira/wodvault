@@ -1,6 +1,7 @@
-import { CharacterMode } from "../../character.ts";
+import { Character, CharacterMode } from "../../character.ts";
 import { createContext } from "$react";
 import { ExperienceField } from "./fields/experienceField.tsx";
+import { myId } from "./services/preferencesService.ts";
 
 export class CharacterBag {
   constructor(private ref: React.RefObject<ExperienceField | null>) {
@@ -44,6 +45,11 @@ export class CharacterBag {
 
   public updateSpentExperience(value: number) {
     this.ref.current?.updateSpentExperience(value);
+  }
+
+  public adjustFields(character: Character) {
+    this.mode = character.mode;
+    this.owner = character.owner != undefined && character.owner == myId;
   }
 }
 
