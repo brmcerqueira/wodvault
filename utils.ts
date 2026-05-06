@@ -1,8 +1,12 @@
 import { Character } from "./character.ts";
 
+declare global {
+  var hostApi: string;
+}
+
 const beforeTime = Date.now();
 
-const responseTime = await fetch("https://wodvault.wod.deno.net/api/time");
+const responseTime = await fetch(`${globalThis.hostApi}/api/time`);
 const datetime = new Date(await responseTime.json()).getTime();
 
 const afterTime = Date.now();

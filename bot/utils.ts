@@ -152,5 +152,5 @@ export async function autocompleteDicePools(
 }
 
 export function host(path: string) {
-  return `https://wodvault.wod.deno.net/${path}`;
+  return `${globalThis.hostApi}/${path}`;
 }

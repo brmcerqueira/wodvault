@@ -19,6 +19,8 @@ import { locale } from "./i18n/locale.ts";
 import { CreateEmojiPayload } from "$harmony/src/types/mod.ts";
 import { start } from "./webSocketService.ts";
 
+globalThis.hostApi = Deno.env.get("HOST_API") ?? "https://wodvault.wod.deno.net";
+
 async function cleanCommands(
   discordCommands: ApplicationCommandPayload[],
   ...keys: string[]
