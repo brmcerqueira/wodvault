@@ -60,7 +60,7 @@ export async function sendCharacterUpdate(character: Character) {
         remove: [character.id],
       });
     }
-  } else if (character.owner === null || character.owner !== myId) {
+  } else if (character.playerId !== myId) {
     await sendCharacterUpdateToPlayer(character);
   }
 }
