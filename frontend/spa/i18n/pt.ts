@@ -23,6 +23,7 @@ export const pt: LocaleType & BaseLocaleType = Object.assign({
   close: "Fechar",
   no: "Não",
   yes: "Sim",
+  common: "Comuns",
   physical: "Físicos",
   social: "Sociais",
   mental: "Mentais",

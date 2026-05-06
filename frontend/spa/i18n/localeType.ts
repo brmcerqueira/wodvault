@@ -23,6 +23,7 @@ export type LocaleType = {
   close: string;
   no: string;
   yes: string;
+  common: string;
   physical: string;
   social: string;
   mental: string;
