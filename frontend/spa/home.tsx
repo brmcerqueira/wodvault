@@ -141,6 +141,17 @@ export class Home extends Component<{}, {
     }
   }
 
+  private renderConnectButtonVariant(): string {
+    switch (this.state.connectionStatus) {
+      case ConnectionStatus.Connecting:
+        return "warning";
+      case ConnectionStatus.Connected:
+        return "danger";
+      default:
+        return "primary";
+    }
+  }
+
   public override render() {
     if (this.state.redirect) {
       return <Navigate to={this.state.redirect} replace />;
@@ -188,13 +199,7 @@ export class Home extends Component<{}, {
                 ref={this.connectIdRef}
                 disabled={this.state.connectionStatus !== ConnectionStatus.Disconnected}
               />)}
-              <Button className="mt-2 w-100" variant={
-                this.state.connectionStatus == ConnectionStatus.Connecting
-                  ? "warning"
-                  : this.state.connectionStatus == ConnectionStatus.Connected
-                  ? "danger"
-                  : "primary"
-              } 
+              <Button className="mt-2 w-100" variant={this.renderConnectButtonVariant()} 
                 onClick={async () => await this.onConnectOrDisconnect()}>
                 {this.renderConnectButtonContent()}
               </Button>
