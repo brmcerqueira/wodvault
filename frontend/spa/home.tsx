@@ -70,7 +70,7 @@ export class Home extends Component<{}, {
   }
 
   private async onConnectOrDisconnect(): Promise<void> {
-    if (this.state.connectionStatus == ConnectionStatus.Connected) {
+    if (this.state.connectionStatus == ConnectionStatus.Connected || this.state.connectionStatus == ConnectionStatus.Connecting) {
       disconnect();
     }
     else {
@@ -88,6 +88,7 @@ export class Home extends Component<{}, {
         }
       }
     }
+
     this.setState({ connectionStatus: connectionStatus() });
   }
 
@@ -132,7 +133,7 @@ export class Home extends Component<{}, {
   private renderConnectButtonContent(): string | JSX.Element {
     switch (this.state.connectionStatus) {
       case ConnectionStatus.Connecting:
-        return <Spinner animation="border" size="sm" />;
+        return <><Spinner animation="border" size="sm" className="me-2" />{locale.cancel}</>;
       case ConnectionStatus.Connected:
         return locale.disconnect;
       default:
@@ -187,8 +188,13 @@ export class Home extends Component<{}, {
                 ref={this.connectIdRef}
                 disabled={this.state.connectionStatus !== ConnectionStatus.Disconnected}
               />)}
-              <Button className="mt-2 w-100" variant={this.state.connectionStatus == ConnectionStatus.Connected ? "danger" : "primary"} 
-                disabled={this.state.connectionStatus == ConnectionStatus.Connecting} 
+              <Button className="mt-2 w-100" variant={
+                this.state.connectionStatus == ConnectionStatus.Connecting
+                  ? "warning"
+                  : this.state.connectionStatus == ConnectionStatus.Connected
+                  ? "danger"
+                  : "primary"
+              } 
                 onClick={async () => await this.onConnectOrDisconnect()}>
                 {this.renderConnectButtonContent()}
               </Button>

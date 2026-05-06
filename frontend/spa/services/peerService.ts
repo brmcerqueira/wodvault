@@ -116,21 +116,22 @@ export async function connect(id: string): Promise<void> {
     clientConnection.close();
   }
 
-  const clientPeerId = peerId(id, PeerKind.Client);
+  const hostPeerId = peerId(id, PeerKind.Host);
 
-  return new Promise((resolve) => {
-    clientConnection = peer!.connect(clientPeerId);
+  return new Promise(resolve => {
+    clientConnection = peer!.connect(hostPeerId);
     clientConnection.on("data", incomingCharacters(clientConnection));
     clientConnection.on("error", (error) => {
+      _connectionStatus = ConnectionStatus.Disconnected;
       console.error("[PeerJS][clientConnection:error]", {
-        target: clientPeerId,
+        target: hostPeerId,
         error,
       });
     });
     clientConnection.on("close", () => {
       _connectionStatus = ConnectionStatus.Disconnected;
       console.error("[PeerJS][clientConnection:close]", {
-        target: clientPeerId,
+        target: hostPeerId,
       });
     });
 
@@ -149,7 +150,8 @@ export function observeCharactersUpdate(
 }
 
 function createPeer(host: boolean): Promise<void> {
-  return new Promise((resolve) => {
+  return new Promise(resolve => {
+
     peer = new Peer(peerId(myId, host ? PeerKind.Host : PeerKind.Client));
 
     peer.on("open", (id) => {
@@ -160,6 +162,7 @@ function createPeer(host: boolean): Promise<void> {
       resolve();
     });
     peer.on("error", (error) => {
+      _connectionStatus = ConnectionStatus.Disconnected;
       console.error("[PeerJS][peer:error]", {
         host,
         error,
