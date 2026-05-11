@@ -3,7 +3,7 @@
 
 import { CharacterBagContext } from "../characterBag.ts";
 import { Component } from "$react";
-import { Col, Container, Form, Row } from "$react-bootstrap";
+import { Col, Form, Row } from "$react-bootstrap";
 import { FieldProps } from "./common.tsx";
 
 export class DetailsField extends Component<FieldProps<string>> {
