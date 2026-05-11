@@ -35,6 +35,7 @@ export type LocaleType = {
   advantages: string;
   flaws: string;
   details: string;
+  export: string;
   takeOwnership: string;
   leaveOwnership: string;
   mode: string[];

@@ -35,6 +35,7 @@ export const pt: LocaleType & BaseLocaleType = Object.assign({
   advantages: "Vantagens",
   flaws: "Defeitos",
   details: "Detalhes",
+  export: "Personagem '%s' exportado com sucesso, copiado para a área de transferência.",
   takeOwnership: "Você agora é dono do personagem '%s'.",
   leaveOwnership: "Você não é mais dono do personagem '%s'.",
   mode: [
@@ -48,7 +49,7 @@ export const pt: LocaleType & BaseLocaleType = Object.assign({
     advantages: "Remover a vantagem '%s'?",
     flaws: "Remover o defeito '%s'?",
     disciplines: "Remover '%s' da disciplina '%s'?",
-    gifts: "Remover o don '%s'?",
+    gifts: "Remover o dom '%s'?",
     rites: "Remover o ritual '%s'?",
   },
   vampire: "Vampiro",

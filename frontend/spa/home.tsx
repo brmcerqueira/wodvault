@@ -107,7 +107,7 @@ export class Home extends Component<{}, {
     await dialog(new Alert(format(takeOwnership ? locale.takeOwnership : locale.leaveOwnership, character.name)));
   }
 
-  private onExport(character: Character) {
+  private async onExport(character: Character) {
     navigator.clipboard.writeText(JSON.stringify(character, (key, value) => {
       if (key === "id" || key === "owner" || key === "mode" || key === "timestamp" || key === "playerId") {
         return undefined;
@@ -115,6 +115,7 @@ export class Home extends Component<{}, {
 
       return value;
     }));
+    await dialog(new Alert(format(locale.export, character.name)));
   }
 
   private async onRemove(character: Character): Promise<void> {
