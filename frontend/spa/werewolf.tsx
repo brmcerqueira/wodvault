@@ -15,7 +15,7 @@ import { SpecialtiesField } from "./fields/specialtiesField.tsx";
 import { RitesField } from "./fields/ritesField.tsx";
 import { DotsField } from "./fields/dotsField.tsx";
 import { GiftsField } from "./fields/giftsField.tsx";
-import { TextAreaField } from "./fields/textAreaField.tsx";
+import { DetailsField } from "./fields/detailsField.tsx";
 import { ImageField } from "./fields/imageField.tsx";
 import { locale } from "./i18n/locale.ts";
 import { JSX } from "$react/jsx-runtime";
@@ -127,7 +127,7 @@ export class Werewolf extends CharacterSheet {
         </Row>
       </Container>
       <hr />
-      <TextAreaField name={locale.details} get={this.get(c => c.details)} update={this.update((c, v) => c.details = v)} />
+      <DetailsField name={locale.details} get={this.get(c => c.details)} update={this.update((c, v) => c.details = v)} />
     </>
   }
 }

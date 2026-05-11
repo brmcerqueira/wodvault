@@ -11,7 +11,7 @@ import { Skills } from "./sections/skills.tsx";
 import { SquaresXField } from "./fields/squaresXField.tsx";
 import { DamageField } from "./fields/damageField.tsx";
 import { SpecialtiesField } from "./fields/specialtiesField.tsx";
-import { TextAreaField } from "./fields/textAreaField.tsx";
+import { DetailsField } from "./fields/detailsField.tsx";
 import { ImageField } from "./fields/imageField.tsx";
 import { locale } from "./i18n/locale.ts";
 import { JSX } from "$react/jsx-runtime";
@@ -100,7 +100,7 @@ export class Vampire extends CharacterSheet {
             <hr />
             <DisciplinesField clan={this.state.character.clan} disciplines={this.state.character.disciplines} />
             <hr />
-            <TextAreaField name={locale.details} get={this.get(c => c.details)} update={this.update((c, v) => c.details = v)} />
+            <DetailsField name={locale.details} get={this.get(c => c.details)} update={this.update((c, v) => c.details = v)} />
         </>
     }
 }
