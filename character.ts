@@ -24,7 +24,6 @@ export type Character = {
   player: string;
   playerId: string;
   owner: string | null;
-  deleted?: boolean;
   mode: CharacterMode;
   kind: CharacterKind;
   attributes: {

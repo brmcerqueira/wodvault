@@ -12,7 +12,6 @@ export function buildCharacter(kind: CharacterKind): Character {
     player: "",
     playerId: myId,
     owner: null,
-    deleted: false,
     mode: CharacterMode.Opened,
     kind: kind,
     attributes: {

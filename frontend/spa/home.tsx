@@ -107,6 +107,16 @@ export class Home extends Component<{}, {
     await dialog(new Alert(format(takeOwnership ? locale.takeOwnership : locale.leaveOwnership, character.name)));
   }
 
+  private onExport(character: Character) {
+    navigator.clipboard.writeText(JSON.stringify(character, (key, value) => {
+      if (key === "id" || key === "owner" || key === "mode" || key === "timestamp" || key === "playerId") {
+        return undefined;
+      }
+
+      return value;
+    }));
+  }
+
   private async onRemove(character: Character): Promise<void> {
     if (await dialog(new Confirm(format(locale.onRemove.characters, character.name)))) {
       removeCharacter(character.id);
@@ -244,6 +254,10 @@ export class Home extends Component<{}, {
                     e.stopPropagation();
                     await this.onOwnership(character);
                   }}><i className={`bi ${character.owner === null ? "bi-person-fill-lock" : "bi-person-fill-x"}`} /></Button>}
+                  <Button variant="primary" onClick={async e => {
+                    e.stopPropagation();
+                    await this.onExport(character);
+                  }}><i className="bi bi-box-arrow-up-right" /></Button>
                   <Button variant="danger" onClick={async e => {
                     e.stopPropagation();
                     await this.onRemove(character);
