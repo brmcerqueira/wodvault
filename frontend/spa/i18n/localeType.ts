@@ -36,6 +36,8 @@ export type LocaleType = {
   flaws: string;
   details: string;
   export: string;
+  import: string;
+  importCharacterTitle: string;
   takeOwnership: string;
   leaveOwnership: string;
   mode: string[];

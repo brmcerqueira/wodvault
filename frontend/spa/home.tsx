@@ -11,9 +11,10 @@ import { Confirm } from "./dialog/confirm.ts";
 import { dialog } from "./dialog/dialog.ts";
 import { format } from "./fields/common.tsx";
 import { locale } from "./i18n/locale.ts";
-import { allCharacters, getCharacter, removeCharacter } from "./services/characterService.ts";
+import { allCharacters, buildCharacter, getCharacter, removeCharacter, saveCharacter } from "./services/characterService.ts";
 import { connect, ConnectionStatus, connectionStatus, disconnect, host, observeCharactersUpdate, sendCharacterUpdate } from "./services/peerService.ts";
 import { isDark, setDark, myId, hostId, isHost, setHost, webSocketPort, setWebSocketPort } from "./services/preferencesService.ts";
+import { ImportCharacter } from "./dialog/importCharacter.tsx";
 
 export class Home extends Component<{}, {
   showOffcanvas: boolean,
@@ -107,6 +108,18 @@ export class Home extends Component<{}, {
     await dialog(new Alert(format(takeOwnership ? locale.takeOwnership : locale.leaveOwnership, character.name)));
   }
 
+  private async onImport() {
+    const json = await dialog(new ImportCharacter());
+    if (json) {
+      const data = JSON.parse(json);
+      const character = Object.assign(buildCharacter(data.kind as CharacterKind), data) as Character;
+      await saveCharacter(character);
+      this.state.characters[character.id] = character;
+      this.setState({ characters: this.state.characters });
+      await dialog(new Alert(format(locale.import, character.name)));
+    }
+  }
+
   private async onExport(character: Character) {
     navigator.clipboard.writeText(JSON.stringify(character, (key, value) => {
       if (key === "id" || key === "owner" || key === "mode" || key === "timestamp" || key === "playerId") {
@@ -177,6 +190,8 @@ export class Home extends Component<{}, {
         <NavDropdown title={<i className="bi bi-person-fill-add" />} drop="end">
           <NavDropdown.Item href="#/vampire">{locale.vampire}</NavDropdown.Item>
           <NavDropdown.Item href="#/werewolf">{locale.werewolf}</NavDropdown.Item>
+          <NavDropdown.Divider />
+          <NavDropdown.Item onClick={async () => await this.onImport()}>{locale.importCharacterTitle}</NavDropdown.Item>
         </NavDropdown>
       </Nav>
       <Nav className="ms-auto">

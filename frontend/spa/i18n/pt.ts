@@ -36,6 +36,8 @@ export const pt: LocaleType & BaseLocaleType = Object.assign({
   flaws: "Defeitos",
   details: "Detalhes",
   export: "Personagem '%s' exportado com sucesso, copiado para a área de transferência.",
+  import: "Personagem '%s' importado com sucesso.",
+  importCharacterTitle: "Importar Personagem",
   takeOwnership: "Você agora é dono do personagem '%s'.",
   leaveOwnership: "Você não é mais dono do personagem '%s'.",
   mode: [
@@ -506,4 +508,4 @@ export const pt: LocaleType & BaseLocaleType = Object.assign({
     },
   },
   webSocketPort: "Porta do Bot",
-}, basePt);
+}, basePt) as LocaleType & BaseLocaleType;
