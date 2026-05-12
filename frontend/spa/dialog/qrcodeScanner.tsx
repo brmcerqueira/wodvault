@@ -1,7 +1,7 @@
 /** @jsxImportSource $react */
 /** @jsxRuntime automatic */
 
-import { Html5Qrcode, Html5QrcodeCameraScanConfig } from "$html5-qrcode";
+import { Html5Qrcode } from "$html5-qrcode";
 import { locale } from "../i18n/locale.ts";
 import { DialogBody } from "./dialogBody.ts";
 
@@ -26,35 +26,28 @@ export class QrcodeScanner extends DialogBody<string | undefined> {
     return undefined;
   }
 
-  private get config(): Html5QrcodeCameraScanConfig {
-    return {
-      fps: 10,
-      qrbox: 250,
-    };
-  }
-
   public override async dialogDidMount() {
     this.qrCode = new Html5Qrcode(qrcodeId);
 
-    try {
+    const devices = await Html5Qrcode.getCameras();
+
+    if (devices.length > 0) {
+      const camera = devices.find((d) =>
+        /back|rear|traseira|environment/i.test(d.label)
+      ) ||
+        devices.find((d) => /front|frontal|user/i.test(d.label)) ||
+        devices[0];
+
       await this.qrCode.start(
-        { facingMode: "environment" },
-        this.config,
-        this.onScanSuccess.bind(this),
-        undefined,
-      );
-    } catch {
-      await this.qrCode.start(
-        { facingMode: "user" },
-        this.config,
-        this.onScanSuccess.bind(this),
+        camera.id,
+        {
+          fps: 10,
+          qrbox: 250,
+        },
+        (decodedText) => this.resolvers.resolve(decodedText),
         undefined,
       );
     }
-  }
-
-  private onScanSuccess(decodedText: string) {
-    this.resolvers.resolve(decodedText);
   }
 
   public override dialogWillUnmount() {
