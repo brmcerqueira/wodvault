@@ -40,9 +40,7 @@ export class QrcodeScanner extends DialogBody<string | undefined> {
       (decodedText) => {
         this.resolvers.resolve(decodedText);
       },
-      (error) => {
-        console.log(error);
-      },
+      undefined
     );
   }
 

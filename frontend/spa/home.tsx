@@ -216,7 +216,7 @@ export class Home extends Component<{}, {
             <Form.Group className="mb-3">
               {this.state.host ? (<>
                   <div className="d-flex justify-content-center mb-2">
-                    <QRCodeSVG value={myId} />
+                    <QRCodeSVG value={myId} size={250} level="H" marginSize={2} />
                   </div>
                   <InputGroup>
                     <Form.Control defaultValue={myId} disabled/>        
