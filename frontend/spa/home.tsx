@@ -26,7 +26,7 @@ export class Home extends Component<{}, {
   characters: Record<string, Character>,
   redirect?: string,
 }> {
-  private connectIdRef = createRef<HTMLTextAreaElement>();
+  private connectIdRef = createRef<HTMLInputElement>();
   private webSocketPortRef = createRef<HTMLInputElement>();
 
   constructor() {
@@ -232,18 +232,16 @@ export class Home extends Component<{}, {
                       ref={this.webSocketPortRef}
                     />
                   </Form.Group>
-                </>) : (<><Form.Control
-                as="textarea"
-                rows={2}
-                defaultValue={hostIdValue != null && hostIdValue != myId ? hostIdValue : ""}
-                ref={this.connectIdRef}
-                disabled={this.state.connectionStatus !== ConnectionStatus.Disconnected}
-              />
-              <Button variant="primary" onClick={async e => {
-                    e.stopPropagation();
-                    await this.onQrcodeScan();
-                  }}><i className="bi bi-box-arrow-up-right" /></Button>
-              </>)}
+                </>) : (<InputGroup>
+                    <Form.Control defaultValue={hostIdValue != null && hostIdValue != myId ? hostIdValue : ""}
+                      ref={this.connectIdRef} disabled={this.state.connectionStatus !== ConnectionStatus.Disconnected}/>        
+                    <Button variant="outline-secondary" onClick={async e => {
+                        e.stopPropagation();
+                        await this.onQrcodeScan();
+                      }}>
+                      <i className="bi bi-qr-code-scan" />
+                    </Button>
+                  </InputGroup>)}
               <Button className="mt-2 w-100" variant={this.renderConnectButtonVariant()} 
                 onClick={async () => await this.onConnectOrDisconnect()}>
                 {this.renderConnectButtonContent()}
