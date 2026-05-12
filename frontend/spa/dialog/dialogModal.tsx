@@ -26,6 +26,14 @@ export class DialogModal extends Component<{}, {
         return body.promise;
     }
 
+    public override componentDidMount() {
+        this.state.body?.componentDidMount();
+    }
+
+    public override componentWillUnmount() {
+        this.state.body?.componentWillUnmount();
+    }
+
     public override render() {
         return <Modal show={this.state.show} onHide={() => this.resolve(false)}>
         <Modal.Header closeButton>{this.state.body?.title}</Modal.Header>

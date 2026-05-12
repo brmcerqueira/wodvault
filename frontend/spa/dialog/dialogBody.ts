@@ -10,6 +10,10 @@ export abstract class DialogBody<T = any> {
     return this.resolvers.promise;
   }
 
+  public componentDidMount() {}
+
+  public componentWillUnmount() {}
+
   public abstract get buttonClose(): string;
 
   public abstract get title(): string | undefined;
