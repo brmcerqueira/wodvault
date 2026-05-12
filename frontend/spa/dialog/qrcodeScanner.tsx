@@ -7,8 +7,11 @@ import { DialogBody } from "./dialogBody.ts";
 
 const qrcodeId = "qrcode";
 
+const devices = await Html5Qrcode.getCameras();
+
 export class QrcodeScanner extends DialogBody<string | undefined> {
   private qrCode: Html5Qrcode | undefined;
+
 
   public override resolve(): void {
     this.resolvers.resolve(undefined);
@@ -28,8 +31,6 @@ export class QrcodeScanner extends DialogBody<string | undefined> {
 
   public override async dialogDidMount() {
     this.qrCode = new Html5Qrcode(qrcodeId);
-
-    const devices = await Html5Qrcode.getCameras();
 
     if (devices.length > 0) {
       const camera = devices.find((c) =>
@@ -55,6 +56,6 @@ export class QrcodeScanner extends DialogBody<string | undefined> {
   }
 
   public override body(): React.ReactNode {
-    return <div id={qrcodeId} />;
+    return <><div id={qrcodeId} /><span>{JSON.stringify(devices)}</span></>;
   }
 }
