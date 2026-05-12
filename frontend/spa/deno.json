@@ -10,6 +10,8 @@
     "$react-dom/client": "https://esm.sh/react-dom@19.1.0/client?target=es2022&bundle",
     "$react-router": "https://esm.sh/react-router@7.13.0?target=es2022&bundle&deps=react@19.1.0,react-dom@19.1.0",
     "$react-bootstrap": "https://esm.sh/react-bootstrap@3.0.0-beta.2?target=es2022&bundle&deps=react@19.1.0,react-dom@19.1.0",
-    "$peerjs": "https://esm.sh/peerjs@1.5.4?target=es2022&bundle"
+    "$react-qrcode": "https://esm.sh/qrcode.react@4.2.0?target=es2022&bundle&deps=react@19.1.0",
+    "$peerjs": "https://esm.sh/peerjs@1.5.4?target=es2022&bundle",
+    "$html5-qrcode": "https://esm.sh/html5-qrcode@2.3.8?target=es2022&bundle"
   }
 }

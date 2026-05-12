@@ -5,10 +5,12 @@ import { Component } from "$react";
 import { Button, Modal } from "$react-bootstrap";
 import { DialogBody } from "./dialogBody.ts";
 
-export class DialogModal extends Component<{}, { 
+type DialogModalState = {
     show: boolean,  
-    body?: DialogBody<any>,
-}> {
+    body?: DialogBody<unknown>,
+};
+
+export class DialogModal extends Component<{}, DialogModalState> {
     constructor() {
         super({})
         this.state = {
@@ -22,8 +24,20 @@ export class DialogModal extends Component<{}, {
     }
 
     public show<T>(body: DialogBody<T>): Promise<T> {
-        this.setState({ show: true, body: body });
+        this.setState({ show: true, body: body as DialogBody<unknown> });
         return body.promise;
+    }
+
+    public override componentDidUpdate(
+        _prevProps: Readonly<{}>,
+        prevState: Readonly<DialogModalState>,
+    ) {
+        if (prevState.body === this.state.body) {
+            return;
+        }
+
+        prevState.body?.dialogWillUnmount();
+        this.state.body?.dialogDidMount();
     }
 
     public override render() {

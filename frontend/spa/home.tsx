@@ -5,6 +5,7 @@ import { Character, CharacterKind } from "../../character.ts";
 import { keys } from "../../utils.ts";
 import { Component, createRef, JSX } from "$react";
 import { Navigate } from "$react-router";
+import { QRCodeSVG } from "$react-qrcode";
 import { Button, ButtonGroup, Card, Col, Container, Form, InputGroup, Nav, Navbar, NavDropdown, Offcanvas, Row, Spinner } from "$react-bootstrap";
 import { Alert } from "./dialog/alert.ts";
 import { Confirm } from "./dialog/confirm.ts";
@@ -15,6 +16,7 @@ import { allCharacters, buildCharacter, getCharacter, removeCharacter, saveChara
 import { connect, ConnectionStatus, connectionStatus, disconnect, host, observeCharactersUpdate, sendCharacterUpdate } from "./services/peerService.ts";
 import { isDark, setDark, myId, hostId, isHost, setHost, webSocketPort, setWebSocketPort } from "./services/preferencesService.ts";
 import { ImportCharacter } from "./dialog/importCharacter.tsx";
+import { QrcodeScanner } from "./dialog/qrcodeScanner.tsx";
 
 export class Home extends Component<{}, {
   showOffcanvas: boolean,
@@ -24,7 +26,7 @@ export class Home extends Component<{}, {
   characters: Record<string, Character>,
   redirect?: string,
 }> {
-  private connectIdRef = createRef<HTMLTextAreaElement>();
+  private connectIdRef = createRef<HTMLInputElement>();
   private webSocketPortRef = createRef<HTMLInputElement>();
 
   constructor() {
@@ -96,6 +98,15 @@ export class Home extends Component<{}, {
   private onSwitchDark(value: boolean): void {
     setDark(value);
     this.setState({ dark: value });
+  }
+
+  private async onQrcodeScan() {
+    const id = await dialog(new QrcodeScanner());
+    if (id) {
+      this.setState({ connectionStatus: ConnectionStatus.Connecting });
+      await connect(id);
+      this.setState({ connectionStatus: connectionStatus() });
+    }
   }
 
   private async onOwnership(character: Character) {
@@ -203,13 +214,16 @@ export class Home extends Component<{}, {
         <Offcanvas.Header closeButton />
         <Offcanvas.Body className="d-flex flex-column"> 
             <Form.Group className="mb-3">
-              {this.state.host ? (<>  
+              {this.state.host ? (<>
+                  <div className="d-flex justify-content-center mb-2">
+                    <QRCodeSVG value={myId} size={250} level="H" marginSize={2} />
+                  </div>
                   <InputGroup>
                     <Form.Control defaultValue={myId} disabled/>        
                     <Button variant="outline-secondary" onClick={() => this.onCopyMyIdInClipboard()}>
                       <i className="bi bi-copy" />
                     </Button>
-                  </InputGroup>
+                  </InputGroup> 
                   <Form.Group className="mt-3 mb-3">
                     <Form.Label><i className="bi bi-router" /> {locale.webSocketPort}</Form.Label>
                     <Form.Control
@@ -218,13 +232,16 @@ export class Home extends Component<{}, {
                       ref={this.webSocketPortRef}
                     />
                   </Form.Group>
-                </>) : (<Form.Control
-                as="textarea"
-                rows={2}
-                defaultValue={hostIdValue != null && hostIdValue != myId ? hostIdValue : ""}
-                ref={this.connectIdRef}
-                disabled={this.state.connectionStatus !== ConnectionStatus.Disconnected}
-              />)}
+                </>) : (<InputGroup>
+                    <Form.Control defaultValue={hostIdValue != null && hostIdValue != myId ? hostIdValue : ""}
+                      ref={this.connectIdRef} disabled={this.state.connectionStatus !== ConnectionStatus.Disconnected}/>        
+                    <Button variant="outline-secondary" onClick={async e => {
+                        e.stopPropagation();
+                        await this.onQrcodeScan();
+                      }}>
+                      <i className="bi bi-qr-code-scan" />
+                    </Button>
+                  </InputGroup>)}
               <Button className="mt-2 w-100" variant={this.renderConnectButtonVariant()} 
                 onClick={async () => await this.onConnectOrDisconnect()}>
                 {this.renderConnectButtonContent()}
