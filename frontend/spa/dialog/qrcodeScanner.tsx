@@ -32,10 +32,10 @@ export class QrcodeScanner extends DialogBody<string | undefined> {
     const devices = await Html5Qrcode.getCameras();
 
     if (devices.length > 0) {
-      const camera = devices.find((d) =>
-        /back|rear|traseira|environment/i.test(d.label)
+      const camera = devices.find((c) =>
+        /back|rear|traseira|environment/i.test(c.label)
       ) ||
-        devices.find((d) => /front|frontal|user/i.test(d.label)) ||
+        devices.find((c) => /front|frontal|user/i.test(c.label)) ||
         devices[0];
 
       await this.qrCode.start(
