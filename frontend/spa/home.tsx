@@ -103,6 +103,10 @@ export class Home extends Component<{}, {
   private async onQrcodeScan() {
     const id = await dialog(new QrcodeScanner());
     if (id) {
+      const connectId = this.connectIdRef.current;
+      if (connectId) {
+        connectId.value = id;
+      }
       this.setState({ connectionStatus: ConnectionStatus.Connecting });
       await connect(id);
       this.setState({ connectionStatus: connectionStatus() });

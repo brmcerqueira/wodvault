@@ -20,12 +20,13 @@ export class DialogModal extends Component<{}, DialogModalState> {
 
     private resolve(isConfirm: boolean) {
         this.state.body?.resolve(isConfirm);
-        this.setState({ show: false, body: undefined });
     }
 
     public show<T>(body: DialogBody<T>): Promise<T> {
         this.setState({ show: true, body: body as DialogBody<unknown> });
-        return body.promise;
+        return body.promise.finally(() => {
+            this.setState({ show: false, body: undefined });
+        });
     }
 
     public override componentDidUpdate(

@@ -17,6 +17,10 @@ img {
     cursor: pointer
 }
 
+.offcanvas {
+  --bs-offcanvas-width: 26em;
+}
+
 .character-head {
     margin-top: 4em;
 }
