@@ -1,14 +1,14 @@
 /** @jsxImportSource $react */
 /** @jsxRuntime automatic */
 
-import { Html5QrcodeScanner } from "$html5-qrcode";
+import { Html5Qrcode, Html5QrcodeCameraScanConfig } from "$html5-qrcode";
 import { locale } from "../i18n/locale.ts";
 import { DialogBody } from "./dialogBody.ts";
 
-const qrcodeScannerId = "qrcode-scanner";
+const qrcodeId = "qrcode";
 
 export class QrcodeScanner extends DialogBody<string | undefined> {
-  private scanner: Html5QrcodeScanner | undefined;
+  private qrCode: Html5Qrcode | undefined;
 
   public override resolve(): void {
     this.resolvers.resolve(undefined);
@@ -26,29 +26,42 @@ export class QrcodeScanner extends DialogBody<string | undefined> {
     return undefined;
   }
 
-  public override dialogDidMount() {
-   this.scanner = new Html5QrcodeScanner(
-      qrcodeScannerId,
-      {
-        fps: 10,
-        qrbox: 250,
-      },
-      false,
-    );
+  private get config(): Html5QrcodeCameraScanConfig {
+    return {
+      fps: 10,
+      qrbox: 250,
+    };
+  }
 
-    this.scanner.render(
-      (decodedText) => {
-        this.resolvers.resolve(decodedText);
-      },
-      undefined
-    );
+  public override async dialogDidMount() {
+    this.qrCode = new Html5Qrcode(qrcodeId);
+
+    try {
+      await this.qrCode.start(
+        { facingMode: "environment" },
+        this.config,
+        this.onScanSuccess.bind(this),
+        undefined,
+      );
+    } catch {
+      await this.qrCode.start(
+        { facingMode: "user" },
+        this.config,
+        this.onScanSuccess.bind(this),
+        undefined,
+      );
+    }
+  }
+
+  private onScanSuccess(decodedText: string) {
+    this.resolvers.resolve(decodedText);
   }
 
   public override dialogWillUnmount() {
-    this.scanner?.clear();
+    this.qrCode?.stop();
   }
 
   public override body(): React.ReactNode {
-    return <div id={qrcodeScannerId}/>;
+    return <div id={qrcodeId} />;
   }
 }
