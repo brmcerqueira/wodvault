@@ -10,9 +10,9 @@ export abstract class DialogBody<T = any> {
     return this.resolvers.promise;
   }
 
-  public componentDidMount() {}
+  public dialogDidMount() {}
 
-  public componentWillUnmount() {}
+  public dialogWillUnmount() {}
 
   public abstract get buttonClose(): string;
 
