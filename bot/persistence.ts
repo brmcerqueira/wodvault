@@ -3,9 +3,11 @@ import { timestamp } from "../utils.ts";
 import { RollResult } from "./diceRoll.ts";
 import { logger } from "./logger.ts";
 
-await Deno.mkdir("./database", { recursive: true });
+const databaseDir = Deno.env.get("DATABASE_DIR") ?? "./database";
 
-const kv = await Deno.openKv("./database/bot.db");
+await Deno.mkdir(databaseDir, { recursive: true });
+
+const kv = await Deno.openKv(`${databaseDir}/bot.db`);
 
 const character = "character";
 const characterKey = (id: string) => [character, id] as const;
