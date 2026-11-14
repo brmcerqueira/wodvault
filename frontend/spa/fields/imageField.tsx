@@ -8,7 +8,7 @@ import { Form, Image as BsImage, InputGroup, Spinner } from "$react-bootstrap";
 
 type Props = { character: Character };
 
-export function imageToBase64(file: File): Promise<string> {
+function imageToBase64(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
 
@@ -47,7 +47,7 @@ export class ImageField
 
     this.setState({ loading: true });
 
-    const url = `data:image/png;base64,${await imageToBase64(image)}`;
+    const url = await imageToBase64(image);
 
     this.setState({ image: url, loading: false });
     this.props.character.image = url;
