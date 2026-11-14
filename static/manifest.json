@@ -1,7 +1,7 @@
 {
   "name": "Wodvault",
   "short_name": "Wodvault",
-  "start_url": "/",
+  "start_url": "/wodvault/",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#de4934",
