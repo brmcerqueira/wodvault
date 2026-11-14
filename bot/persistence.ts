@@ -10,9 +10,9 @@ await Deno.mkdir(databaseDir, { recursive: true });
 const kv = await Deno.openKv(`${databaseDir}/bot.db`);
 
 const character = "character";
+const userIdCharacterId = "userId_characterId";
 const characterKey = (id: string) => [character, id] as const;
-const userIdCharacterIdKey = (id: string) =>
-  ["userId_characterId", id] as const;
+const userIdCharacterIdKey = (id: string) => [userIdCharacterId, id] as const;
 const lastRollKey = (id: string) => ["lastRoll", id] as const;
 const storytellerIdKey = ["storytellerId"] as const;
 const rollChannelIdKey = ["rollChannelId"] as const;
@@ -109,6 +109,26 @@ export async function allCharacters(): Promise<Record<string, Character>> {
     characters[entry.value.id] = entry.value;
   }
   logger.debug("[KV] list characters = %v", Object.keys(characters).length);
+  return characters;
+}
+
+export async function allPlayersCharacters(): Promise<
+  Record<string, Character>
+> {
+  const characters: Record<string, Character> = {};
+  for await (
+    const entry of kv.list<string>({ prefix: [userIdCharacterId] })
+  ) {
+    const characterId = String(entry.key[1]);
+    const character = await getCharacter(entry.value);
+    if (character) {
+      characters[characterId] = character;
+    }
+  }
+  logger.debug(
+    "[KV] list players and characters = %v",
+    Object.keys(characters).length,
+  );
   return characters;
 }
 

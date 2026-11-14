@@ -10,6 +10,7 @@ import { clearRollChannelSolver } from "../solver/clearRollChannelSolver.ts";
 import { setRollChannelSolver } from "../solver/setRollChannelSolver.ts";
 import { clearCurrentCharacterSolver } from "../solver/clearCurrentCharacterSolver.ts";
 import { setCurrentCharacterSolver } from "../solver/setCurrentCharacterSolver.ts";
+import { overlayCssSolver } from "../solver/overlayCssSolver.ts";
 
 command({
   name: locale.commands.storyteller.name,
@@ -27,6 +28,7 @@ command({
     setStoryteller: setStorytellerSolver,
     setDifficulty: setDifficultySolver,
     setModifier: setModifierSolver,
+    overlayCss: overlayCssSolver,
   }),
   options: {
     character: {
@@ -162,6 +164,19 @@ command({
           required: true,
           min_value: -10,
           max_value: 10,
+        },
+      },
+    },
+    overlayCss: {
+      name: locale.commands.storyteller.overlayCss.name,
+      description: locale.commands.storyteller.overlayCss.description,
+      type: ApplicationCommandOptionType.SUB_COMMAND,
+      options: {
+        hide: {
+          name: locale.commands.storyteller.overlayCss.hide.name,
+          description: locale.commands.storyteller.overlayCss.hide.description,
+          type: ApplicationCommandOptionType.USER,
+          required: false,
         },
       },
     },

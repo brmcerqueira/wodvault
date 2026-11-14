@@ -194,7 +194,15 @@ export const pt: LocaleType & BaseLocaleType = Object.assign({
           name: "valor",
           description: "Valor do novo modificador",
         },
-      }
+      },
+      overlayCss: {
+        name: "overlay-css",
+        description: "Pegar o CSS para o overlay",
+        hide: {
+          name: "esconder",
+          description: "Usuário para esconder",
+        },
+      },
     },
   },
   dicePools: [

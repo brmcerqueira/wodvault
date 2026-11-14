@@ -88,6 +88,9 @@ export type LocaleType = {
       setModifier: {
         value: CommandOption;
       } & CommandOption;
+      overlayCss: {
+        hide: CommandOption;
+      } & CommandOption;
     } & CommandOption;
   };
   dicePools: string[];
