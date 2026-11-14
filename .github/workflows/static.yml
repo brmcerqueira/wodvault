@@ -34,12 +34,19 @@ jobs:
           deno-version: v2.x
 
       - name: Build frontend
-        run: deno task bootstrap && deno task build:frontend
+        run: |
+          deno task bootstrap
+          deno task build:frontend
 
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: './static'
+
+      - name: Cleanup static files
+        run: |
+          find ./static -type f -name "*.min.js" -delete
+          find ./static -type d -name "vendor" -prune -exec rm -rf {} +
 
       - name: Deploy to GitHub Pages
         id: deployment
