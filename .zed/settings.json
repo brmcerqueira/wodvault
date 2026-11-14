@@ -3,7 +3,7 @@
   "lsp": {
     "deno": {
       "binary": {
-        "path": "/home/bruno-cerqueira/.deno/bin/deno",
+        "path": "/home/bruno/.deno/bin/deno",
         "arguments": ["lsp"]
       },
       "settings": {
