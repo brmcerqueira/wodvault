@@ -1,6 +1,7 @@
 .env
 deno.lock
 *.min.js
+index.html
 database/
 bot/dist/
 static/vendor/

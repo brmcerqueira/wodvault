@@ -5,6 +5,11 @@
     "cwd": "$ZED_WORKTREE_ROOT"
   },
   {
+    "label": "Deno: build index",
+    "command": "deno task build:index",
+    "cwd": "$ZED_WORKTREE_ROOT"
+  },
+  {
     "label": "Deno: build spa",
     "command": "deno task build:spa",
     "cwd": "$ZED_WORKTREE_ROOT"
@@ -17,6 +22,11 @@
   {
     "label": "Deno: bootstrap",
     "command": "deno task bootstrap",
+    "cwd": "$ZED_WORKTREE_ROOT"
+  },
+  {
+    "label": "Deno: serve",
+    "command": "deno task serve",
     "cwd": "$ZED_WORKTREE_ROOT"
   },
 ]
