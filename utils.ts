@@ -1,7 +1,20 @@
 import { Character } from "./character.ts";
 
+const beforeTime = Date.now();
+
+const response = await fetch('https://www.cloudflare.com/cdn-cgi/trace')
+
+const text = await response.text();
+const match = text.match(/^ts=(.+)$/m);
+
+const datetime = match ? new Date(Number(match[1]) * 1000) : new Date();
+
+const afterTime = Date.now();
+
+const offset = datetime + ((afterTime - beforeTime) / 2) - afterTime;
+
 export function timestamp(): number {
-  return Date.now();
+  return Date.now() + offset;
 }
 
 export function keys<T extends object>(o: T): (keyof T)[] {
