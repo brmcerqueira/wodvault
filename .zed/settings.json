@@ -1,0 +1,50 @@
+
+{
+  "lsp": {
+    "deno": {
+      "binary": {
+        "path": "/home/bruno-cerqueira/.deno/bin/deno",
+        "arguments": ["lsp"]
+      },
+      "settings": {
+        "deno": {
+          "enable": true,
+          "lint": true,
+          "unstable": false
+        }
+      }
+    }
+  },
+  "languages": {
+    "JavaScript": {
+      "language_servers": [
+        "deno",
+        "!typescript-language-server",
+        "!vtsls",
+        "!eslint"
+      ],
+      "formatter": "language_server",
+      "format_on_save": "on"
+    },
+    "TypeScript": {
+      "language_servers": [
+        "deno",
+        "!typescript-language-server",
+        "!vtsls",
+        "!eslint"
+      ],
+      "formatter": "language_server",
+      "format_on_save": "on"
+    },
+    "TSX": {
+      "language_servers": [
+        "deno",
+        "!typescript-language-server",
+        "!vtsls",
+        "!eslint"
+      ],
+      "formatter": "language_server",
+      "format_on_save": "on"
+    }
+  }
+}

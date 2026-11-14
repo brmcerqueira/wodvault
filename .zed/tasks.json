@@ -1,0 +1,7 @@
+[
+  {
+    "label": "Deno: build frontend",
+    "command": "deno task build-frontend",
+    "cwd": "$ZED_WORKTREE_ROOT"
+  },
+]

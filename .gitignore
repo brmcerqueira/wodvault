@@ -2,3 +2,4 @@ _fresh/
 .env
 database/
 bot/dist/
+deno.lock
