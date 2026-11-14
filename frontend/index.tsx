@@ -38,3 +38,5 @@ await Deno.writeTextFile(
     <Index />,
   ),
 );
+
+Deno.exit(0);
