@@ -6,7 +6,9 @@
     "build:executables": "deno task build:linux && deno task build:windows"
   },
   "imports": {
-    "$harmony/": "https://deno.land/x/harmony@v2.9.1/",
-    "$std/": "https://deno.land/std@0.216.0/"
+    "harmony": "jsr:@harmony/harmony@^2.9.1",
+    "@std/log": "jsr:@std/log@^0.224.14",
+    "@std/fmt": "jsr:@std/fmt@^1.0.10",
+    "@std/encoding": "jsr:@std/encoding@^1.0.11"
   }
 }

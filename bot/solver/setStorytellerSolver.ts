@@ -1,6 +1,6 @@
 import { locale } from "../i18n/locale.ts";
 import { colors, InteractionResponseError } from "../utils.ts";
-import { Interaction, InteractionResponseType } from "$harmony/mod.ts";
+import { Interaction, InteractionResponseType } from "harmony";
 import { setStorytellerId } from "../persistence.ts";
 
 export async function setStorytellerSolver(

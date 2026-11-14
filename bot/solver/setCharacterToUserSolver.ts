@@ -1,4 +1,4 @@
-import { Interaction, InteractionResponseType } from "$harmony/mod.ts";
+import { Interaction, InteractionResponseType } from "harmony";
 import {
   autocompleteCharacters,
   colors,
@@ -6,7 +6,11 @@ import {
   InteractionResponseError,
 } from "../utils.ts";
 import { locale } from "../i18n/locale.ts";
-import { getCharacter, getStorytellerId, setCharacterIdByUserId } from "../persistence.ts";
+import {
+  getCharacter,
+  getStorytellerId,
+  setCharacterIdByUserId,
+} from "../persistence.ts";
 
 export async function setCharacterToUserSolver(
   interaction: Interaction,

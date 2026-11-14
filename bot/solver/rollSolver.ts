@@ -1,4 +1,4 @@
-import { Interaction } from "$harmony/mod.ts";
+import { Interaction } from "harmony";
 import { sendRoll } from "../sendRoll.ts";
 import { getCharacterByUserId } from "../utils.ts";
 

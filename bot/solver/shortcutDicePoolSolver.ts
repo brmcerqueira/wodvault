@@ -2,7 +2,7 @@ import {
   Interaction,
   InteractionResponseType,
   MessageComponentType,
-} from "$harmony/mod.ts";
+} from "harmony";
 import { autocompleteDicePools, DicePoolInput } from "../utils.ts";
 import { dicePoolButton } from "../actions/module.ts";
 import { locale } from "../i18n/locale.ts";
@@ -19,8 +19,8 @@ export async function shortcutDicePoolSolver(
     await interaction.respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       content: locale.dicePools.length > index
-          ? locale.dicePools[index]
-          : index.toString(),
+        ? locale.dicePools[index]
+        : index.toString(),
       components: [{
         type: MessageComponentType.ACTION_ROW,
         components: [

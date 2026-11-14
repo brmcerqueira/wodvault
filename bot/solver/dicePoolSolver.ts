@@ -1,4 +1,4 @@
-import { Interaction } from "$harmony/mod.ts";
+import { Interaction } from "harmony";
 import { locale } from "../i18n/locale.ts";
 import {
   autocompleteDicePools,

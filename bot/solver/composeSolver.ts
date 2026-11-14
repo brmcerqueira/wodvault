@@ -1,7 +1,12 @@
 // deno-lint-ignore-file no-explicit-any
-import { Interaction } from "$harmony/mod.ts";
+import { Interaction } from "harmony";
 import { Character } from "../../character.ts";
-import { AttributeType, ComposeInput, getCharacterByUserId, InteractionResponseError } from "../utils.ts";
+import {
+  AttributeType,
+  ComposeInput,
+  getCharacterByUserId,
+  InteractionResponseError,
+} from "../utils.ts";
 import { sendRoll } from "../sendRoll.ts";
 import { locale } from "../i18n/locale.ts";
 

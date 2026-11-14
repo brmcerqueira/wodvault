@@ -8,7 +8,7 @@ import {
   InteractionApplicationCommandData,
   InteractionApplicationCommandOption,
   RESTEndpoints,
-} from "$harmony/mod.ts";
+} from "harmony";
 import { Solver } from "../utils.ts";
 import { logger } from "../logger.ts";
 import { keys } from "../../utils.ts";
@@ -22,8 +22,9 @@ export type CommandOption = {
 export type RecordCommandOptions = Record<string, CommandOption>;
 
 export function buildChoices<T extends object>(
-  o: T, excludeName?: boolean,
-  getName?: (item: T[Exclude<keyof T, "name">]) => string
+  o: T,
+  excludeName?: boolean,
+  getName?: (item: T[Exclude<keyof T, "name">]) => string,
 ): ApplicationCommandChoice[] {
   let array = keys(o);
 
@@ -33,7 +34,9 @@ export function buildChoices<T extends object>(
 
   return array.map((key) => {
     return {
-      name: getName ? getName(o[key] as T[Exclude<keyof T, "name">]) : o[key] as string,
+      name: getName
+        ? getName(o[key] as T[Exclude<keyof T, "name">])
+        : o[key] as string,
       value: key,
     };
   });
@@ -146,7 +149,7 @@ function parseCommandOptions(
 }
 
 export async function interactionCommand(
-  interaction: Interaction
+  interaction: Interaction,
 ) {
   const data = interaction.data as InteractionApplicationCommandData;
   for (const command of commands) {

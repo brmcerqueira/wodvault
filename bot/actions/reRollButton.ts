@@ -1,4 +1,4 @@
-import { ButtonComponent } from "$harmony/mod.ts";
+import { ButtonComponent } from "harmony";
 import { reRollSolver } from "../solver/reRollSolver.ts";
 import { button, ButtonOptions } from "./common.ts";
 

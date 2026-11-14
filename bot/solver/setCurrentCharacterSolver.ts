@@ -10,7 +10,7 @@ import {
   host,
   InteractionResponseError,
 } from "../utils.ts";
-import { Interaction, InteractionResponseType } from "$harmony/mod.ts";
+import { Interaction, InteractionResponseType } from "harmony";
 
 export async function setCurrentCharacterSolver(
   interaction: Interaction,

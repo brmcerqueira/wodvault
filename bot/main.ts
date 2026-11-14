@@ -6,18 +6,23 @@ import {
   Interaction,
   InteractionResponseType,
   InteractionType,
-} from "$harmony/mod.ts";
+} from "harmony";
 import { colors, emojis, InteractionResponseError } from "./utils.ts";
 import {
   createMissingCommands,
   interactionCommand,
 } from "./commands/module.ts";
 import { logger } from "./logger.ts";
-import { encodeBase64 } from "$std/encoding/base64.ts";
+import { encodeBase64 } from "@std/encoding/base64";
 import { interactionCustomId } from "./actions/module.ts";
 import { locale } from "./i18n/locale.ts";
-import { CreateEmojiPayload } from "$harmony/src/types/mod.ts";
 import { start } from "./webSocketService.ts";
+
+interface CreateEmojiPayload {
+  name: string;
+  image: string;
+  roles?: string[];
+}
 
 async function cleanCommands(
   discordCommands: ApplicationCommandPayload[],
@@ -156,6 +161,6 @@ client.on("ready", async () => {
   }
 });
 
-await start(parseInt(Deno.env.get("WEBSOCKET_PORT") ?? "8787"));
+start(parseInt(Deno.env.get("WEBSOCKET_PORT") ?? "8787"));
 
 await client.connect();

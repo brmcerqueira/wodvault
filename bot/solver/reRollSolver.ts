@@ -1,10 +1,7 @@
-import { Interaction, InteractionResponseType } from "$harmony/mod.ts";
+import { Interaction, InteractionResponseType } from "harmony";
 import { buildRollMessage } from "../buildRollMessage.ts";
-import {
-  getCharacterByUserId,
-  InteractionResponseError,
-} from "../utils.ts";
-import { sprintf } from "$std/fmt/printf.ts";
+import { getCharacterByUserId, InteractionResponseError } from "../utils.ts";
+import { sprintf } from "@std/fmt/printf";
 import { reRoll } from "../diceRoll.ts";
 import { locale } from "../i18n/locale.ts";
 import { getLastRoll, setLastRoll } from "../persistence.ts";

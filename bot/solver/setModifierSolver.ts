@@ -1,4 +1,4 @@
-import { Interaction, InteractionResponseType } from "$harmony/mod.ts";
+import { Interaction, InteractionResponseType } from "harmony";
 import { colors, InteractionResponseError } from "../utils.ts";
 import { locale } from "../i18n/locale.ts";
 import { getStorytellerId, setModifier } from "../persistence.ts";

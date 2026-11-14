@@ -1,4 +1,4 @@
-import { ButtonComponent } from "$harmony/mod.ts";
+import { ButtonComponent } from "harmony";
 import { composeSolver } from "../solver/composeSolver.ts";
 import { button } from "./common.ts";
 import { locale } from "../i18n/locale.ts";

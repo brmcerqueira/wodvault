@@ -1,8 +1,4 @@
-import {
-  EmbedField,
-  Interaction,
-  InteractionResponseType,
-} from "$harmony/mod.ts";
+import { EmbedField, Interaction, InteractionResponseType } from "harmony";
 import {
   colors,
   getCharacterByUserId,

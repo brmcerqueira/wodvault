@@ -8,10 +8,10 @@ import {
   MessageComponentEmoji,
   MessageComponentType,
   TextInputStyle,
-} from "$harmony/mod.ts";
+} from "harmony";
 import { separator, Solver } from "../utils.ts";
 
-type Parse = (context: string[], interaction?: Interaction) => any
+type Parse = (context: string[], interaction?: Interaction) => any;
 
 export type ButtonOptions = {
   label?: string;
@@ -80,9 +80,10 @@ function modalParse(
 }
 
 export async function interactionCustomId(
-  interaction: Interaction
+  interaction: Interaction,
 ) {
-  const data = interaction.data as InteractionMessageComponentData
+  const data = interaction.data as
+    | InteractionMessageComponentData
     | InteractionModalSubmitData;
   const array = data.custom_id.split(separator);
 

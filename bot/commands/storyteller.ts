@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionType, ChannelTypes } from "$harmony/mod.ts";
+import { ApplicationCommandOptionType, ChannelTypes } from "harmony";
 import { command } from "./common.ts";
 import { locale } from "../i18n/locale.ts";
 import { setCharacterToUserSolver } from "../solver/setCharacterToUserSolver.ts";

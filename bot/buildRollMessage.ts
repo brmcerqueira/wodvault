@@ -1,4 +1,4 @@
-import { EmbedPayload, EmojiPayload } from "$harmony/mod.ts";
+import { EmbedPayload, EmojiPayload } from "harmony";
 import { Character } from "../character.ts";
 import { RollResult, RollStatus } from "./diceRoll.ts";
 import { colors, emojis, host } from "./utils.ts";

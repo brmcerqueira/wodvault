@@ -1,4 +1,10 @@
-import { ButtonStyle, Interaction, InteractionResponseType, MessageComponentData, MessageComponentType } from "$harmony/mod.ts";
+import {
+  ButtonStyle,
+  Interaction,
+  InteractionResponseType,
+  MessageComponentData,
+  MessageComponentType,
+} from "harmony";
 import { colors } from "./utils.ts";
 import { Character, CharacterKind } from "../character.ts";
 import { roll } from "./diceRoll.ts";
@@ -95,7 +101,8 @@ export async function sendRoll(
   const rollChannelId = await getRollChannelId();
 
   if (
-    rollChannelId && interaction.channel && interaction.channel.id !== rollChannelId
+    rollChannelId && interaction.channel &&
+    interaction.channel.id !== rollChannelId
   ) {
     await interaction.respond({
       type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,

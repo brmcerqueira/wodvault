@@ -1,4 +1,4 @@
-import { ApplicationCommandOptionType } from "$harmony/mod.ts";
+import { ApplicationCommandOptionType } from "harmony";
 import { buildChoices, command, RecordCommandOptions } from "./common.ts";
 import { locale } from "../i18n/locale.ts";
 import { rollSolver } from "../solver/rollSolver.ts";
@@ -174,7 +174,7 @@ command({
   description: locale.commands.shortcut.description,
   solve: groupSolver({
     compose: shortcutComposeSolver,
-    dicePool: shortcutDicePoolSolver
+    dicePool: shortcutDicePoolSolver,
   }),
   options: {
     compose: {

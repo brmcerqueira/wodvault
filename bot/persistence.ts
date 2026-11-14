@@ -3,6 +3,8 @@ import { timestamp } from "../utils.ts";
 import { RollResult } from "./diceRoll.ts";
 import { logger } from "./logger.ts";
 
+await Deno.mkdir("./database", { recursive: true });
+
 const kv = await Deno.openKv("./database/bot.db");
 
 const character = "character";
@@ -132,7 +134,11 @@ export async function getCharactersByTerm(
     }
   }
 
-  logger.debug("[KV] getCharactersByTerm term=%v = %v", term, characters.length);
+  logger.debug(
+    "[KV] getCharactersByTerm term=%v = %v",
+    term,
+    characters.length,
+  );
   return characters;
 }
 

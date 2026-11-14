@@ -3,7 +3,7 @@ import {
   Interaction,
   InteractionResponseType,
   MessageComponentType,
-} from "$harmony/mod.ts";
+} from "harmony";
 import { AttributeType, colors, ComposeInput } from "../utils.ts";
 import { composeButton } from "../actions/module.ts";
 import { locale } from "../i18n/locale.ts";

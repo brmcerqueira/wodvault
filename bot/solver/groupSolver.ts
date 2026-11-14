@@ -1,4 +1,4 @@
-import { Interaction } from "$harmony/mod.ts";
+import { Interaction } from "harmony";
 import { Solver } from "../utils.ts";
 
 export function groupSolver<T = any>(
@@ -8,13 +8,13 @@ export function groupSolver<T = any>(
     interaction: Interaction,
     input?: Record<string, T>,
   ) => {
-      for (const key in input) {
-        const data = input[key];
+    for (const key in input) {
+      const data = input[key];
 
-        if (data) {
-            await solvers[key](interaction, data);
-            break;
-        }
+      if (data) {
+        await solvers[key](interaction, data);
+        break;
       }
+    }
   };
 }

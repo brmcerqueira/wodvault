@@ -3,7 +3,7 @@ import {
   EmojiPayload,
   Interaction,
   InteractionResponseType,
-} from "$harmony/mod.ts";
+} from "harmony";
 import { Character } from "../character.ts";
 import { characterTitle } from "../utils.ts";
 import { dicePools } from "./dicePools.ts";
