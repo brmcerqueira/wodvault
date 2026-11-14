@@ -16,11 +16,10 @@ import { ExperienceField } from "./fields/experienceField.tsx";
 import { locale } from "./i18n/locale.ts";
 import { characterTitle, keys } from "../../utils.ts";
 
-export abstract class CharacterSheet
-  extends Component<
-    {},
-    { character: Character; characterBag: CharacterBag; redirect?: string }
-  > {
+export abstract class CharacterSheet extends Component<
+  {},
+  { character: Character; characterBag: CharacterBag; redirect?: string }
+> {
   protected experienceFieldRef = createRef<ExperienceField>();
 
   constructor(kind: CharacterKind) {
@@ -113,7 +112,7 @@ export abstract class CharacterSheet
       <CharacterBagContext.Provider value={this.state.characterBag}>
         <Navbar expand className="bg-body-tertiary border-bottom fixed-top">
           <Nav className="me-auto">
-            <Nav.Link href="#">
+            <Nav.Link href="./">
               <i className="bi bi-arrow-left" />
             </Nav.Link>
           </Nav>
@@ -132,7 +131,7 @@ export abstract class CharacterSheet
                     >
                       {locale.mode[key as unknown as number]}
                     </option>
-                  )
+                  ),
                 )}
               </Form.Select>
             )}
