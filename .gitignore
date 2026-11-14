@@ -1,5 +1,6 @@
-_fresh/
 .env
+deno.lock
+*.min.js
 database/
 bot/dist/
-deno.lock
+static/vendor/

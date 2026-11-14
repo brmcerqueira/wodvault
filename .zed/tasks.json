@@ -1,7 +1,22 @@
 [
   {
     "label": "Deno: build frontend",
-    "command": "deno task build-frontend",
+    "command": "deno task build:frontend",
+    "cwd": "$ZED_WORKTREE_ROOT"
+  },
+  {
+    "label": "Deno: build spa",
+    "command": "deno task build:spa",
+    "cwd": "$ZED_WORKTREE_ROOT"
+  },
+  {
+    "label": "Deno: build sw",
+    "command": "deno task build:sw",
+    "cwd": "$ZED_WORKTREE_ROOT"
+  },
+  {
+    "label": "Deno: bootstrap",
+    "command": "deno task bootstrap",
     "cwd": "$ZED_WORKTREE_ROOT"
   },
 ]
