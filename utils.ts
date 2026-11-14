@@ -2,7 +2,7 @@ import { Character } from "./character.ts";
 
 const beforeTime = Date.now();
 
-const response = await fetch('https://www.cloudflare.com/cdn-cgi/trace')
+const response = await fetch('https://www.cloudflare.com/cdn-cgi/trace');
 
 const text = await response.text();
 const match = text.match(/^ts=(.+)$/m);
