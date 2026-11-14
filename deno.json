@@ -1,29 +1,9 @@
 {
   "lock": false,
   "tasks": {
-    "check": "deno fmt --check && deno lint && deno check **/*.ts && deno check **/*.tsx",
-    "cli": "echo \"import '\\$fresh/src/dev/cli.ts'\" | deno run --unstable -A -",
-    "manifest": "deno task cli manifest $(pwd)",
-    "start": "deno run -A --env-file=.env --watch=static/,routes/ dev.ts",
-    "build": "deno run -A dev.ts build",
-    "preview": "deno run -A main.ts",
-    "update": "deno run -A -r https://fresh.deno.dev/update .",
     "build-spa": "deno bundle --config ./frontend/spa/deno.json --minify --platform browser --output ./static/main.min.js ./frontend/spa/main.tsx",
     "build-frontend": "deno task build-spa && deno task build-sw",
     "build-sw": "deno bundle --minify --platform browser --output ./static/serviceWorker.min.js ./frontend/sw/main.ts",
-    "start-all": "deno task build-spa --watch --sourcemap=inline & deno task start",
     "bootstrap": "mkdir -p static/vendor/bootstrap static/vendor/bootstrap-icons && curl -L https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css -o static/vendor/bootstrap/bootstrap.min.css && curl -L https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.css -o static/vendor/bootstrap-icons/bootstrap-icons.css && curl -L https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/fonts/bootstrap-icons.woff -o static/vendor/bootstrap-icons/bootstrap-icons.woff && curl -L https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/fonts/bootstrap-icons.woff2 -o static/vendor/bootstrap-icons/bootstrap-icons.woff2 && sed -i 's|url(../fonts/|url(\"./|g; s|\\?.*\\\")|\")|g' static/vendor/bootstrap-icons/bootstrap-icons.css"
-  },
-  "lint": { "rules": { "tags": ["fresh", "recommended"] } },
-  "exclude": ["**/_fresh/*"],
-  "imports": {
-    "$fresh/": "https://deno.land/x/fresh@1.7.3/",
-    "preact": "https://esm.sh/preact@10.22.0",
-    "preact/": "https://esm.sh/preact@10.22.0/",
-    "@preact/signals": "https://esm.sh/*@preact/signals@1.2.2",
-    "@preact/signals-core": "https://esm.sh/*@preact/signals-core@1.5.1",
-    "$std/": "https://deno.land/std@0.216.0/",
-    "$react/jsx-runtime": "https://esm.sh/@types/react@19.1.8/jsx-runtime"
-  },
-  "compilerOptions": { "jsx": "react-jsx", "jsxImportSource": "preact" }
+  }
 }

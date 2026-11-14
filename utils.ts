@@ -1,20 +1,7 @@
 import { Character } from "./character.ts";
 
-declare global {
-  var hostApi: string | undefined;
-}
-
-const beforeTime = Date.now();
-
-const responseTime = await fetch(`${globalThis.hostApi ?? ""}/api/time`);
-const datetime = new Date(await responseTime.json()).getTime();
-
-const afterTime = Date.now();
-
-const offset = datetime + ((afterTime - beforeTime) / 2) - afterTime;
-
 export function timestamp(): number {
-  return Date.now() + offset;
+  return Date.now();
 }
 
 export function keys<T extends object>(o: T): (keyof T)[] {
