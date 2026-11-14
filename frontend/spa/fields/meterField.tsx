@@ -1,62 +1,94 @@
-/** @jsxImportSource $react */
-/** @jsxRuntime automatic */
-
-import { JSX } from "$react/jsx-runtime";
+import { JSX } from "react/jsx-runtime";
 import { CharacterMode } from "../../../character.ts";
 import { CharacterBagContext } from "../characterBag.ts";
-import { Component } from "$react";
-import { Button } from "$react-bootstrap";
-import { Meter, GetUpdateFieldProps, TotalFieldProps, calculateSpent } from "./common.tsx";
+import { Component } from "react";
+import { Button } from "react-bootstrap";
+import {
+  calculateSpent,
+  GetUpdateFieldProps,
+  Meter,
+  TotalFieldProps,
+} from "./common.tsx";
 
-export type MinFieldProps = { min?: number, multiplier?: number, open?: boolean };
+export type MinFieldProps = {
+  min?: number;
+  multiplier?: number;
+  open?: boolean;
+};
 
-export abstract class MeterField<T extends MinFieldProps & TotalFieldProps & GetUpdateFieldProps<number>> extends Component<T, { value: number }> {
-    static override contextType = CharacterBagContext
-    declare context: React.ContextType<typeof CharacterBagContext>
+export abstract class MeterField<
+  T extends MinFieldProps & TotalFieldProps & GetUpdateFieldProps<number>,
+> extends Component<T, { value: number }> {
+  static override contextType = CharacterBagContext;
+  declare context: React.ContextType<typeof CharacterBagContext>;
 
-    constructor(props: T) {
-        super(props);
-        this.state = {
-            value: this.props.get()
-        }
+  constructor(props: T) {
+    super(props);
+    this.state = {
+      value: this.props.get(),
+    };
+  }
+
+  public override componentDidUpdate() {
+    if (this.state.value !== this.props.get()) {
+      this.setState({ value: this.props.get() });
+    }
+  }
+
+  private onClick(add: boolean): void {
+    let value = this.state.value;
+
+    if (add && value < this.props.total) {
+      ++value;
+    } else if (!add && value > (this.props.min || 0)) {
+      --value;
     }
 
-    public override componentDidUpdate() {
-        if (this.state.value !== this.props.get()) {
-            this.setState({ value: this.props.get() });
-        }
+    if (value != this.state.value) {
+      if (this.props.multiplier && this.context.mode == CharacterMode.Tracked) {
+        this.context.updateSpentExperience(
+          calculateSpent(this.state.value, value, this.props.multiplier),
+        );
+      }
+
+      this.setState({ value });
+      this.props.update(value);
     }
+  }
 
-    private onClick(add: boolean): void {
-        let value = this.state.value;
+  protected abstract get empty(): JSX.Element;
+  protected abstract get fill(): JSX.Element;
 
-        if (add && value < this.props.total) {
-            ++value;
-        } else if (!add && value > (this.props.min || 0)) {
-            --value;
-        }
-
-        if (value != this.state.value) {
-            if (this.props.multiplier && this.context.mode == CharacterMode.Tracked) {
-                this.context.updateSpentExperience(calculateSpent(this.state.value, value, this.props.multiplier));
-            }
-
-            this.setState({ value });
-            this.props.update(value);
-        }
-    }
-
-    protected abstract get empty(): JSX.Element
-    protected abstract get fill(): JSX.Element
-
-    public override render() {
-        return <>{(this.props.open ? this.context.edit : this.context.canUpdate) && <Button className="me-1" size="sm" variant="secondary" onClick={() => this.onClick(false)}><i className="bi bi-dash" /></Button>}
-            <Meter
-                value={this.props.get()}
-                total={this.props.total}
-                empty={this.empty}
-                fill={this.fill}
-            />
-            {(this.props.open ? this.context.edit : this.context.canUpdate) && <Button className="ms-1" size="sm" variant="secondary" onClick={() => this.onClick(true)}><i className="bi bi-plus" /></Button>}</>
-    }
+  public override render() {
+    return (
+      <>
+        {(this.props.open ? this.context.edit : this.context.canUpdate) && (
+          <Button
+            className="me-1"
+            size="sm"
+            variant="secondary"
+            onClick={() => this.onClick(false)}
+          >
+            <i className="bi bi-dash" />
+          </Button>
+        )}
+        <Meter
+          value={this.props.get()}
+          total={this.props.total}
+          empty={this.empty}
+          fill={this.fill}
+        />
+        {(this.props.open ? this.context.edit : this.context.canUpdate) && (
+          <Button
+            className="ms-1"
+            size="sm"
+            variant="secondary"
+            onClick={() => this.onClick(true)}
+          >
+            <i className="bi bi-plus" />
+          </Button>
+        )}
+      </>
+    );
+  }
 }

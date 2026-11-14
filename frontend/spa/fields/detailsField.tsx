@@ -1,9 +1,6 @@
-/** @jsxImportSource $react */
-/** @jsxRuntime automatic */
-
 import { CharacterBagContext } from "../characterBag.ts";
-import { Component } from "$react";
-import { Col, Form, Row } from "$react-bootstrap";
+import { Component } from "react";
+import { Col, Form, Row } from "react-bootstrap";
 import { FieldProps } from "./common.tsx";
 
 export class DetailsField extends Component<FieldProps<string>> {

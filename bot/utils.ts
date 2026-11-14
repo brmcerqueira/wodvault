@@ -8,7 +8,13 @@ import { Character } from "../character.ts";
 import { characterTitle } from "../utils.ts";
 import { dicePools } from "./dicePools.ts";
 import { locale } from "./i18n/locale.ts";
-import { getCharacter, getCharacterIdByUserId, getCharactersByTerm, getCurrentCharacterId, getStorytellerId } from "./persistence.ts";
+import {
+  getCharacter,
+  getCharacterIdByUserId,
+  getCharactersByTerm,
+  getCurrentCharacterId,
+  getStorytellerId,
+} from "./persistence.ts";
 
 export const separator = "^";
 
@@ -152,5 +158,5 @@ export async function autocompleteDicePools(
 }
 
 export function host(path: string) {
-  return `${globalThis.hostApi!}/${path}`;
+  return path;
 }

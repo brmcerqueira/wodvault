@@ -1,5 +1,5 @@
 import { Character } from "../../../character.ts";
-import Peer, { DataConnection } from "$peerjs";
+import Peer, { DataConnection } from "peerjs";
 import {
   allCharacters,
   getCharacter,
@@ -45,16 +45,18 @@ export async function sendCharacterUpdate(character: Character) {
   saveCharacter(character);
 
   if (clientConnection) {
-    if (character.owner === null || clientConnection.peer === peerId(character.owner, PeerKind.Host)) {
+    if (
+      character.owner === null ||
+      clientConnection.peer === peerId(character.owner, PeerKind.Host)
+    ) {
       await sendCharacters(clientConnection, {
         characters: [character],
         remove: [],
       });
-    }
-    else if (
-        character.owner !== null &&
-        clientConnection.peer !== peerId(character.owner, PeerKind.Host)
-      ) {
+    } else if (
+      character.owner !== null &&
+      clientConnection.peer !== peerId(character.owner, PeerKind.Host)
+    ) {
       await sendCharacters(clientConnection, {
         characters: [],
         remove: [character.id],
@@ -75,7 +77,7 @@ async function sendCharacterUpdateToPlayer(character: Character) {
           characters: [character],
           remove: [],
         });
-      } 
+      }
     } else {
       delete hostConnections[key];
     }
@@ -118,7 +120,7 @@ export async function connect(id: string): Promise<void> {
 
   const hostPeerId = peerId(id, PeerKind.Host);
 
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     clientConnection = peer!.connect(hostPeerId);
     clientConnection.on("data", incomingCharacters(clientConnection));
     clientConnection.on("error", (error) => {
@@ -150,8 +152,7 @@ export function observeCharactersUpdate(
 }
 
 function createPeer(host: boolean): Promise<void> {
-  return new Promise(resolve => {
-
+  return new Promise((resolve) => {
     peer = new Peer(peerId(myId, host ? PeerKind.Host : PeerKind.Client));
 
     peer.on("open", (id) => {

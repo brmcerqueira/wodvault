@@ -1,11 +1,8 @@
-/** @jsxImportSource $react */
-/** @jsxRuntime automatic */
-
 import { Character, CharacterKind, CharacterMode } from "../../character.ts";
-import { Component, createRef } from "$react";
-import { Form, Nav, Navbar } from "$react-bootstrap";
-import { Navigate } from "$react-router";
-import { JSX } from "$react/jsx-runtime";
+import { Component, createRef } from "react";
+import { Form, Nav, Navbar } from "react-bootstrap";
+import { Navigate } from "react-router";
+import { JSX } from "react/jsx-runtime";
 import { buildCharacter, getCharacter } from "./services/characterService.ts";
 import {
   observeCharactersUpdate,

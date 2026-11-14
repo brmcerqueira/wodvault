@@ -1,5 +1,5 @@
 import { Character, CharacterMode } from "../../character.ts";
-import { createContext } from "$react";
+import { createContext } from "react";
 import { ExperienceField } from "./fields/experienceField.tsx";
 import { myId } from "./services/preferencesService.ts";
 

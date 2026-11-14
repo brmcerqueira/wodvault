@@ -1,10 +1,7 @@
-/** @jsxImportSource $react */
-/** @jsxRuntime automatic */
-
-import { Html5Qrcode } from "$html5-qrcode";
+import { Html5Qrcode } from "html5-qrcode";
 import { locale } from "../i18n/locale.ts";
 import { DialogBody } from "./dialogBody.ts";
-import { Spinner } from "$react-bootstrap";
+import { Spinner } from "react-bootstrap";
 
 const qrcodeId = "qrcode";
 
@@ -54,8 +51,15 @@ export class QrcodeScanner extends DialogBody<string | undefined> {
   }
 
   public override body(): React.ReactNode {
-    return <div id={qrcodeId} className="d-flex justify-content-center align-items-center">
-      {this.qrCode == undefined && <Spinner animation="border" size="sm" className="me-2" />}
-      </div>;
+    return (
+      <div
+        id={qrcodeId}
+        className="d-flex justify-content-center align-items-center"
+      >
+        {this.qrCode == undefined && (
+          <Spinner animation="border" size="sm" className="me-2" />
+        )}
+      </div>
+    );
   }
 }

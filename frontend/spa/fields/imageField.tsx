@@ -1,10 +1,7 @@
-/** @jsxImportSource $react */
-/** @jsxRuntime automatic */
-
 import { Character } from "../../../character.ts";
 import { CharacterBagContext } from "../characterBag.ts";
-import { Component } from "$react";
-import { Form, Image as BsImage, InputGroup, Spinner } from "$react-bootstrap";
+import { Component } from "react";
+import { Form, Image as BsImage, InputGroup, Spinner } from "react-bootstrap";
 
 type Props = { character: Character };
 
