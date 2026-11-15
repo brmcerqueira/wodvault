@@ -239,10 +239,11 @@ function createPeer(host: boolean): Promise<void> {
 function buildWebSocket() {
   const port = webSocketPort();
   if (port) {
-    socket = new WebSocket(`ws://localhost:${port}/webSocket`);
+    const newSocket = new WebSocket(`ws://localhost:${port}/webSocket`);
 
-    socket.onopen = () => {
+    newSocket.onopen = () => {
       console.info("✅ Websocket connection opened.");
+      socket = newSocket;
       const characters: Character[] = [];
 
       for (const key of allCharacters()) {
@@ -253,16 +254,14 @@ function buildWebSocket() {
         characters.push(character);
       }
 
-      if (socket) {
-        sendCharacters(socket, { characters, remove: [] });
-      }
+      sendCharacters(newSocket, { characters, remove: [] });
     };
 
-    const incomingCharactersByBot = incomingCharacters(socket, true);
+    const incomingCharactersByBot = incomingCharacters(newSocket, true);
 
-    socket.onmessage = (event) => incomingCharactersByBot(event.data);
+    newSocket.onmessage = (event) => incomingCharactersByBot(event.data);
 
-    socket.onclose = (e) => {
+    newSocket.onclose = (e) => {
       console.warn(
         "⚠️ Websocket connection closed. Reconnecting in 3s...",
         e.reason,
