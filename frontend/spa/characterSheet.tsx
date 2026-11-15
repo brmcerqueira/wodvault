@@ -109,7 +109,7 @@ export abstract class CharacterSheet extends Component<
       <CharacterBagContext.Provider value={this.state.characterBag}>
         <Navbar expand className="bg-body-tertiary border-bottom fixed-top">
           <Nav className="me-auto">
-            <Nav.Link href="./">
+            <Nav.Link href="./#">
               <i className="bi bi-arrow-left" />
             </Nav.Link>
           </Nav>
