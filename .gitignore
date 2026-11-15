@@ -1,6 +1,7 @@
 .env
 deno.lock
 *.min.js
+*.min.js.map
 index.html
 database/
 bot/dist/
