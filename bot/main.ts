@@ -149,14 +149,20 @@ client.on("ready", async () => {
   } catch (error) {
     logger.error(error);
     if (error instanceof InteractionResponseError) {
-      await interaction.respond({
-        type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
-        embeds: [{
-          title: error.message,
-          color: colors.red,
-        }],
-        ephemeral: true,
-      });
+      if (error.focused) {
+        await interaction.respond({
+          type: InteractionResponseType.APPLICATION_COMMAND_AUTOCOMPLETE_RESULT,
+        });
+      } else {
+        await interaction.respond({
+          type: InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+          embeds: [{
+            title: error.message,
+            color: colors.red,
+          }],
+          ephemeral: true,
+        });
+      }
     }
   }
 });

@@ -48,8 +48,10 @@ export async function overlayCssSolver(
 
     ${
     (await Promise.all(
-      Object.entries(characters).map((pair) =>
-        `li[data-userid="${pair[0]}"] .voice_username::before {
+      Object.entries(characters).map(async (pair) => {
+        const image = await imageToBase64(pair[1].image);
+        return image
+          ? `li[data-userid="${pair[0]}"] .voice_username::before {
         content: "";
         display: inline-block;
         width: 2.813em;
@@ -57,7 +59,7 @@ export async function overlayCssSolver(
         margin-right: 0.375em;
         border-radius: 1em;
         border: 0.125em solid transparent;
-        background-image: url(${pair[1].image});
+        background-image: url(${image});
         background-size: cover;
         background-position: center;
         background-repeat: no-repeat;
@@ -70,7 +72,8 @@ export async function overlayCssSolver(
       margin-left: 0.375em;
     }
     `
-      ),
+          : "";
+      }),
     )).join("\n    ")
   }
 
@@ -94,5 +97,27 @@ export async function overlayCssSolver(
         }),
       ),
     ],
+  });
+}
+
+async function imageToBase64(url: string): Promise<string | undefined> {
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    return undefined;
+  }
+
+  const blob = await response.blob();
+
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      resolve(reader.result as string);
+    };
+
+    reader.onerror = () => reject(reader.error);
+
+    reader.readAsDataURL(blob);
   });
 }

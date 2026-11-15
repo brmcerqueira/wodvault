@@ -24,7 +24,10 @@ export async function setCharacterToUserSolver(
 ) {
   const storytellerId = await getStorytellerId();
   if (storytellerId != interaction.user.id) {
-    throw new InteractionResponseError(locale.unauthorized);
+    throw new InteractionResponseError(
+      locale.unauthorized,
+      input.character.focused,
+    );
   }
 
   if (input.character.focused) {

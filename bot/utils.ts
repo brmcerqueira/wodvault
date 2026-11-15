@@ -55,7 +55,15 @@ export const emojis: {
   werewolfSuccessRed: null,
 };
 
-export class InteractionResponseError extends Error {}
+export class InteractionResponseError extends Error {
+  constructor(message: string, private _focused?: boolean) {
+    super(message);
+  }
+
+  public get focused(): boolean {
+    return this._focused ?? false;
+  }
+}
 
 export type AttributeType =
   | keyof Character["attributes"]["physical"]
