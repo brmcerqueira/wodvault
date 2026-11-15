@@ -31,6 +31,7 @@ let observeCharactersUpdateCallback:
   | undefined;
 let peer: Peer | undefined = undefined;
 let clientConnection: DataConnection | undefined = undefined;
+let socket: WebSocket | undefined = undefined;
 let _connectionStatus: ConnectionStatus = ConnectionStatus.Disconnected;
 
 export function peerId(id: string, kind: PeerKind): string {
@@ -62,8 +63,14 @@ export async function sendCharacterUpdate(character: Character) {
         remove: [character.id],
       });
     }
-  } else if (character.playerId !== myId) {
-    await sendCharacterUpdateToPlayer(character);
+  } else {
+    if (socket) {
+      sendCharacters(socket, { characters: [character], remove: [] });
+    }
+
+    if (character.playerId !== myId) {
+      await sendCharacterUpdateToPlayer(character);
+    }
   }
 }
 
@@ -232,7 +239,7 @@ function createPeer(host: boolean): Promise<void> {
 function buildWebSocket() {
   const port = webSocketPort();
   if (port) {
-    const socket = new WebSocket(`ws://localhost:${port}/webSocket`);
+    socket = new WebSocket(`ws://localhost:${port}/webSocket`);
 
     socket.onopen = () => {
       console.info("✅ Websocket connection opened.");
@@ -246,7 +253,9 @@ function buildWebSocket() {
         characters.push(character);
       }
 
-      sendCharacters(socket, { characters, remove: [] });
+      if (socket) {
+        sendCharacters(socket, { characters, remove: [] });
+      }
     };
 
     const incomingCharactersByBot = incomingCharacters(socket, true);
@@ -258,6 +267,7 @@ function buildWebSocket() {
         "⚠️ Websocket connection closed. Reconnecting in 3s...",
         e.reason,
       );
+      socket = undefined;
       setTimeout(buildWebSocket, 3000);
     };
   }
