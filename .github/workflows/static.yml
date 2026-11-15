@@ -48,6 +48,7 @@ jobs:
       - name: Cleanup static files
         run: |
           find ./static -type f -name "*.min.js" -delete
+          find ./static -type f -name "*.min.js.map" -delete
           find ./static -type f -name "index.html" -delete
           find ./static -type d -name "vendor" -prune -exec rm -rf {} +
 
