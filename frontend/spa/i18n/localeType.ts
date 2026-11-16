@@ -1,3 +1,5 @@
+import { RitesCommonType, RitesSocialType } from "../../../character.ts";
+
 type OptionsLocale = {
   name: string;
   options: string[];
@@ -49,7 +51,7 @@ export type LocaleType = {
     disciplines: string;
     gifts: string;
     rites: string;
-  }
+  };
   vampire: string;
   createVampire: string;
   resonance: OptionsLocale;
@@ -395,33 +397,8 @@ export type LocaleType = {
   };
   rites: {
     name: string;
-    common: {
-      riteOfAbjuration: string;
-      riteOfRage: string;
-      riteOfTranquility: string;
-      riteOfContrition: string;
-      riteOfForgetfulRecord: string;
-      riteOfTheLivingCaern: string;
-      riteOfShadowPassage: string;
-      riteOfDedication: string;
-      riteOfKinseeking: string;
-      riteOfSpiritSummoning: string;
-      riteOfBinding: string;
-      riteOfShame: string;
-      riteOfPatronage: string;
-      riteOfCelebration: string;
-      riteOfCaernBuilding: string;
-      riteOfTheWolfReborn: string;
-      riteOfTheWhisperingField: string;
-      riteOfTheShroudedGlen: string;
-    };
-    social: {
-      riteOfPassage: string;
-      satireRite: string;
-      riteOfAccomplishment: string;
-      gatheringForTheDeparted: string;
-      riteOfTheWinterWolf: string;
-    };
+    common: Record<RitesCommonType, string>;
+    social: Record<RitesSocialType, string>;
   };
   webSocketPort: string;
-}
+};
