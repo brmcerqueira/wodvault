@@ -233,6 +233,33 @@ export type ThinBloodAlchemyType =
   | "airborneMomentum"
   | "awakenTheSleeper";
 
+export type RitesCommonType =
+  | "riteOfAbjuration"
+  | "riteOfRage"
+  | "riteOfTranquility"
+  | "riteOfContrition"
+  | "riteOfForgetfulRecord"
+  | "riteOfTheLivingCaern"
+  | "riteOfShadowPassage"
+  | "riteOfDedication"
+  | "riteOfKinseeking"
+  | "riteOfSpiritSummoning"
+  | "riteOfBinding"
+  | "riteOfShame"
+  | "riteOfPatronage"
+  | "riteOfCelebration"
+  | "riteOfCaernBuilding"
+  | "riteOfTheWolfReborn"
+  | "riteOfTheWhisperingField"
+  | "riteOfTheShroudedGlen";
+
+export type RitesSocialType =
+  | "riteOfPassage"
+  | "satireRite"
+  | "riteOfAccomplishment"
+  | "gatheringForTheDeparted"
+  | "riteOfTheWinterWolf";
+
 export type Character = {
   id: string;
   timestamp: number;
@@ -293,19 +320,19 @@ export type Character = {
   };
   bloodPotency: number;
   disciplines: {
-    animalism?: AnimalismType[];
-    auspex?: AuspexType[];
-    dominate?: DominateType[];
-    bloodSorcery?: BloodSorceryType[];
-    fortitude?: FortitudeType[];
-    protean?: ProteanType[];
-    obfuscate?: ObfuscateType[];
-    oblivion?: OblivionType[];
-    potence?: PotenceType[];
-    presence?: PresenceType[];
-    celerity?: CelerityType[];
-    rituals?: RitualsType[];
-    thinBloodAlchemy?: ThinBloodAlchemyType[];
+    animalism?: Array<AnimalismType>;
+    auspex?: Array<AuspexType>;
+    dominate?: Array<DominateType>;
+    bloodSorcery?: Array<BloodSorceryType>;
+    fortitude?: Array<FortitudeType>;
+    protean?: Array<ProteanType>;
+    obfuscate?: Array<ObfuscateType>;
+    oblivion?: Array<OblivionType>;
+    potence?: Array<PotenceType>;
+    presence?: Array<PresenceType>;
+    celerity?: Array<CelerityType>;
+    rituals?: Array<RitualsType>;
+    thinBloodAlchemy?: Array<ThinBloodAlchemyType>;
   };
   auspice: string;
   tribe: string;
@@ -317,5 +344,5 @@ export type Character = {
   harano: number;
   hauglosk: number;
   gifts: Record<string, number>;
-  rites: string[];
+  rites: Array<RitesCommonType & RitesSocialType>;
 };
