@@ -15,6 +15,39 @@ export type Damage = {
   penalty: number;
 };
 
+export type PhysicalSkillType =
+  | "athletics"
+  | "brawl"
+  | "craft"
+  | "drive"
+  | "firearms"
+  | "melee"
+  | "larceny"
+  | "stealth"
+  | "survival";
+
+export type SocialSkillType =
+  | "animalKen"
+  | "etiquette"
+  | "insight"
+  | "intimidation"
+  | "leadership"
+  | "performance"
+  | "persuasion"
+  | "streetwise"
+  | "subterfuge";
+
+export type MentalSkillType =
+  | "academics"
+  | "awareness"
+  | "finance"
+  | "investigation"
+  | "medicine"
+  | "occult"
+  | "politics"
+  | "science"
+  | "technology";
+
 export type AnimalismType =
   | "bondFamulus"
   | "senseTheBeast"
@@ -229,39 +262,9 @@ export type Character = {
     };
   };
   skills: {
-    physical: {
-      athletics: number;
-      brawl: number;
-      craft: number;
-      drive: number;
-      firearms: number;
-      melee: number;
-      larceny: number;
-      stealth: number;
-      survival: number;
-    };
-    social: {
-      animalKen: number;
-      etiquette: number;
-      insight: number;
-      intimidation: number;
-      leadership: number;
-      performance: number;
-      persuasion: number;
-      streetwise: number;
-      subterfuge: number;
-    };
-    mental: {
-      academics: number;
-      awareness: number;
-      finance: number;
-      investigation: number;
-      medicine: number;
-      occult: number;
-      politics: number;
-      science: number;
-      technology: number;
-    };
+    physical: Record<PhysicalSkillType, number>;
+    social: Record<SocialSkillType, number>;
+    mental: Record<MentalSkillType, number>;
   };
   health: Damage & {
     start: number;
@@ -271,9 +274,10 @@ export type Character = {
     total: number;
     spent: number;
   };
-  specialties: {
-    [skill: string]: string[];
-  };
+  specialties: Record<
+    PhysicalSkillType & SocialSkillType & MentalSkillType,
+    string[]
+  >;
   advantages: Record<string, number>;
   flaws: Record<string, number>;
   hungerOrRage: number;

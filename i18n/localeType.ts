@@ -5,12 +5,15 @@ import {
   CelerityType,
   DominateType,
   FortitudeType,
+  MentalSkillType,
   ObfuscateType,
   OblivionType,
+  PhysicalSkillType,
   PotenceType,
   PresenceType,
   ProteanType,
   RitualsType,
+  SocialSkillType,
   ThinBloodAlchemyType,
 } from "../character.ts";
 
@@ -42,39 +45,9 @@ export type LocaleType = {
     };
   } & Named;
   skills: {
-    physical: {
-      athletics: string;
-      brawl: string;
-      craft: string;
-      drive: string;
-      firearms: string;
-      melee: string;
-      larceny: string;
-      stealth: string;
-      survival: string;
-    };
-    social: {
-      animalKen: string;
-      etiquette: string;
-      insight: string;
-      intimidation: string;
-      leadership: string;
-      performance: string;
-      persuasion: string;
-      streetwise: string;
-      subterfuge: string;
-    };
-    mental: {
-      academics: string;
-      awareness: string;
-      finance: string;
-      investigation: string;
-      medicine: string;
-      occult: string;
-      politics: string;
-      science: string;
-      technology: string;
-    };
+    physical: Record<PhysicalSkillType, string>;
+    social: Record<SocialSkillType, string>;
+    mental: Record<MentalSkillType, string>;
   } & Named;
   hunger: string;
   disciplines: {
