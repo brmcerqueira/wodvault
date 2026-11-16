@@ -260,6 +260,343 @@ export type RitesSocialType =
   | "gatheringForTheDeparted"
   | "riteOfTheWinterWolf";
 
+export type NativeOneType =
+  | "catfeet"
+  | "eyesOfTheOwl"
+  | "haresLeap"
+  | "penumbralSenses"
+  | "ragingStrike"
+  | "staredown";
+
+export type NativeFourType =
+  | "sharpenedSenses"
+  | "spiritOfTheFray"
+  | "thwartingTheArrow";
+
+export type NativeSevenType =
+  | "bodyShift"
+  | "jamTechnology"
+  | "tongueOfTheBeasts";
+
+export type RagabashTwoType =
+  | "blissfulIgnorance"
+  | "crowsLaughter"
+  | "gremlins"
+  | "spidersSong";
+
+export type RagabashFiveType =
+  | "blurOfTheMilkyEye"
+  | "openSeal"
+  | "pulseOfThePrey"
+  | "scentOfRunningWater";
+
+export type RagabashEightType =
+  | "lunasBlessing"
+  | "thievingTalonsOfTheMagpie"
+  | "theThousandForms"
+  | "whelpBody";
+
+export type TheurgeTwoType =
+  | "ensnareSpirit"
+  | "mothersTouch"
+  | "shadowSense"
+  | "sightFromBeyond";
+
+export type TheurgeFiveType =
+  | "banishSpirit"
+  | "graspFromBeyond"
+  | "mindspeak"
+  | "umbralTether";
+
+export type TheurgeEightType =
+  | "commandSpirit"
+  | "drainSpirit"
+  | "feralRegression"
+  | "livingWard";
+
+export type PhilodoxTwoType =
+  | "ancestralConviction"
+  | "gaiasCandor"
+  | "porcupinesReprisal"
+  | "senseTheTrueForm";
+
+export type PhilodoxFiveType =
+  | "beastsFealty"
+  | "commandTheGathering"
+  | "fangsOfJudgement"
+  | "scentOfThePast";
+
+export type PhilodoxEightType =
+  | "geas"
+  | "oathbreakersBane"
+  | "strengthOfPurpose"
+  | "takeTheTrueForm";
+
+export type GalliardTwoType =
+  | "animalMagnetism"
+  | "howlOfAssembly"
+  | "songOfRage"
+  | "songOfSerenity";
+
+export type GalliardFiveType =
+  | "callTheRidden"
+  | "eyesOfTheCobra"
+  | "songOfValor"
+  | "songOfInspiration";
+
+export type GalliardEightType =
+  | "againstTheOdds"
+  | "breakTheShackles"
+  | "defyDeath"
+  | "dreamwalk";
+
+export type AhrounTwoType =
+  | "haltTheCowardsFlight"
+  | "rapidShift"
+  | "razorClaws"
+  | "senseDanger";
+
+export type AhrounFiveType =
+  | "primalAnger"
+  | "snarlOfChallenge"
+  | "trueFear"
+  | "windClaws";
+
+export type AhrounEightType =
+  | "closingTheGap"
+  | "kissOfHelios"
+  | "lunasArmor"
+  | "silverClaws";
+
+export type BlackFuriesThreeType =
+  | "curseOfAeolus"
+  | "haltTheCowardsFlight"
+  | "porcupinesReprisal";
+
+export type BlackFuriesSixType =
+  | "coupDeGrace"
+  | "kalisScar"
+  | "waspTalons";
+
+export type BlackFuriesNineType =
+  | "breakTheShackles"
+  | "drainSpirit"
+  | "gorgonsVisage"
+  | "whelpBody";
+
+export type BoneGnawersThreeType =
+  | "blissfulIgnorance"
+  | "rapidShift"
+  | "sightFromBeyond"
+  | "odiousAroma";
+
+export type BoneGnawersSixType =
+  | "faceInTheCrowd"
+  | "scentOfThePast"
+  | "streetsTellStories";
+
+export type BoneGnawersNineType =
+  | "aThousandEyes"
+  | "betweenTheCracks"
+  | "defyDeath";
+
+export type ChildrenOfGaiaThreeType =
+  | "brothersScent"
+  | "mothersTouch"
+  | "senseTheTrueForm"
+  | "songOfSerenity";
+
+export type ChildrenOfGaiaSixType =
+  | "calmTheFuriousBeast"
+  | "openSeal"
+  | "revealTrauma";
+
+export type ChildrenOfGaiaNineType =
+  | "lunasArmor"
+  | "lifesPresence"
+  | "shareThePain";
+
+export type GalestalkersThreeType =
+  | "camouflage"
+  | "ensnareSpirit"
+  | "laceratingWind";
+
+export type GalestalkersSixType =
+  | "chillCloak"
+  | "callTheRidden"
+  | "pulseOfThePrey"
+  | "windClaws";
+
+export type GalestalkersNineType =
+  | "bloodOfTheWastes"
+  | "clawsOfFrozenDeath"
+  | "oathbreakersBane";
+
+export type GhostCouncilThreeType =
+  | "augur"
+  | "senseDanger"
+  | "blackout";
+
+export type GhostCouncilSixType =
+  | "serpentsCoil"
+  | "handsOfTheEarth"
+  | "mindspeak";
+
+export type GhostCouncilNineType =
+  | "dreamwalk"
+  | "shroudedAspect"
+  | "takeTheTrueForm"
+  | "thievingTalonsOfTheMagpie";
+
+export type GlassWalkersThreeType =
+  | "animalMagnetism"
+  | "gaiasCandor"
+  | "skinbind"
+  | "spidersSong";
+
+export type GlassWalkersSixType =
+  | "graspFromBeyond"
+  | "energize"
+  | "snarlOfChallenge";
+
+export type GlassWalkersNineType =
+  | "controlMachine"
+  | "doppelganger"
+  | "recoverMemory";
+
+export type HartWardensThreeType =
+  | "crowsLaughter"
+  | "sacredBoundary"
+  | "blessedBrew";
+
+export type HartWardensSixType =
+  | "beastsFealty"
+  | "songOfInspiration"
+  | "territorialDominance";
+
+export type HartWardensNineType =
+  | "balorsGaze"
+  | "theLivingWood"
+  | "kissOfHelios"
+  | "livingWard";
+
+export type RedTalonsThreeType =
+  | "hiddenKiller"
+  | "razorClaws"
+  | "renderDown"
+  | "songOfRage";
+
+export type RedTalonsSixType =
+  | "fangsOfJudgement"
+  | "gaiasEmbrace"
+  | "quicksand";
+
+export type RedTalonsNineType =
+  | "feralRegression"
+  | "shieldOfTheWyld"
+  | "theThousandForms";
+
+export type ShadowLordsThreeType =
+  | "fatalFlaw"
+  | "icyChillOfDespair"
+  | "shadowSense";
+
+export type ShadowLordsSixType =
+  | "blurOfTheMilkyEye"
+  | "direDistraction"
+  | "eyesOfTheCobra"
+  | "trueFear";
+
+export type ShadowLordsNineType =
+  | "geas"
+  | "thunderclap"
+  | "underTheGun";
+
+export type SilentStridersThreeType =
+  | "fetchBounty"
+  | "speechOfTheWorld"
+  | "whisperedPassage";
+
+export type SilentStridersSixType =
+  | "burrow"
+  | "scentOfRunningWater"
+  | "umbralTether";
+
+export type SilentStridersNineType =
+  | "againstTheOdds"
+  | "closingTheGap"
+  | "theGoldenPath"
+  | "strengthOfPurpose";
+
+export type SilverFangsThreeType =
+  | "howlOfAssembly"
+  | "packInstinct"
+  | "theSilverCompact";
+
+export type SilverFangsSixType =
+  | "bloodOfThePack"
+  | "commandTheGathering"
+  | "unityOfThePack";
+
+export type SilverFangsNineType =
+  | "commandSpirit"
+  | "lunasAvenger"
+  | "lunasBlessing"
+  | "silverClaws";
+
+export type GiftsType =
+  | NativeOneType
+  | NativeFourType
+  | NativeSevenType
+  | RagabashTwoType
+  | RagabashFiveType
+  | RagabashEightType
+  | TheurgeTwoType
+  | TheurgeFiveType
+  | TheurgeEightType
+  | PhilodoxTwoType
+  | PhilodoxFiveType
+  | PhilodoxEightType
+  | GalliardTwoType
+  | GalliardFiveType
+  | GalliardEightType
+  | AhrounTwoType
+  | AhrounFiveType
+  | AhrounEightType
+  | BlackFuriesThreeType
+  | BlackFuriesSixType
+  | BlackFuriesNineType
+  | BoneGnawersThreeType
+  | BoneGnawersSixType
+  | BoneGnawersNineType
+  | ChildrenOfGaiaThreeType
+  | ChildrenOfGaiaSixType
+  | ChildrenOfGaiaNineType
+  | GalestalkersThreeType
+  | GalestalkersSixType
+  | GalestalkersNineType
+  | GhostCouncilThreeType
+  | GhostCouncilSixType
+  | GhostCouncilNineType
+  | GlassWalkersThreeType
+  | GlassWalkersSixType
+  | GlassWalkersNineType
+  | HartWardensThreeType
+  | HartWardensSixType
+  | HartWardensNineType
+  | RedTalonsThreeType
+  | RedTalonsSixType
+  | RedTalonsNineType
+  | ShadowLordsThreeType
+  | ShadowLordsSixType
+  | ShadowLordsNineType
+  | SilentStridersThreeType
+  | SilentStridersSixType
+  | SilentStridersNineType
+  | SilverFangsThreeType
+  | SilverFangsSixType
+  | SilverFangsNineType;
+
 export type Character = {
   id: string;
   timestamp: number;
@@ -343,6 +680,6 @@ export type Character = {
   };
   harano: number;
   hauglosk: number;
-  gifts: Record<string, number>;
+  gifts: Partial<Record<GiftsType, number>>;
   rites: Array<RitesCommonType & RitesSocialType>;
 };

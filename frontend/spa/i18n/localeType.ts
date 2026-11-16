@@ -1,12 +1,65 @@
-import { RitesCommonType, RitesSocialType } from "../../../character.ts";
+import {
+  AhrounEightType,
+  AhrounFiveType,
+  AhrounTwoType,
+  BlackFuriesNineType,
+  BlackFuriesSixType,
+  BlackFuriesThreeType,
+  BoneGnawersNineType,
+  BoneGnawersSixType,
+  BoneGnawersThreeType,
+  ChildrenOfGaiaNineType,
+  ChildrenOfGaiaSixType,
+  ChildrenOfGaiaThreeType,
+  GalestalkersNineType,
+  GalestalkersSixType,
+  GalestalkersThreeType,
+  GalliardEightType,
+  GalliardFiveType,
+  GalliardTwoType,
+  GhostCouncilNineType,
+  GhostCouncilSixType,
+  GhostCouncilThreeType,
+  GlassWalkersNineType,
+  GlassWalkersSixType,
+  GlassWalkersThreeType,
+  HartWardensNineType,
+  HartWardensSixType,
+  HartWardensThreeType,
+  NativeFourType,
+  NativeOneType,
+  NativeSevenType,
+  PhilodoxEightType,
+  PhilodoxFiveType,
+  PhilodoxTwoType,
+  RagabashEightType,
+  RagabashFiveType,
+  RagabashTwoType,
+  RedTalonsNineType,
+  RedTalonsSixType,
+  RedTalonsThreeType,
+  RitesCommonType,
+  RitesSocialType,
+  ShadowLordsNineType,
+  ShadowLordsSixType,
+  ShadowLordsThreeType,
+  SilentStridersNineType,
+  SilentStridersSixType,
+  SilentStridersThreeType,
+  SilverFangsNineType,
+  SilverFangsSixType,
+  SilverFangsThreeType,
+  TheurgeEightType,
+  TheurgeFiveType,
+  TheurgeTwoType,
+} from "../../../character.ts";
+import { Named } from "../../../i18n/localeType.ts";
 
 type OptionsLocale = {
-  name: string;
   options: string[];
-};
+} & Named;
 
 export type LocaleType = {
-  name: string;
   connect: string;
   cancel: string;
   disconnect: string;
@@ -18,10 +71,9 @@ export type LocaleType = {
   health: string;
   willpower: string;
   experience: {
-    name: string;
     total: string;
     spent: string;
-  };
+  } & Named;
   close: string;
   no: string;
   yes: string;
@@ -30,10 +82,9 @@ export type LocaleType = {
   social: string;
   mental: string;
   specialties: {
-    name: string;
     skill: string;
     specialty: string;
-  };
+  } & Named;
   advantages: string;
   flaws: string;
   details: string;
@@ -59,9 +110,8 @@ export type LocaleType = {
   desire: string;
   predator: OptionsLocale;
   clan: {
-    name: string;
     options: Record<string, string[] | null>;
-  };
+  } & Named;
   generation: string;
   bloodPotency: string;
   humanity: string;
@@ -74,331 +124,95 @@ export type LocaleType = {
   rage: string;
   hauglosk: string;
   gifts: {
-    name: string;
     native: {
-      name: string;
-      one: {
-        catfeet: string;
-        eyesOfTheOwl: string;
-        haresLeap: string;
-        penumbralSenses: string;
-        ragingStrike: string;
-        staredown: string;
-      };
-      four: {
-        sharpenedSenses: string;
-        spiritOfTheFray: string;
-        thwartingTheArrow: string;
-      };
-      seven: {
-        bodyShift: string;
-        jamTechnology: string;
-        tongueOfTheBeasts: string;
-      };
-    };
+      one: Record<NativeOneType, string>;
+      four: Record<NativeFourType, string>;
+      seven: Record<NativeSevenType, string>;
+    } & Named;
     ragabash: {
-      name: string;
-      two: {
-        blissfulIgnorance: string;
-        crowsLaughter: string;
-        gremlins: string;
-        spidersSong: string;
-      };
-      five: {
-        blurOfTheMilkyEye: string;
-        openSeal: string;
-        pulseOfThePrey: string;
-        scentOfRunningWater: string;
-      };
-      eight: {
-        lunasBlessing: string;
-        thievingTalonsOfTheMagpie: string;
-        theThousandForms: string;
-        whelpBody: string;
-      };
-    };
+      two: Record<RagabashTwoType, string>;
+      five: Record<RagabashFiveType, string>;
+      eight: Record<RagabashEightType, string>;
+    } & Named;
     theurge: {
-      name: string;
-      two: {
-        ensnareSpirit: string;
-        mothersTouch: string;
-        shadowSense: string;
-        sightFromBeyond: string;
-      };
-      five: {
-        banishSpirit: string;
-        graspFromBeyond: string;
-        mindspeak: string;
-        umbralTether: string;
-      };
-      eight: {
-        commandSpirit: string;
-        drainSpirit: string;
-        feralRegression: string;
-        livingWard: string;
-      };
-    };
+      two: Record<TheurgeTwoType, string>;
+      five: Record<TheurgeFiveType, string>;
+      eight: Record<TheurgeEightType, string>;
+    } & Named;
     philodox: {
-      name: string;
-      two: {
-        ancestralConviction: string;
-        gaiasCandor: string;
-        porcupinesReprisal: string;
-        senseTheTrueForm: string;
-      };
-      five: {
-        beastsFealty: string;
-        commandTheGathering: string;
-        fangsOfJudgement: string;
-        scentOfThePast: string;
-      };
-      eight: {
-        geas: string;
-        oathbreakersBane: string;
-        strengthOfPurpose: string;
-        takeTheTrueForm: string;
-      };
-    };
+      two: Record<PhilodoxTwoType, string>;
+      five: Record<PhilodoxFiveType, string>;
+      eight: Record<PhilodoxEightType, string>;
+    } & Named;
     galliard: {
-      name: string;
-      two: {
-        animalMagnetism: string;
-        howlOfAssembly: string;
-        songOfRage: string;
-        songOfSerenity: string;
-      };
-      five: {
-        callTheRidden: string;
-        eyesOfTheCobra: string;
-        songOfValor: string;
-        songOfInspiration: string;
-      };
-      eight: {
-        againstTheOdds: string;
-        breakTheShackles: string;
-        defyDeath: string;
-        dreamwalk: string;
-      };
-    };
+      two: Record<GalliardTwoType, string>;
+      five: Record<GalliardFiveType, string>;
+      eight: Record<GalliardEightType, string>;
+    } & Named;
     ahroun: {
-      name: string;
-      two: {
-        haltTheCowardsFlight: string;
-        rapidShift: string;
-        razorClaws: string;
-        senseDanger: string;
-      };
-      five: {
-        primalAnger: string;
-        snarlOfChallenge: string;
-        trueFear: string;
-        windClaws: string;
-      };
-      eight: {
-        closingTheGap: string;
-        kissOfHelios: string;
-        lunasArmor: string;
-        silverClaws: string;
-      };
-    };
+      two: Record<AhrounTwoType, string>;
+      five: Record<AhrounFiveType, string>;
+      eight: Record<AhrounEightType, string>;
+    } & Named;
     blackFuries: {
-      name: string;
-      three: {
-        curseOfAeolus: string;
-        haltTheCowardsFlight: string;
-        porcupinesReprisal: string;
-      };
-      six: { coupDeGrace: string; kalisScar: string; waspTalons: string };
-      nine: {
-        breakTheShackles: string;
-        drainSpirit: string;
-        gorgonsVisage: string;
-        whelpBody: string;
-      };
-    };
+      three: Record<BlackFuriesThreeType, string>;
+      six: Record<BlackFuriesSixType, string>;
+      nine: Record<BlackFuriesNineType, string>;
+    } & Named;
     boneGnawers: {
-      name: string;
-      three: {
-        blissfulIgnorance: string;
-        rapidShift: string;
-        sightFromBeyond: string;
-        odiousAroma: string;
-      };
-      six: {
-        faceInTheCrowd: string;
-        scentOfThePast: string;
-        streetsTellStories: string;
-      };
-      nine: {
-        aThousandEyes: string;
-        betweenTheCracks: string;
-        defyDeath: string;
-      };
-    };
+      three: Record<BoneGnawersThreeType, string>;
+      six: Record<BoneGnawersSixType, string>;
+      nine: Record<BoneGnawersNineType, string>;
+    } & Named;
     childrenOfGaia: {
-      name: string;
-      three: {
-        brothersScent: string;
-        mothersTouch: string;
-        senseTheTrueForm: string;
-        songOfSerenity: string;
-      };
-      six: {
-        calmTheFuriousBeast: string;
-        openSeal: string;
-        revealTrauma: string;
-      };
-      nine: { lunasArmor: string; lifesPresence: string; shareThePain: string };
-    };
+      three: Record<ChildrenOfGaiaThreeType, string>;
+      six: Record<ChildrenOfGaiaSixType, string>;
+      nine: Record<ChildrenOfGaiaNineType, string>;
+    } & Named;
     galestalkers: {
-      name: string;
-      three: {
-        camouflage: string;
-        ensnareSpirit: string;
-        laceratingWind: string;
-      };
-      six: {
-        chillCloak: string;
-        callTheRidden: string;
-        pulseOfThePrey: string;
-        windClaws: string;
-      };
-      nine: {
-        bloodOfTheWastes: string;
-        clawsOfFrozenDeath: string;
-        oathbreakersBane: string;
-      };
-    };
+      three: Record<GalestalkersThreeType, string>;
+      six: Record<GalestalkersSixType, string>;
+      nine: Record<GalestalkersNineType, string>;
+    } & Named;
     ghostCouncil: {
-      name: string;
-      three: { augur: string; senseDanger: string; blackout: string };
-      six: { serpentsCoil: string; handsOfTheEarth: string; mindspeak: string };
-      nine: {
-        dreamwalk: string;
-        shroudedAspect: string;
-        takeTheTrueForm: string;
-        thievingTalonsOfTheMagpie: string;
-      };
-    };
+      three: Record<GhostCouncilThreeType, string>;
+      six: Record<GhostCouncilSixType, string>;
+      nine: Record<GhostCouncilNineType, string>;
+    } & Named;
     glassWalkers: {
-      name: string;
-      three: {
-        animalMagnetism: string;
-        gaiasCandor: string;
-        skinbind: string;
-        spidersSong: string;
-      };
-      six: {
-        graspFromBeyond: string;
-        energize: string;
-        snarlOfChallenge: string;
-      };
-      nine: {
-        controlMachine: string;
-        doppelganger: string;
-        recoverMemory: string;
-      };
-    };
+      three: Record<GlassWalkersThreeType, string>;
+      six: Record<GlassWalkersSixType, string>;
+      nine: Record<GlassWalkersNineType, string>;
+    } & Named;
     hartWardens: {
-      name: string;
-      three: {
-        crowsLaughter: string;
-        sacredBoundary: string;
-        blessedBrew: string;
-      };
-      six: {
-        beastsFealty: string;
-        songOfInspiration: string;
-        territorialDominance: string;
-      };
-      nine: {
-        balorsGaze: string;
-        theLivingWood: string;
-        kissOfHelios: string;
-        livingWard: string;
-      };
-    };
+      three: Record<HartWardensThreeType, string>;
+      six: Record<HartWardensSixType, string>;
+      nine: Record<HartWardensNineType, string>;
+    } & Named;
     redTalons: {
-      name: string;
-      three: {
-        hiddenKiller: string;
-        razorClaws: string;
-        renderDown: string;
-        songOfRage: string;
-      };
-      six: {
-        fangsOfJudgement: string;
-        gaiasEmbrace: string;
-        quicksand: string;
-      };
-      nine: {
-        feralRegression: string;
-        shieldOfTheWyld: string;
-        theThousandForms: string;
-      };
-    };
+      three: Record<RedTalonsThreeType, string>;
+      six: Record<RedTalonsSixType, string>;
+      nine: Record<RedTalonsNineType, string>;
+    } & Named;
     shadowLords: {
-      name: string;
-      three: {
-        fatalFlaw: string;
-        icyChillOfDespair: string;
-        shadowSense: string;
-      };
-      six: {
-        blurOfTheMilkyEye: string;
-        direDistraction: string;
-        eyesOfTheCobra: string;
-        trueFear: string;
-      };
-      nine: {
-        geas: string;
-        thunderclap: string;
-        underTheGun: string;
-      };
-    };
+      three: Record<ShadowLordsThreeType, string>;
+      six: Record<ShadowLordsSixType, string>;
+      nine: Record<ShadowLordsNineType, string>;
+    } & Named;
     silentStriders: {
-      name: string;
-      three: {
-        fetchBounty: string;
-        speechOfTheWorld: string;
-        whisperedPassage: string;
-      };
-      six: {
-        burrow: string;
-        scentOfRunningWater: string;
-        umbralTether: string;
-      };
-      nine: {
-        againstTheOdds: string;
-        closingTheGap: string;
-        theGoldenPath: string;
-        strengthOfPurpose: string;
-      };
-    };
+      three: Record<SilentStridersThreeType, string>;
+      six: Record<SilentStridersSixType, string>;
+      nine: Record<SilentStridersNineType, string>;
+    } & Named;
     silverFangs: {
-      name: string;
-      three: {
-        howlOfAssembly: string;
-        packInstinct: string;
-        theSilverCompact: string;
-      };
-      six: {
-        bloodOfThePack: string;
-        commandTheGathering: string;
-        unityOfThePack: string;
-      };
-      nine: {
-        commandSpirit: string;
-        lunasAvenger: string;
-        lunasBlessing: string;
-        silverClaws: string;
-      };
-    };
-  };
+      three: Record<SilverFangsThreeType, string>;
+      six: Record<SilverFangsSixType, string>;
+      nine: Record<SilverFangsNineType, string>;
+    } & Named;
+  } & Named;
   rites: {
-    name: string;
     common: Record<RitesCommonType, string>;
     social: Record<RitesSocialType, string>;
-  };
+  } & Named;
   webSocketPort: string;
-};
+} & Named;
