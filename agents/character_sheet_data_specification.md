@@ -83,8 +83,6 @@ game system.
 
 ``` json
 {
-  "id": "",
-  "timestamp": 0,
   "details": "",
   "image": "",
   "name": "",
@@ -200,50 +198,16 @@ only when supported by the available reference materials.
 
 ### 4.1 Identity and record metadata
 
-  -----------------------------------------------------------------------
-  JSON field              JSON type               Meaning and handling
-  ----------------------- ----------------------- -----------------------
-  `id`                    string                  Unique identifier for
-                                                  this character record.
-                                                  Do not invent a real
-                                                  external identifier.
-                                                  Use an empty string if
-                                                  the application assigns
-                                                  it later.
-
-  `timestamp`             number                  Timestamp associated
-                                                  with the record.
-                                                  Preserve the
-                                                  application's expected
-                                                  numeric timestamp
-                                                  convention. Use `0` if
-                                                  not yet assigned.
-
-  `details`               string                  Free-text character
-                                                  details or notes.
-
-  `image`                 string                  Image reference, URL,
-                                                  or application-specific
-                                                  image value. Use `""`
-                                                  if none is supplied.
-
-  `name`                  string                  Character's name.
-
-  `player`                string                  Player's display name.
-
-  `playerId`              string                  Player identifier. Use
-                                                  `""` if not supplied.
-
-  `owner`                 string or null          Owner identifier or
-                                                  `null` when unassigned.
-
-  `mode`                  integer                 Record mode: `0`
-                                                  Opened, `1` Tracked,
-                                                  `2` Closed.
-
-  `kind`                  integer                 Game system: `0`
-                                                  Vampire, `1` Werewolf.
-  -----------------------------------------------------------------------
+| JSON field | JSON type | Meaning and handling |
+|---|---|---|
+| `details` | string (HTML) | Character details, biography, appearance, personality, background, relationships, and notes. Supports HTML. Use semantic elements such as `<section>`, `<h2>`, `<h3>`, `<p>`, `<ul>`, and `<li>` to organize the content. Store a clean HTML fragment, without `<html>`, `<head>`, or `<body>` tags, JavaScript, or executable content. |
+| `image` | string (Base64 data URI or permanent URL) | Character portrait or thumbnail. Use a supplied image if available. If none is supplied, generate an original portrait based on the character's description. Prefer embedding the image as a Base64 data URI (e.g. `data:image/png;base64,...`). Alternatively, use a genuine, permanent, publicly accessible image URL. Never fabricate URLs or use temporary references as permanent ones. If neither format is available, use `""` and inform the user that the image could not be stored. |
+| `name` | string | Character's name. |
+| `player` | string | Player's display name. |
+| `playerId` | string | Player identifier. Use `""` if not supplied. |
+| `owner` | string or null | Owner identifier or `null` when unassigned. |
+| `mode` | integer | Record mode: `0` Opened, `1` Tracked, `2` Closed. |
+| `kind` | integer | Game system: `0` Vampire, `1` Werewolf. |
 
 ### 4.2 Attributes
 
@@ -1032,8 +996,7 @@ creation limits. - Starting rating distributions. - Health or Willpower
 calculation formulas. - Experience costs. - Discipline, Gift, or Rite
 mechanics and descriptions. - The meaning of numeric Gift values. - A
 fixed catalog for advantages, flaws, specialties, ambitions, or
-desires. - Whether the numeric `timestamp` uses seconds, milliseconds,
-or another convention.
+desires.
 
 Do not guess these details. Consult the permitted reference materials
 and cite the relevant source and page when explaining rules. If the
