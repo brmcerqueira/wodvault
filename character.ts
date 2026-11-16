@@ -638,9 +638,11 @@ export type Character = {
     total: number;
     spent: number;
   };
-  specialties: Record<
-    PhysicalSkillType & SocialSkillType & MentalSkillType,
-    string[]
+  specialties: Partial<
+    Record<
+      PhysicalSkillType | SocialSkillType | MentalSkillType,
+      string[]
+    >
   >;
   advantages: Record<string, number>;
   flaws: Record<string, number>;
@@ -681,5 +683,5 @@ export type Character = {
   harano: number;
   hauglosk: number;
   gifts: Partial<Record<GiftsType, number>>;
-  rites: Array<RitesCommonType & RitesSocialType>;
+  rites: Array<RitesCommonType | RitesSocialType>;
 };
