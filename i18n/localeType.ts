@@ -1,12 +1,33 @@
-export type DisciplineLevelLocale = {
+import {
+  AnimalismType,
+  AuspexType,
+  BloodSorceryType,
+  CelerityType,
+  DominateType,
+  FortitudeType,
+  MentalSkillType,
+  ObfuscateType,
+  OblivionType,
+  PhysicalSkillType,
+  PotenceType,
+  PresenceType,
+  ProteanType,
+  RitualsType,
+  SocialSkillType,
+  ThinBloodAlchemyType,
+} from "../character.ts";
+
+export type Named = {
   name: string;
-  value: number;
 };
 
+export type DisciplineType = {
+  value: number;
+} & Named;
+
 export type LocaleType = {
-  player: string; 
+  player: string;
   attributes: {
-    name: string;
     physical: {
       strength: string;
       dexterity: string;
@@ -22,249 +43,33 @@ export type LocaleType = {
       wits: string;
       resolve: string;
     };
-  };
+  } & Named;
   skills: {
-    name: string;
-    physical: {
-      athletics: string;
-      brawl: string;
-      craft: string;
-      drive: string;
-      firearms: string;
-      melee: string;
-      larceny: string;
-      stealth: string;
-      survival: string;
-    };
-    social: {
-      animalKen: string;
-      etiquette: string;
-      insight: string;
-      intimidation: string;
-      leadership: string;
-      performance: string;
-      persuasion: string;
-      streetwise: string;
-      subterfuge: string;
-    };
-    mental: {
-      academics: string;
-      awareness: string;
-      finance: string;
-      investigation: string;
-      medicine: string;
-      occult: string;
-      politics: string;
-      science: string;
-      technology: string;
-    };
-  };
+    physical: Record<PhysicalSkillType, string>;
+    social: Record<SocialSkillType, string>;
+    mental: Record<MentalSkillType, string>;
+  } & Named;
   hunger: string;
   disciplines: {
-    name: string;
-    animalism: {
-      name: string;
-      bondFamulus: DisciplineLevelLocale;
-      senseTheBeast: DisciplineLevelLocale;
-      feralWhispers: DisciplineLevelLocale;
-      animalSucculence: DisciplineLevelLocale;
-      quellTheBeast: DisciplineLevelLocale;
-      unlivingHive: DisciplineLevelLocale;
-      subsumeTheSpirit: DisciplineLevelLocale;
-      animalDominion: DisciplineLevelLocale;
-      drawingOutTheBeast: DisciplineLevelLocale;
-    };
-    auspex: {
-      name: string;
-      heightenedSenses: DisciplineLevelLocale;
-      senseTheUnseen: DisciplineLevelLocale;
-      obeah: DisciplineLevelLocale;
-      premonition: DisciplineLevelLocale;
-      scryTheSoul: DisciplineLevelLocale;
-      shareTheSenses: DisciplineLevelLocale;
-      spiritsTouch: DisciplineLevelLocale;
-      clairvoyance: DisciplineLevelLocale;
-      possession: DisciplineLevelLocale;
-      telepathy: DisciplineLevelLocale;
-      unburdeningTheBestialSoul: DisciplineLevelLocale;
-    };
-    dominate: {
-      name: string;
-      cloudMemory: DisciplineLevelLocale;
-      compel: DisciplineLevelLocale;
-      mesmerize: DisciplineLevelLocale;
-      dementation: DisciplineLevelLocale;
-      domitorsFavor: DisciplineLevelLocale;
-      slavishDevotion: DisciplineLevelLocale;
-      theForgetfulMind: DisciplineLevelLocale;
-      submergedDirective: DisciplineLevelLocale;
-      ancestralDominion: DisciplineLevelLocale;
-      rationalize: DisciplineLevelLocale;
-      massManipulation: DisciplineLevelLocale;
-      terminalDecree: DisciplineLevelLocale;
-    };
-    bloodSorcery: {
-      name: string;
-      corrosiveVitae: DisciplineLevelLocale;
-      aTasteForBlood: DisciplineLevelLocale;
-      extinguishVitae: DisciplineLevelLocale;
-      bloodOfPotency: DisciplineLevelLocale;
-      scorpionsTouch: DisciplineLevelLocale;
-      theftOfVitae: DisciplineLevelLocale;
-      baalsCaress: DisciplineLevelLocale;
-      cauldronOfBlood: DisciplineLevelLocale;
-    };
-    fortitude: {
-      name: string;
-      resilience: DisciplineLevelLocale;
-      unswayableMind: DisciplineLevelLocale;
-      toughness: DisciplineLevelLocale;
-      enduringBeasts: DisciplineLevelLocale;
-      valeren: DisciplineLevelLocale;
-      defyBane: DisciplineLevelLocale;
-      fortifyTheInnerFacade: DisciplineLevelLocale;
-      draughtOfEndurance: DisciplineLevelLocale;
-      shatter: DisciplineLevelLocale;
-      fleshOfMarble: DisciplineLevelLocale;
-      prowessFromPain: DisciplineLevelLocale;
-    };
-    protean: {
-      name: string;
-      eyesOfTheBeast: DisciplineLevelLocale;
-      weightOfTheFeather: DisciplineLevelLocale;
-      feralWeapons: DisciplineLevelLocale;
-      vicissitude: DisciplineLevelLocale;
-      serpentsKiss: DisciplineLevelLocale;
-      earthMeld: DisciplineLevelLocale;
-      shapechange: DisciplineLevelLocale;
-      fleshCrafting: DisciplineLevelLocale;
-      metamorphosis: DisciplineLevelLocale;
-      horridForm: DisciplineLevelLocale;
-      mistForm: DisciplineLevelLocale;
-      theUnfetteredHeart: DisciplineLevelLocale;
-      oneWithTheLand: DisciplineLevelLocale;
-      theHeartOfDarkness: DisciplineLevelLocale;
-    };
-    obfuscate: {
-      name: string;
-      cloakOfShadows: DisciplineLevelLocale;
-      silenceOfDeath: DisciplineLevelLocale;
-      unseenPassage: DisciplineLevelLocale;
-      chimerstry: DisciplineLevelLocale;
-      mentalMaze: DisciplineLevelLocale;
-      ghostInTheMachine: DisciplineLevelLocale;
-      maskOfAThousandFaces: DisciplineLevelLocale;
-      fataMorgana: DisciplineLevelLocale;
-      conceal: DisciplineLevelLocale;
-      vanish: DisciplineLevelLocale;
-      cloakTheGathering: DisciplineLevelLocale;
-      impostorsGuise: DisciplineLevelLocale;
-    };
-    potence: {
-      name: string;
-      lethalBody: DisciplineLevelLocale;
-      soaringLeap: DisciplineLevelLocale;
-      prowess: DisciplineLevelLocale;
-      brutalFeed: DisciplineLevelLocale;
-      sparkOfRage: DisciplineLevelLocale;
-      uncannyGrip: DisciplineLevelLocale;
-      draughtOfMight: DisciplineLevelLocale;
-      earthshock: DisciplineLevelLocale;
-      fistOfCaine: DisciplineLevelLocale;
-    };
-    oblivion: {
-      name: string;
-      ashesToAshes: DisciplineLevelLocale;
-      oblivionsSight: DisciplineLevelLocale;
-      shadowCloak: DisciplineLevelLocale;
-      theBindingFeather: DisciplineLevelLocale;
-      fatalPrecognition: DisciplineLevelLocale;
-      shadowCast: DisciplineLevelLocale;
-      armsOfAhriman: DisciplineLevelLocale;
-      whereTheShroudThins: DisciplineLevelLocale;
-      auraOfDecay: DisciplineLevelLocale;
-      passionFeast: DisciplineLevelLocale;
-      shadowPerspective: DisciplineLevelLocale;
-      touchOfOblivion: DisciplineLevelLocale;
-      necroticPlague: DisciplineLevelLocale;
-      stygianShroud: DisciplineLevelLocale;
-      shadowStep: DisciplineLevelLocale;
-      skuldFulfilled: DisciplineLevelLocale;
-      tenebrousAvatar: DisciplineLevelLocale;
-      witheringSpirit: DisciplineLevelLocale;
-    };
-    presence: {
-      name: string;
-      awe: DisciplineLevelLocale;
-      daunt: DisciplineLevelLocale;
-      eyesOfTheSerpent: DisciplineLevelLocale;
-      lingeringKiss: DisciplineLevelLocale;
-      dreadGaze: DisciplineLevelLocale;
-      entrancement: DisciplineLevelLocale;
-      trueLovesFace: DisciplineLevelLocale;
-      irresistibleVoice: DisciplineLevelLocale;
-      summon: DisciplineLevelLocale;
-      majesty: DisciplineLevelLocale;
-      starMagnetism: DisciplineLevelLocale;
-    };
-    celerity: {
-      name: string;
-      catsGrace: DisciplineLevelLocale;
-      rapidReflexes: DisciplineLevelLocale;
-      fleetness: DisciplineLevelLocale;
-      blink: DisciplineLevelLocale;
-      traversal: DisciplineLevelLocale;
-      draughtOfElegance: DisciplineLevelLocale;
-      unerringAim: DisciplineLevelLocale;
-      lightningStrike: DisciplineLevelLocale;
-      splitSecond: DisciplineLevelLocale;
-    };
-    rituals: {
-      name: string;
-      bloodWalk: DisciplineLevelLocale;
-      clingingOfTheInsect: DisciplineLevelLocale;
-      craftBloodstone: DisciplineLevelLocale;
-      wakeWithEveningsFreshness: DisciplineLevelLocale;
-      wardAgainstGhouls: DisciplineLevelLocale;
-      communicateWithKindredSire: DisciplineLevelLocale;
-      eyesOfBabel: DisciplineLevelLocale;
-      illuminateTheTrailOfPrey: DisciplineLevelLocale;
-      ishtarsTouch: DisciplineLevelLocale;
-      truthOfBlood: DisciplineLevelLocale;
-      wardAgainstSpirits: DisciplineLevelLocale;
-      wardingCircleAgainstGhouls: DisciplineLevelLocale;
-      dagonsCall: DisciplineLevelLocale;
-      deflectionOfWoodenDoom: DisciplineLevelLocale;
-      essenceOfAir: DisciplineLevelLocale;
-      firewalker: DisciplineLevelLocale;
-      wardAgainstLupines: DisciplineLevelLocale;
-      wardingCircleAgainstSpirits: DisciplineLevelLocale;
-      oneWithTheBlade: DisciplineLevelLocale;
-      defenseOfTheSacredHaven: DisciplineLevelLocale;
-      eyesOfTheNighthawk: DisciplineLevelLocale;
-      incorporealPassage: DisciplineLevelLocale;
-      wardAgainstCainites: DisciplineLevelLocale;
-      wardingCircleAgainstLupines: DisciplineLevelLocale;
-      escapeToTrueSanctuary: DisciplineLevelLocale;
-      heartOfStone: DisciplineLevelLocale;
-      shaftOfBelatedDissolution: DisciplineLevelLocale;
-      wardingCircleAgainstCainites: DisciplineLevelLocale;
-    };
-    thinBloodAlchemy: {
-      name: string;
-      farReach: DisciplineLevelLocale;
-      haze: DisciplineLevelLocale;
-      envelop: DisciplineLevelLocale;
-      profaneHierosGamos: DisciplineLevelLocale;
-      defractionate: DisciplineLevelLocale;
-      airborneMomentum: DisciplineLevelLocale;
-      awakenTheSleeper: DisciplineLevelLocale;
-    };
-  };
+    animalism: Named & Record<AnimalismType, DisciplineType>;
+    auspex: Named & Record<AuspexType, DisciplineType>;
+    dominate: Named & Record<DominateType, DisciplineType>;
+    bloodSorcery: Named & Record<BloodSorceryType, DisciplineType>;
+    fortitude: Named & Record<FortitudeType, DisciplineType>;
+    protean: Named & Record<ProteanType, DisciplineType>;
+    obfuscate: Named & Record<ObfuscateType, DisciplineType>;
+    potence: Named & Record<PotenceType, DisciplineType>;
+    oblivion: Named & Record<OblivionType, DisciplineType>;
+    presence: Named & Record<PresenceType, DisciplineType>;
+    celerity: Named & Record<CelerityType, DisciplineType>;
+    rituals: Named & Record<RitualsType, DisciplineType>;
+    thinBloodAlchemy:
+      & Named
+      & Record<ThinBloodAlchemyType, DisciplineType>;
+  } & Named;
   renown: {
-    name: string;
     glory: string;
     honor: string;
     wisdom: string;
-  };
+  } & Named;
 };

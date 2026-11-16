@@ -293,5 +293,5 @@ export const basePt: LocaleType = {
     glory: "Glória",
     honor: "Honra",
     wisdom: "Sabedoria",
-  },  
+  },
 };
