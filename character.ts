@@ -15,6 +15,191 @@ export type Damage = {
   penalty: number;
 };
 
+export type AnimalismType =
+  | "bondFamulus"
+  | "senseTheBeast"
+  | "feralWhispers"
+  | "animalSucculence"
+  | "quellTheBeast"
+  | "unlivingHive"
+  | "subsumeTheSpirit"
+  | "animalDominion"
+  | "drawingOutTheBeast";
+
+export type AuspexType =
+  | "heightenedSenses"
+  | "senseTheUnseen"
+  | "obeah"
+  | "premonition"
+  | "scryTheSoul"
+  | "shareTheSenses"
+  | "spiritsTouch"
+  | "clairvoyance"
+  | "possession"
+  | "telepathy"
+  | "unburdeningTheBestialSoul";
+
+export type DominateType =
+  | "cloudMemory"
+  | "compel"
+  | "mesmerize"
+  | "dementation"
+  | "domitorsFavor"
+  | "slavishDevotion"
+  | "theForgetfulMind"
+  | "submergedDirective"
+  | "ancestralDominion"
+  | "rationalize"
+  | "massManipulation"
+  | "terminalDecree";
+
+export type BloodSorceryType =
+  | "corrosiveVitae"
+  | "aTasteForBlood"
+  | "extinguishVitae"
+  | "bloodOfPotency"
+  | "scorpionsTouch"
+  | "theftOfVitae"
+  | "baalsCaress"
+  | "cauldronOfBlood";
+
+export type FortitudeType =
+  | "resilience"
+  | "unswayableMind"
+  | "toughness"
+  | "enduringBeasts"
+  | "valeren"
+  | "defyBane"
+  | "fortifyTheInnerFacade"
+  | "draughtOfEndurance"
+  | "shatter"
+  | "fleshOfMarble"
+  | "prowessFromPain";
+
+export type ProteanType =
+  | "eyesOfTheBeast"
+  | "weightOfTheFeather"
+  | "feralWeapons"
+  | "vicissitude"
+  | "serpentsKiss"
+  | "earthMeld"
+  | "shapechange"
+  | "fleshCrafting"
+  | "metamorphosis"
+  | "horridForm"
+  | "mistForm"
+  | "theUnfetteredHeart"
+  | "oneWithTheLand"
+  | "theHeartOfDarkness";
+
+export type ObfuscateType =
+  | "cloakOfShadows"
+  | "silenceOfDeath"
+  | "unseenPassage"
+  | "chimerstry"
+  | "mentalMaze"
+  | "ghostInTheMachine"
+  | "maskOfAThousandFaces"
+  | "fataMorgana"
+  | "conceal"
+  | "vanish"
+  | "cloakTheGathering"
+  | "impostorsGuise";
+
+export type PotenceType =
+  | "lethalBody"
+  | "soaringLeap"
+  | "prowess"
+  | "brutalFeed"
+  | "sparkOfRage"
+  | "uncannyGrip"
+  | "draughtOfMight"
+  | "earthshock"
+  | "fistOfCaine";
+
+export type OblivionType =
+  | "ashesToAshes"
+  | "oblivionsSight"
+  | "shadowCloak"
+  | "theBindingFeather"
+  | "fatalPrecognition"
+  | "shadowCast"
+  | "armsOfAhriman"
+  | "whereTheShroudThins"
+  | "auraOfDecay"
+  | "passionFeast"
+  | "shadowPerspective"
+  | "touchOfOblivion"
+  | "necroticPlague"
+  | "stygianShroud"
+  | "shadowStep"
+  | "skuldFulfilled"
+  | "tenebrousAvatar"
+  | "witheringSpirit";
+
+export type PresenceType =
+  | "awe"
+  | "daunt"
+  | "eyesOfTheSerpent"
+  | "lingeringKiss"
+  | "dreadGaze"
+  | "entrancement"
+  | "trueLovesFace"
+  | "irresistibleVoice"
+  | "summon"
+  | "majesty"
+  | "starMagnetism";
+
+export type CelerityType =
+  | "catsGrace"
+  | "rapidReflexes"
+  | "fleetness"
+  | "blink"
+  | "traversal"
+  | "draughtOfElegance"
+  | "unerringAim"
+  | "lightningStrike"
+  | "splitSecond";
+
+export type RitualsType =
+  | "bloodWalk"
+  | "clingingOfTheInsect"
+  | "craftBloodstone"
+  | "wakeWithEveningsFreshness"
+  | "wardAgainstGhouls"
+  | "communicateWithKindredSire"
+  | "eyesOfBabel"
+  | "illuminateTheTrailOfPrey"
+  | "ishtarsTouch"
+  | "truthOfBlood"
+  | "wardAgainstSpirits"
+  | "wardingCircleAgainstGhouls"
+  | "dagonsCall"
+  | "deflectionOfWoodenDoom"
+  | "essenceOfAir"
+  | "firewalker"
+  | "wardAgainstLupines"
+  | "wardingCircleAgainstSpirits"
+  | "oneWithTheBlade"
+  | "defenseOfTheSacredHaven"
+  | "eyesOfTheNighthawk"
+  | "incorporealPassage"
+  | "wardAgainstCainites"
+  | "wardingCircleAgainstLupines"
+  | "escapeToTrueSanctuary"
+  | "heartOfStone"
+  | "shaftOfBelatedDissolution"
+  | "wardingCircleAgainstCainites";
+
+export type ThinBloodAlchemyType =
+  | "farReach"
+  | "haze"
+  | "envelop"
+  | "profaneHierosGamos"
+  | "defractionate"
+  | "airborneMomentum"
+  | "awakenTheSleeper";
+
 export type Character = {
   id: string;
   timestamp: number;
@@ -104,19 +289,19 @@ export type Character = {
   };
   bloodPotency: number;
   disciplines: {
-    animalism?: string[];
-    auspex?: string[];
-    dominate?: string[];
-    bloodSorcery?: string[];
-    fortitude?: string[];
-    protean?: string[];
-    obfuscate?: string[];
-    oblivion?: string[];
-    potence?: string[];
-    presence?: string[];
-    celerity?: string[];
-    rituals?: string[];
-    thinBloodAlchemy?: string[];
+    animalism?: AnimalismType[];
+    auspex?: AuspexType[];
+    dominate?: DominateType[];
+    bloodSorcery?: BloodSorceryType[];
+    fortitude?: FortitudeType[];
+    protean?: ProteanType[];
+    obfuscate?: ObfuscateType[];
+    oblivion?: OblivionType[];
+    potence?: PotenceType[];
+    presence?: PresenceType[];
+    celerity?: CelerityType[];
+    rituals?: RitualsType[];
+    thinBloodAlchemy?: ThinBloodAlchemyType[];
   };
   auspice: string;
   tribe: string;

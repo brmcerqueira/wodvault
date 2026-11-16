@@ -1,5 +1,5 @@
 import { CharacterMode } from "../../../character.ts";
-import { DisciplineLevelLocale, LocaleType } from "../../../i18n/localeType.ts";
+import { DisciplineType, LocaleType } from "../../../i18n/localeType.ts";
 import { keys } from "../../../utils.ts";
 import { CharacterBagContext } from "../characterBag.ts";
 import { Component, createRef } from "react";
@@ -142,7 +142,7 @@ export class DisciplinesField extends Component<Props, State> {
                       {keys(locale.disciplines[discipline]).filter((key) =>
                         key != "name"
                       ).map((level) => {
-                        const levelLocale: DisciplineLevelLocale =
+                        const levelLocale: DisciplineType =
                           locale.disciplines[discipline][level];
                         return (
                           <option
@@ -179,7 +179,7 @@ export class DisciplinesField extends Component<Props, State> {
                 </Col>
               </Row>
               {this.state.disciplines[discipline]?.map((level) => {
-                const levelLocale: DisciplineLevelLocale =
+                const levelLocale: DisciplineType =
                   (locale.disciplines as any)[discipline][level];
                 return (
                   <Row className="align-items-center mb-1" key={level}>
