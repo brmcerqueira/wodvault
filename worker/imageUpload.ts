@@ -1,22 +1,6 @@
-import type { Env } from "./env.ts";
+import { response } from "./response.ts";
 
 const MAX_FILE_SIZE = 32 * 1024 * 1024;
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Methods": "POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type",
-};
-
-function json(data: unknown, status = 200): Response {
-  return new Response(JSON.stringify(data), {
-    status,
-    headers: {
-      ...corsHeaders,
-      "Content-Type": "application/json",
-    },
-  });
-}
 
 export async function imageUpload(
   request: Request,
@@ -25,16 +9,16 @@ export async function imageUpload(
   if (request.method === "OPTIONS") {
     return new Response(null, {
       status: 204,
-      headers: corsHeaders,
+      headers: response.corsHeaders,
     });
   }
 
   if (request.method !== "POST") {
-    return json({ error: "Method not allowed" }, 405);
+    return response.json({ error: "Method not allowed" }, 405);
   }
 
   if (!env.IMGBB_API_KEY) {
-    return json({ error: "ImgBB API key not configured" }, 500);
+    return response.json({ error: "ImgBB API key not configured" }, 500);
   }
 
   try {
@@ -42,19 +26,19 @@ export async function imageUpload(
     const image = incoming.get("image");
 
     if (!(image instanceof File)) {
-      return json({ error: "Image file is required" }, 400);
+      return response.json({ error: "Image file is required" }, 400);
     }
 
     if (image.size === 0) {
-      return json({ error: "Empty image" }, 400);
+      return response.json({ error: "Empty image" }, 400);
     }
 
     if (image.size > MAX_FILE_SIZE) {
-      return json({ error: "Image exceeds 32MB limit" }, 413);
+      return response.json({ error: "Image exceeds 32MB limit" }, 413);
     }
 
     if (!image.type.startsWith("image/")) {
-      return json({ error: "Invalid image type" }, 415);
+      return response.json({ error: "Invalid image type" }, 415);
     }
 
     const form = new FormData();
@@ -76,25 +60,25 @@ export async function imageUpload(
 
     imgbbUrl.searchParams.set("key", env.IMGBB_API_KEY);
 
-    const response = await fetch(imgbbUrl, {
+    const imageResponse = await fetch(imgbbUrl, {
       method: "POST",
       body: form,
     });
 
-    const body = await response.text();
+    const body = await imageResponse.text();
 
     return new Response(body, {
-      status: response.status,
+      status: imageResponse.status,
       headers: {
-        ...corsHeaders,
-        "Content-Type": response.headers.get("Content-Type") ??
+        ...response.corsHeaders,
+        "Content-Type": imageResponse.headers.get("Content-Type") ??
           "application/json",
       },
     });
   } catch (error) {
     console.error("Upload error:", error);
 
-    return json(
+    return response.json(
       { error: "Failed to upload image" },
       500,
     );

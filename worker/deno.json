@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "lib": ["esnext"],
+    "types": ["./worker-configuration.d.ts"],
+    "skipLibCheck": true
+  },
+  "tasks": {
+    "types": "deno run -A npm:wrangler types",
+    "check": "deno check main.ts",
+    "dev": "deno run -A npm:wrangler dev",
+    "deploy": "deno run -A npm:wrangler deploy"
+  }
+}
