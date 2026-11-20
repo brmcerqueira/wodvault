@@ -5,21 +5,6 @@ import { Form, Image as BsImage, InputGroup, Spinner } from "react-bootstrap";
 
 type Props = { character: Character };
 
-function imageToBase64(file: File): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      const result = reader.result as string;
-      resolve(result);
-    };
-
-    reader.onerror = () => reject(reader.error);
-
-    reader.readAsDataURL(file);
-  });
-}
-
 export class ImageField
   extends Component<Props, { image: string; loading: boolean }> {
   static override contextType = CharacterBagContext;
@@ -43,11 +28,33 @@ export class ImageField
     const image = target.files![0];
 
     this.setState({ loading: true });
+    const formData = new FormData();
 
-    const url = await imageToBase64(image);
+    formData.append("image", image);
 
-    this.setState({ image: url, loading: false });
-    this.props.character.image = url;
+    const response = await fetch(
+      "api/upload",
+      {
+        method: "POST",
+        body: formData,
+      },
+    );
+
+    let url: string | undefined = undefined;
+
+    if (response.ok) {
+      const result = await response.json();
+
+      url = result.data?.thumb?.url ??
+        result.data?.image?.url ?? result.data?.url;
+    }
+
+    if (url) {
+      this.setState({ image: url, loading: false });
+      this.props.character.image = url;
+    } else {
+      this.setState({ loading: false });
+    }
   }
 
   public override render() {

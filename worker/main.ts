@@ -1,28 +1,14 @@
-interface Env {
-  ASSETS: {
-    fetch(request: Request): Promise<Response>;
-  };
-}
+import type { Env } from "./env.ts";
+import { imageUpload } from "./imageUpload.ts";
 
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
 
-    // API
-    if (url.pathname.startsWith("/api/")) {
-      return new Response(
-        JSON.stringify({
-          message: "API executada pelo Cloudflare Worker",
-        }),
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        },
-      );
+    if (url.pathname.startsWith("/api/upload")) {
+      return imageUpload(request, env);
     }
 
-    // Frontend estático
     return env.ASSETS.fetch(request);
   },
 };
