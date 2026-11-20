@@ -48,6 +48,7 @@ jobs:
   deploy:
     name: Deploy Cloudflare Worker
     runs-on: ubuntu-latest
+    environment: worker
     needs: build
 
     steps:
