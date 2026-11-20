@@ -96,6 +96,20 @@ export abstract class CharacterSheet extends Component<
     };
   }
 
+  protected updateMeta(property: string, content: string) {
+    let element = document.querySelector<HTMLMetaElement>(
+      `meta[property="${property}"]`,
+    );
+
+    if (!element) {
+      element = document.createElement("meta");
+      element.setAttribute("property", property);
+      document.head.appendChild(element);
+    }
+
+    element.content = content;
+  }
+
   protected abstract sheet(): JSX.Element;
 
   public override render() {
@@ -104,6 +118,15 @@ export abstract class CharacterSheet extends Component<
     }
 
     document.title = characterTitle(this.state.character);
+
+    this.updateMeta("og:title", this.state.character.name);
+    this.updateMeta(
+      "og:description",
+      `${locale.player}: ${this.state.character.player}`,
+    );
+    this.updateMeta("og:image", this.state.character.image);
+    //this.updateMeta("og:url", window.location.href);
+    this.updateMeta("og:type", "website");
 
     return (
       <CharacterBagContext.Provider value={this.state.characterBag}>

@@ -1,0 +1,27 @@
+name: Deploy static on Worker
+
+on:
+  push:
+    tags:
+      - "*"
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: Build frontend
+        env:
+          BASE_PATH: /wodvault/
+        run: |
+          deno task bootstrap
+          deno task build:frontend
