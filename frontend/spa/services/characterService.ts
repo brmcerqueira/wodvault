@@ -164,9 +164,20 @@ export function getCharacter(id: string): Character | null {
 
 export function saveCharacter(character: Character) {
   character.timestamp = timestamp();
+
+  const data = JSON.stringify(character);
+
   localStorage.setItem(
     localStorageCharacterKey(character.id),
-    JSON.stringify(character),
+    data,
+  );
+
+  fetch(
+    `api/character/${character.id}.json`,
+    {
+      method: "PUT",
+      body: data,
+    },
   );
 }
 
