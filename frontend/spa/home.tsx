@@ -197,6 +197,22 @@ export class Home extends Component<{}, {
     await dialog(new Alert(format(locale.export, character.name)));
   }
 
+  private async onShared(character: Character) {
+    const url = new URL("/", import.meta.url);
+
+    url.pathname = `api/shared/${character.id}.html`;
+
+    if (navigator.share) {
+      await navigator.share({
+        title: character.name,
+        url: url.toString(),
+      });
+    } else {
+      await navigator.clipboard.writeText(url.toString());
+      await dialog(new Alert(format(locale.shared, character.name)));
+    }
+  }
+
   private async onRemove(character: Character): Promise<void> {
     if (
       await dialog(
@@ -462,6 +478,15 @@ export class Home extends Component<{}, {
                           }}
                         >
                           <i className="bi bi-box-arrow-up-right" />
+                        </Button>
+                        <Button
+                          variant="success"
+                          onClick={async (e) => {
+                            e.stopPropagation();
+                            await this.onShared(character);
+                          }}
+                        >
+                          <i className="bi bi-share-fill" />
                         </Button>
                         <Button
                           variant="danger"

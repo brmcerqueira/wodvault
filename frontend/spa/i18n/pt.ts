@@ -35,7 +35,10 @@ export const pt: LocaleType & BaseLocaleType = Object.assign({
   advantages: "Vantagens",
   flaws: "Defeitos",
   details: "Detalhes",
-  export: "Personagem '%s' exportado com sucesso, copiado para a área de transferência.",
+  shared:
+    "Personagem '%s' compartilhado com sucesso, copiado para a área de transferência.",
+  export:
+    "Personagem '%s' exportado com sucesso, copiado para a área de transferência.",
   import: "Personagem '%s' importado com sucesso.",
   importCharacterTitle: "Importar Personagem",
   takeOwnership: "Você agora é dono do personagem '%s'.",

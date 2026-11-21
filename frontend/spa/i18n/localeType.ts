@@ -88,6 +88,7 @@ export type LocaleType = {
   advantages: string;
   flaws: string;
   details: string;
+  shared: string;
   export: string;
   import: string;
   importCharacterTitle: string;
