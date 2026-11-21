@@ -117,7 +117,7 @@ export class Home extends Component<{}, {
       if (this.state.host) {
         const webSocketPortValue =
           this.webSocketPortRef.current?.value.trim() ?? "";
-        await setWebSocketPort(
+        setWebSocketPort(
           webSocketPortValue === "" ? null : parseInt(webSocketPortValue),
         );
         await host();
@@ -176,7 +176,7 @@ export class Home extends Component<{}, {
         buildCharacter(data.kind as CharacterKind),
         data,
       ) as Character;
-      await saveCharacter(character);
+      saveCharacter(character);
       this.state.characters[character.id] = character;
       this.setState({ characters: this.state.characters });
       await dialog(new Alert(format(locale.import, character.name)));

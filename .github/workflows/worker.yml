@@ -1,0 +1,67 @@
+name: Build and Deploy Worker
+
+on:
+  push:
+    tags:
+      - "*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build React
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Deno
+        uses: denoland/setup-deno@v2
+        with:
+          deno-version: v2.x
+
+      - name: Build frontend
+        run: |
+          deno task bootstrap
+          deno task build:frontend
+
+      - name: Upload static assets
+        uses: actions/upload-artifact@v4
+        with:
+          name: react-build
+          path: static/
+          if-no-files-found: error
+          retention-days: 1
+
+      - name: Cleanup static files
+        run: |
+          find ./static -type f -name "*.min.js" -delete
+          find ./static -type f -name "*.min.js.map" -delete
+          find ./static -type f -name "index.html" -delete
+          find ./static -type d -name "vendor" -prune -exec rm -rf {} +
+
+  deploy:
+    name: Deploy Cloudflare Worker
+    runs-on: ubuntu-latest
+    environment: worker
+    needs: build
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Download static assets
+        uses: actions/download-artifact@v4
+        with:
+          name: react-build
+          path: artifact/
+
+      - name: Deploy Worker
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: deploy

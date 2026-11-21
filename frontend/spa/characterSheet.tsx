@@ -1,6 +1,6 @@
 import { Character, CharacterKind, CharacterMode } from "../../character.ts";
 import { Component, createRef } from "react";
-import { Form, Nav, Navbar } from "react-bootstrap";
+import { Form, Nav, Navbar, Spinner } from "react-bootstrap";
 import { Navigate } from "react-router";
 import { JSX } from "react/jsx-runtime";
 import { buildCharacter, getCharacter } from "./services/characterService.ts";
@@ -15,7 +15,13 @@ import { characterTitle, keys } from "../../utils.ts";
 
 export abstract class CharacterSheet extends Component<
   {},
-  { character: Character; characterBag: CharacterBag; redirect?: string }
+  {
+    character: Character;
+    characterBag: CharacterBag;
+    loading: boolean;
+    key?: string;
+    redirect?: string;
+  }
 > {
   protected experienceFieldRef = createRef<ExperienceField>();
 
@@ -30,11 +36,13 @@ export abstract class CharacterSheet extends Component<
         : "",
     );
 
-    let character = params.has("key")
-      ? getCharacter(atob(params.get("key")!))
-      : null;
+    const key = params.has("key") ? atob(params.get("key")!) : undefined;
 
-    if (character) {
+    const shared = params.get("shared") === "true";
+
+    let character = key ? getCharacter(key) : undefined;
+
+    if (character && !shared) {
       characterBag.adjustFields(character);
     } else {
       character = buildCharacter(kind);
@@ -43,6 +51,8 @@ export abstract class CharacterSheet extends Component<
     this.state = {
       characterBag,
       character: character!,
+      loading: shared,
+      key,
     };
 
     observeCharactersUpdate((characters, remove) => {
@@ -96,11 +106,33 @@ export abstract class CharacterSheet extends Component<
     };
   }
 
+  private async loadKeyByShared() {
+    const response = await fetch(
+      `api/character/${this.state.key}.json`,
+      {
+        method: "GET",
+      },
+    );
+
+    if (response.ok) {
+      const character = await response.json();
+      this.state.characterBag.adjustFields(character);
+      this.setState({ character: character, loading: false });
+    } else {
+      this.setState({ loading: false });
+    }
+  }
+
   protected abstract sheet(): JSX.Element;
 
   public override render() {
     if (this.state.redirect) {
       return <Navigate to={this.state.redirect} replace />;
+    }
+
+    if (this.state.loading && this.state.key) {
+      this.loadKeyByShared();
+      return <Spinner animation="border" size="sm" />;
     }
 
     document.title = characterTitle(this.state.character);

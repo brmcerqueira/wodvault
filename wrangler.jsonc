@@ -1,0 +1,23 @@
+{
+  "name": "wodvault",
+  "main": "worker/main.ts",
+  "compatibility_date": "2026-11-20",
+  "assets": {
+    "directory": "./artifact",
+    "binding": "ASSETS",
+    "not_found_handling": "single-page-application",
+    "run_worker_first": ["/api/*"],
+  },
+  "kv_namespaces": [
+    {
+      "binding": "STORAGE",
+      "id": "89873337436b479bbae32a2c36e74bfb",
+    },
+  ],
+  "secrets": {
+    "required": ["IMGBB_API_KEY"],
+  },
+  "observability": {
+    "enabled": true,
+  },
+}

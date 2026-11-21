@@ -1,4 +1,5 @@
 .env
+.wrangler/
 deno.lock
 *.min.js
 *.min.js.map
