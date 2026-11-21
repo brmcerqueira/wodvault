@@ -7,3 +7,4 @@ index.html
 database/
 bot/dist/
 static/vendor/
+worker/dist/

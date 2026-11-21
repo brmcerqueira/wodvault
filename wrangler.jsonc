@@ -1,6 +1,6 @@
 {
   "name": "wodvault",
-  "main": "worker/main.ts",
+  "main": "worker/dist/main.min.js",
   "compatibility_date": "2026-11-20",
   "assets": {
     "directory": "./artifact",

@@ -2,41 +2,51 @@
   {
     "label": "Deno: build frontend",
     "command": "deno task build:frontend",
-    "cwd": "$ZED_WORKTREE_ROOT"
+    "cwd": "$ZED_WORKTREE_ROOT",
   },
   {
     "label": "Deno: build index",
     "command": "deno task build:index",
-    "cwd": "$ZED_WORKTREE_ROOT"
+    "cwd": "$ZED_WORKTREE_ROOT",
   },
   {
     "label": "Deno: build spa",
     "command": "deno task build:spa",
-    "cwd": "$ZED_WORKTREE_ROOT"
+    "cwd": "$ZED_WORKTREE_ROOT",
   },
   {
     "label": "Deno: build sw",
     "command": "deno task build:sw",
-    "cwd": "$ZED_WORKTREE_ROOT"
+    "cwd": "$ZED_WORKTREE_ROOT",
+  },
+  {
+    "label": "Deno: build worker",
+    "command": "deno task worker:build",
+    "cwd": "$ZED_WORKTREE_ROOT",
+  },
+  {
+    "label": "Deno: worker types",
+    "command": "deno task worker:types",
+    "cwd": "$ZED_WORKTREE_ROOT",
   },
   {
     "label": "Deno: bootstrap",
     "command": "deno task bootstrap",
-    "cwd": "$ZED_WORKTREE_ROOT"
+    "cwd": "$ZED_WORKTREE_ROOT",
   },
   {
     "label": "Deno: serve",
     "command": "deno task serve",
-    "cwd": "$ZED_WORKTREE_ROOT"
+    "cwd": "$ZED_WORKTREE_ROOT",
   },
   {
     "label": "Deno: bot build executables",
     "command": "deno task build:executables",
-    "cwd": "$ZED_WORKTREE_ROOT/bot"
+    "cwd": "$ZED_WORKTREE_ROOT/bot",
   },
   {
     "label": "Deno: bot run",
     "command": "deno task run",
-    "cwd": "$ZED_WORKTREE_ROOT/bot"
+    "cwd": "$ZED_WORKTREE_ROOT/bot",
   },
 ]
