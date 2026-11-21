@@ -37,12 +37,13 @@ jobs:
           if-no-files-found: error
           retention-days: 1
 
-      - name: Cleanup static files
-        run: |
-          find ./static -type f -name "*.min.js" -delete
-          find ./static -type f -name "*.min.js.map" -delete
-          find ./static -type f -name "index.html" -delete
-          find ./static -type d -name "vendor" -prune -exec rm -rf {} +
+      - name: Upload Worker bundle
+        uses: actions/upload-artifact@v4
+        with:
+          name: worker-build
+          path: worker/dist/
+          if-no-files-found: error
+          retention-days: 1
 
   deploy:
     name: Deploy Cloudflare Worker
@@ -59,6 +60,19 @@ jobs:
         with:
           name: react-build
           path: artifact/
+
+      - name: Download Worker bundle
+        uses: actions/download-artifact@v4
+        with:
+          name: worker-build
+          path: worker/dist/
+
+      - name: Verify build files
+        run: |
+          test -f worker/dist/main.min.js
+          test -f artifact/index.html
+          ls -lh worker/dist/main.min.js
+          ls -lh artifact/
 
       - name: Deploy Worker
         uses: cloudflare/wrangler-action@v4
