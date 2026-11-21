@@ -1,5 +1,3 @@
-import { renderToStaticMarkup } from "react-dom/server";
-
 const basePath = Deno.env.get("BASE_PATH") ?? "/";
 
 function Index() {
@@ -34,9 +32,5 @@ function Index() {
 
 await Deno.writeTextFile(
   "./static/index.html",
-  renderToStaticMarkup(
-    <Index />,
-  ),
+  Index().toString(),
 );
-
-Deno.exit(0);

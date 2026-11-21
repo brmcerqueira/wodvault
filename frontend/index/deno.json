@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "hono/jsx",
+    "lib": ["esnext", "deno.ns"]
+  },
+  "imports": {
+    "hono": "jsr:@hono/hono",
+    "hono/jsx": "jsr:@hono/hono/jsx",
+    "hono/html": "jsr:@hono/hono/html"
+  }
+}
