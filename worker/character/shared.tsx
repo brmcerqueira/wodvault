@@ -1,4 +1,3 @@
-import { renderToStaticMarkup } from "react-dom/server";
 import { Character, CharacterKind } from "../../character.ts";
 import { response } from "../response.ts";
 import { key } from "./key.ts";
@@ -12,18 +11,13 @@ export async function shared(
   const character = value ? JSON.parse(value) as Character : null;
 
   if (character) {
-    return new Response(
-      renderToStaticMarkup(
-        <Metadata character={character} url={request.url} />,
-      ),
-      {
-        status: 200,
-        headers: {
-          ...response.corsHeaders,
-          "Content-Type": "text/html; charset=UTF-8",
-        },
+    return new Response(Metadata({ character, url: request.url }).toString(), {
+      status: 200,
+      headers: {
+        ...response.corsHeaders,
+        "Content-Type": "text/html; charset=UTF-8",
       },
-    );
+    });
   }
 
   return new Response(null, {
@@ -40,7 +34,7 @@ function Metadata(props: { character: Character; url: string }) {
   }?shared=true&key=${btoa(props.character.id)}`;
 
   return (
-    <html lang="pt-BR">
+    <html>
       <head>
         <meta charSet="UTF-8" />
         <meta property="og:title" content={props.character.name} />
@@ -54,7 +48,7 @@ function Metadata(props: { character: Character; url: string }) {
         <meta name="twitter:image" content={props.character.image ?? ""} />
         <meta http-equiv="refresh" content={`0;url=${redirectUrl}`} />
       </head>
-      <body></body>
+      <body />
     </html>
   );
 }
