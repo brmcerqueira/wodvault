@@ -1,24 +1,27 @@
+import type { Context } from "hono";
+import type { Bindings } from "../bindings.ts";
 import { Character, CharacterKind } from "../../character.ts";
 import { locale } from "../i18n/locale.ts";
 import { response } from "../response.ts";
 import { key } from "./key.ts";
 
 export async function shared(
-  request: Request,
-  env: Env,
-  id: string,
+  context: Context<Bindings>,
 ): Promise<Response> {
-  const value = await env.STORAGE.get(key(id));
+  const value = await context.env.STORAGE.get(key(context.req.param("key")!));
   const character = value ? JSON.parse(value) as Character : null;
 
   if (character) {
-    return new Response(Metadata({ character, url: request.url }).toString(), {
-      status: 200,
-      headers: {
-        ...response.corsHeaders,
-        "Content-Type": "text/html; charset=UTF-8",
+    return new Response(
+      Metadata({ character, url: context.req.url }).toString(),
+      {
+        status: 200,
+        headers: {
+          ...response.corsHeaders,
+          "Content-Type": "text/html; charset=UTF-8",
+        },
       },
-    });
+    );
   }
 
   return new Response(null, {

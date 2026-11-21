@@ -1,59 +1,24 @@
+import { Hono } from "hono";
+import type { Bindings } from "./bindings.ts";
 import { get, put, shared } from "./character/mod.ts";
 import { imageUpload } from "./imageUpload.ts";
 import { response } from "./response.ts";
 
-export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
-    const url = new URL(request.url);
+const app = new Hono<Bindings>();
 
-    if (url.pathname.startsWith("/api/upload")) {
-      return imageUpload(request, env);
-    }
+app.all("/api/upload", imageUpload);
 
-    if (
-      url.pathname.startsWith("/api/character/") &&
-      url.pathname.endsWith(".json")
-    ) {
-      const match = url.pathname.match(/\/([^/]+)\.json/);
+app.get("/api/character/:key.json", get);
 
-      const key = match?.[1];
+app.put("/api/character/:key.json", put);
 
-      if (key) {
-        if (request.method === "GET") {
-          return get(request, env, key);
-        }
+app.get("/api/shared/:key.html", shared);
 
-        if (request.method === "PUT") {
-          return put(request, env, key);
-        }
-      }
+app.notFound(() => {
+  return new Response(null, {
+    status: 404,
+    headers: response.corsHeaders,
+  });
+});
 
-      return new Response(null, {
-        status: 404,
-        headers: response.corsHeaders,
-      });
-    }
-
-    if (
-      url.pathname.startsWith("/api/shared/") &&
-      url.pathname.endsWith(".html")
-    ) {
-      const match = url.pathname.match(/\/([^/]+)\.html/);
-
-      const key = match?.[1];
-
-      if (key) {
-        if (request.method === "GET") {
-          return shared(request, env, key);
-        }
-      }
-
-      return new Response(null, {
-        status: 404,
-        headers: response.corsHeaders,
-      });
-    }
-
-    return env.ASSETS.fetch(request);
-  },
-};
+export default app;

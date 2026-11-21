@@ -1,12 +1,12 @@
+import type { Context } from "hono";
+import type { Bindings } from "../bindings.ts";
 import { response } from "../response.ts";
 import { key } from "./key.ts";
 
 export async function get(
-  _request: Request,
-  env: Env,
-  id: string,
+  context: Context<Bindings>,
 ): Promise<Response> {
-  const value = await env.STORAGE.get(key(id));
+  const value = await context.env.STORAGE.get(key(context.req.param("key")!));
 
   if (value) {
     return new Response(value, {

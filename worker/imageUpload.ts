@@ -1,13 +1,14 @@
+import type { Context } from "hono";
+import type { Bindings } from "./bindings.ts";
 import { locale } from "./i18n/locale.ts";
 import { response } from "./response.ts";
 
 const MAX_FILE_SIZE = 32 * 1024 * 1024;
 
 export async function imageUpload(
-  request: Request,
-  env: Env,
+  context: Context<Bindings>,
 ): Promise<Response> {
-  if (request.method === "OPTIONS") {
+  if (context.req.method === "OPTIONS") {
     return new Response(null, {
       status: 204,
       headers: response.corsHeaders,
@@ -15,7 +16,7 @@ export async function imageUpload(
   }
 
   try {
-    const incoming = await request.formData();
+    const incoming = await context.req.formData();
     const image = incoming.get("image");
 
     if (!(image instanceof File)) {
@@ -51,7 +52,7 @@ export async function imageUpload(
       "https://api.imgbb.com/1/upload",
     );
 
-    imgbbUrl.searchParams.set("key", env.IMGBB_API_KEY);
+    imgbbUrl.searchParams.set("key", context.env.IMGBB_API_KEY);
 
     const imageResponse = await fetch(imgbbUrl, {
       method: "POST",
