@@ -27,6 +27,7 @@ jobs:
         run: |
           deno task bootstrap
           deno task build:frontend
+          deno task worker:build
 
       - name: Upload static assets
         uses: actions/upload-artifact@v4

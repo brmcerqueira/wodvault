@@ -1,3 +1,4 @@
+import { locale } from "./i18n/locale.ts";
 import { response } from "./response.ts";
 
 const MAX_FILE_SIZE = 32 * 1024 * 1024;
@@ -13,32 +14,24 @@ export async function imageUpload(
     });
   }
 
-  if (request.method !== "POST") {
-    return response.json({ error: "Method not allowed" }, 405);
-  }
-
-  if (!env.IMGBB_API_KEY) {
-    return response.json({ error: "ImgBB API key not configured" }, 500);
-  }
-
   try {
     const incoming = await request.formData();
     const image = incoming.get("image");
 
     if (!(image instanceof File)) {
-      return response.json({ error: "Image file is required" }, 400);
+      return response.json({ error: locale.imageFileIsRequired }, 400);
     }
 
     if (image.size === 0) {
-      return response.json({ error: "Empty image" }, 400);
+      return response.json({ error: locale.emptyImage }, 400);
     }
 
     if (image.size > MAX_FILE_SIZE) {
-      return response.json({ error: "Image exceeds 32MB limit" }, 413);
+      return response.json({ error: locale.imageExceedsLimit }, 413);
     }
 
     if (!image.type.startsWith("image/")) {
-      return response.json({ error: "Invalid image type" }, 415);
+      return response.json({ error: locale.invalidImageType }, 415);
     }
 
     const form = new FormData();
@@ -79,7 +72,7 @@ export async function imageUpload(
     console.error("Upload error:", error);
 
     return response.json(
-      { error: "Failed to upload image" },
+      { error: locale.failedToUploadImage },
       500,
     );
   }

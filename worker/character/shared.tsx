@@ -1,4 +1,5 @@
 import { Character, CharacterKind } from "../../character.ts";
+import { locale } from "../i18n/locale.ts";
 import { response } from "../response.ts";
 import { key } from "./key.ts";
 
@@ -33,18 +34,28 @@ function Metadata(props: { character: Character; url: string }) {
     props.character.kind === CharacterKind.Vampire ? "vampire" : "werewolf"
   }?shared=true&key=${btoa(props.character.id)}`;
 
+  let description = `${locale.player}: ${props.character.player} · `;
+
+  if (props.character.kind === CharacterKind.Vampire) {
+    description +=
+      `${locale.clan}: ${props.character.clan} · ${locale.predator}: ${props.character.predator} · ${locale.generation}: ${props.character.generation}`;
+  } else {
+    description +=
+      `${locale.tribe}: ${props.character.tribe} · ${locale.auspice}: ${props.character.auspice}`;
+  }
+
   return (
     <html>
       <head>
         <meta charSet="UTF-8" />
         <meta property="og:title" content={props.character.name} />
-        <meta property="og:description" content={props.character.player} />
+        <meta property="og:description" content={description} />
         <meta property="og:image" content={props.character.image ?? ""} />
         <meta property="og:url" content={props.url} />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={props.character.name} />
-        <meta name="twitter:description" content={props.character.player} />
+        <meta name="twitter:description" content={description} />
         <meta name="twitter:image" content={props.character.image ?? ""} />
         <meta http-equiv="refresh" content={`0;url=${redirectUrl}`} />
       </head>
