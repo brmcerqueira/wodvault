@@ -1,4 +1,4 @@
-import { Character } from "../../character.ts";
+import { Character, CharacterKind } from "../../character.ts";
 import { response } from "../response.ts";
 import { key } from "./key.ts";
 
@@ -21,13 +21,17 @@ export async function shared(
             <meta property="og:title" content="${character.name}" />
             <meta property="og:description" content="${character.player}" />
             <meta property="og:image" content="${character.image ?? ""}" />
-            <meta property="og:url" content="#/open?key=${btoa(id)}" />
+            <meta property="og:url" content="api/shared/${id}.html" />
             <meta property="og:type" content="website" />
 
             <meta name="twitter:card" content="summary_large_image" />
             <meta name="twitter:title" content="${character.name}" />
             <meta name="twitter:description" content="${character.player}" />
             <meta name="twitter:image" content="${character.image ?? ""}" />
+
+            <meta http-equiv="refresh" content="0;#/${
+        character.kind === CharacterKind.Vampire ? "vampire" : "werewolf"
+      }?shared=true&key=${btoa(id)}" />
           </head>
           <body></body>
         </html>
