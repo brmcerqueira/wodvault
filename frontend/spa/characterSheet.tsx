@@ -117,7 +117,9 @@ export abstract class CharacterSheet extends Component<
     if (response.ok) {
       const character = await response.json();
       this.state.characterBag.adjustFields(character);
-      this.setState({ character: character });
+      this.setState({ character: character, loading: false });
+    } else {
+      this.setState({ loading: false });
     }
   }
 
