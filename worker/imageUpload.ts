@@ -1,7 +1,6 @@
 import type { Context } from "hono";
 import type { Bindings } from "./bindings.ts";
 import { locale } from "./i18n/locale.ts";
-import { response } from "./response.ts";
 
 const MAX_FILE_SIZE = 32 * 1024 * 1024;
 
@@ -9,10 +8,7 @@ export async function imageUpload(
   context: Context<Bindings>,
 ): Promise<Response> {
   if (context.req.method === "OPTIONS") {
-    return new Response(null, {
-      status: 204,
-      headers: response.corsHeaders,
-    });
+    return context.body(null, 204);
   }
 
   try {
@@ -20,19 +16,19 @@ export async function imageUpload(
     const image = incoming.get("image");
 
     if (!(image instanceof File)) {
-      return response.json({ error: locale.imageFileIsRequired }, 400);
+      return context.json({ error: locale.imageFileIsRequired }, 400);
     }
 
     if (image.size === 0) {
-      return response.json({ error: locale.emptyImage }, 400);
+      return context.json({ error: locale.emptyImage }, 400);
     }
 
     if (image.size > MAX_FILE_SIZE) {
-      return response.json({ error: locale.imageExceedsLimit }, 413);
+      return context.json({ error: locale.imageExceedsLimit }, 413);
     }
 
     if (!image.type.startsWith("image/")) {
-      return response.json({ error: locale.invalidImageType }, 415);
+      return context.json({ error: locale.invalidImageType }, 415);
     }
 
     const form = new FormData();
@@ -61,18 +57,14 @@ export async function imageUpload(
 
     const body = await imageResponse.text();
 
-    return new Response(body, {
-      status: imageResponse.status,
-      headers: {
-        ...response.corsHeaders,
-        "Content-Type": imageResponse.headers.get("Content-Type") ??
-          "application/json",
-      },
+    return context.body(body, 200, {
+      "Content-Type": imageResponse.headers.get("Content-Type") ??
+        "application/json",
     });
   } catch (error) {
     console.error("Upload error:", error);
 
-    return response.json(
+    return context.json(
       { error: locale.failedToUploadImage },
       500,
     );

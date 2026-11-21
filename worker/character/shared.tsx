@@ -2,7 +2,6 @@ import type { Context } from "hono";
 import type { Bindings } from "../bindings.ts";
 import { Character, CharacterKind } from "../../character.ts";
 import { locale } from "../i18n/locale.ts";
-import { response } from "../response.ts";
 import { key } from "./key.ts";
 
 export async function shared(
@@ -12,22 +11,16 @@ export async function shared(
   const character = value ? JSON.parse(value) as Character : null;
 
   if (character) {
-    return new Response(
+    return context.html(
       Metadata({ character, url: context.req.url }).toString(),
+      200,
       {
-        status: 200,
-        headers: {
-          ...response.corsHeaders,
-          "Content-Type": "text/html; charset=UTF-8",
-        },
+        "Content-Type": "text/html; charset=UTF-8",
       },
     );
   }
 
-  return new Response(null, {
-    status: 404,
-    headers: response.corsHeaders,
-  });
+  return context.html("", 404);
 }
 
 function Metadata(props: { character: Character; url: string }) {

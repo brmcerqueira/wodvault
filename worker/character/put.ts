@@ -1,6 +1,5 @@
 import type { Context } from "hono";
 import type { Bindings } from "../bindings.ts";
-import { response } from "../response.ts";
 import { key } from "./key.ts";
 
 export async function put(
@@ -11,8 +10,5 @@ export async function put(
     JSON.stringify(await context.req.json()),
   );
 
-  return new Response(null, {
-    status: 200,
-    headers: response.corsHeaders,
-  });
+  return context.json(null, 200);
 }

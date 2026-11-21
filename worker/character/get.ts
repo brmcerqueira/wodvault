@@ -1,6 +1,5 @@
 import type { Context } from "hono";
 import type { Bindings } from "../bindings.ts";
-import { response } from "../response.ts";
 import { key } from "./key.ts";
 
 export async function get(
@@ -9,14 +8,8 @@ export async function get(
   const value = await context.env.STORAGE.get(key(context.req.param("key")!));
 
   if (value) {
-    return new Response(value, {
-      status: 200,
-      headers: response.corsHeaders,
-    });
+    return context.body(value, 200);
   }
 
-  return new Response(null, {
-    status: 404,
-    headers: response.corsHeaders,
-  });
+  return context.json(null, 404);
 }
