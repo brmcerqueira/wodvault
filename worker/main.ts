@@ -3,6 +3,7 @@ import { cors } from "hono/cors";
 import type { Bindings } from "./bindings.ts";
 import { get, put, shared } from "./character/mod.ts";
 import { imageUpload } from "./imageUpload.ts";
+import { events } from "./events.ts";
 
 const app = new Hono<Bindings>();
 
@@ -14,6 +15,8 @@ app.use(
     allowHeaders: ["Content-Type"],
   }),
 );
+
+app.get("/api/events", events);
 
 app.all("/api/upload", imageUpload);
 
