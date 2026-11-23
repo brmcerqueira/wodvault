@@ -6,7 +6,7 @@ import character from "./character/mod.ts";
 import events from "./events/mod.ts";
 import { imageUpload } from "./imageUpload.ts";
 
-export * from "./do/mod.ts";
+export { CharacterDO, ConnectionDO } from "./do/mod.ts";
 
 const app = new Hono<Bindings>();
 
