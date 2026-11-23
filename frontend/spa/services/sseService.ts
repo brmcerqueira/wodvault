@@ -1,10 +1,21 @@
 import { Character } from "../../../character.ts";
-import { CharactersSubscribe } from "../../../charactersSubscribe.ts";
+import type {
+  CharactersSubscribe,
+  CharacterUpdate,
+} from "../../../sseTypes.ts";
 import { myId } from "./preferencesService.ts";
-import { allCharacters } from "./characterService.ts";
+import {
+  allCharacters,
+  getCharacter,
+  localStorageCharacterKey,
+  removeCharacter,
+  saveCharacter,
+} from "./characterService.ts";
 
-let observeCharactersUpdateCallback:
-  | ((characters: Character[], remove: string[]) => void)
+type CharacterUpdateCallback = (update: CharacterUpdate) => void;
+
+let characterUpdateCallback:
+  | CharacterUpdateCallback
   | undefined;
 
 const connection = new EventSource(
@@ -26,12 +37,31 @@ connection.onopen = () => {
 };
 
 connection.onmessage = (event) => {
-  const data = JSON.parse(event.data);
+  const data = JSON.parse(event.data) as CharacterUpdate;
 
   console.log("Event received:", data);
 
-  if (observeCharactersUpdateCallback) {
-    observeCharactersUpdateCallback([data], []);
+  const keys = allCharacters();
+
+  if (data.character) {
+    if (keys.includes(localStorageCharacterKey(data.character.id))) {
+      const character = getCharacter(data.character.id)!;
+      if (character.timestamp < data.character.timestamp) {
+        saveCharacter(data.character);
+      }
+    } else {
+      saveCharacter(data.character);
+    }
+  }
+
+  if (data.remove) {
+    if (keys.includes(localStorageCharacterKey(data.remove))) {
+      removeCharacter(data.remove);
+    }
+  }
+
+  if (characterUpdateCallback) {
+    characterUpdateCallback(data);
   }
 };
 
@@ -39,8 +69,20 @@ connection.onerror = (event) => {
   console.error("SSE error:", event);
 };
 
-export function observeCharactersUpdate(
-  callback: (characters: Character[], remove: string[]) => void,
+export function observeCharacterUpdate(
+  callback: CharacterUpdateCallback,
 ) {
-  observeCharactersUpdateCallback = callback;
+  characterUpdateCallback = callback;
+}
+
+export async function sendCharacterUpdate(character: Character) {
+  saveCharacter(character);
+
+  await fetch(
+    `api/character/${myId}`,
+    {
+      method: "PUT",
+      body: JSON.stringify(character),
+    },
+  );
 }

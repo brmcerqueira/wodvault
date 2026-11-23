@@ -171,14 +171,6 @@ export function saveCharacter(character: Character) {
     localStorageCharacterKey(character.id),
     data,
   );
-
-  fetch(
-    `api/character/${myId}`,
-    {
-      method: "PUT",
-      body: data,
-    },
-  );
 }
 
 export function removeCharacter(id: string) {

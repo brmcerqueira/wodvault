@@ -1,6 +1,6 @@
 import type { Context } from "hono";
 import type { Bindings } from "../bindings.ts";
-import type { CharactersSubscribe } from "../../charactersSubscribe.ts";
+import type { CharactersSubscribe } from "../../sseTypes.ts";
 import { CharacterDO } from "../do/mod.ts";
 
 export async function subscribe(

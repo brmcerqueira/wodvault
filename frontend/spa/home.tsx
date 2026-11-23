@@ -28,7 +28,6 @@ import {
   buildCharacter,
   getCharacter,
   removeCharacter,
-  saveCharacter,
 } from "./services/characterService.ts";
 import {
   connect,
@@ -36,7 +35,6 @@ import {
   connectionStatus,
   disconnect,
   host,
-  sendCharacterUpdate,
 } from "./services/peerService.ts";
 import {
   hostId,
@@ -50,7 +48,10 @@ import {
 } from "./services/preferencesService.ts";
 import { ImportCharacter } from "./dialog/importCharacter.tsx";
 import { QrcodeScanner } from "./dialog/qrcodeScanner.tsx";
-import { observeCharactersUpdate } from "./services/sseService.ts";
+import {
+  observeCharacterUpdate,
+  sendCharacterUpdate,
+} from "./services/sseService.ts";
 
 export class Home extends Component<{}, {
   showOffcanvas: boolean;
@@ -84,13 +85,13 @@ export class Home extends Component<{}, {
       characters,
     };
 
-    observeCharactersUpdate((characters, remove) => {
-      for (const character of characters) {
-        this.state.characters[character.id] = character;
+    observeCharacterUpdate((update) => {
+      if (update.remove) {
+        delete this.state.characters[update.remove];
       }
 
-      for (const id of remove) {
-        delete this.state.characters[id];
+      if (update.character) {
+        this.state.characters[update.character.id] = update.character;
       }
 
       this.setState({ characters: this.state.characters });
@@ -176,7 +177,7 @@ export class Home extends Component<{}, {
         buildCharacter(data.kind as CharacterKind),
         data,
       ) as Character;
-      saveCharacter(character);
+      await sendCharacterUpdate(character);
       this.state.characters[character.id] = character;
       this.setState({ characters: this.state.characters });
       await dialog(new Alert(format(locale.import, character.name)));

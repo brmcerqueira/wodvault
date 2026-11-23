@@ -1,5 +1,5 @@
 import { DurableObject } from "cloudflare:workers";
-import { Character } from "../../character.ts";
+import { CharacterUpdate } from "../../sseTypes.ts";
 
 export class ConnectionDO extends DurableObject {
   private encoder = new TextEncoder();
@@ -58,7 +58,7 @@ export class ConnectionDO extends DurableObject {
     return this.controller !== undefined;
   }
 
-  public sendCharacter(character: Character) {
-    this.enqueue(`data: ${JSON.stringify(character)}\n\n`);
+  public sendCharacterUpdate(update: CharacterUpdate) {
+    this.enqueue(`data: ${JSON.stringify(update)}\n\n`);
   }
 }

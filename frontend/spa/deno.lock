@@ -1,5 +1,10 @@
 {
   "version": "5",
+  "redirects": {
+    "https://esm.sh/@types/react-dom@~19.1.11/client.d.ts": "https://esm.sh/@types/react-dom@19.1.11/client.d.ts",
+    "https://esm.sh/@types/react@~19.1.17/index.d.ts": "https://esm.sh/@types/react@19.1.17/index.d.ts",
+    "https://esm.sh/@types/react@~19.1.17/jsx-runtime.d.ts": "https://esm.sh/@types/react@19.1.17/jsx-runtime.d.ts"
+  },
   "remote": {
     "https://esm.sh/html5-qrcode@2.3.8/es2022/html5-qrcode.bundle.mjs": "38a1284117a9a264319a744777cd13f15d10085a58f92ac232d0cfd601aa75fa",
     "https://esm.sh/html5-qrcode@2.3.8?target=es2022&bundle": "cbd06cc53aa60f50bcc81f0c1546597a28d9ed61ea336be952d2b10ad1285f83",

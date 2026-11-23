@@ -42,7 +42,7 @@ export function connectionStatus(): ConnectionStatus {
   return _connectionStatus;
 }
 
-export async function sendCharacterUpdate(character: Character) {
+export async function sendCharacterUpdate2(character: Character) {
   saveCharacter(character);
 
   if (clientConnection) {

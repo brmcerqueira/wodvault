@@ -19,7 +19,7 @@ export async function put(
     context.env.CHARACTERS.idFromName(character.id),
   ) as unknown as CharacterDO;
 
-  stub.notify(character, key);
+  stub.notify({ character }, key);
 
   return context.json(null, 200);
 }

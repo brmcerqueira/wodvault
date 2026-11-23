@@ -1,6 +1,7 @@
 import { DurableObject } from "cloudflare:workers";
 import { Character } from "../../character.ts";
 import { ConnectionDO } from "./connectionDO.ts";
+import { CharacterUpdate } from "../../sseTypes.ts";
 
 const connectionsKey: string = "connections";
 
@@ -24,17 +25,15 @@ export class CharacterDO extends DurableObject {
 
   public async subscribe(id: string) {
     this.connections.add(id);
-
     await this.ctx.storage.put(connectionsKey, [...this.connections]);
   }
 
   public async unsubscribe(id: string) {
     this.connections.delete(id);
-
     await this.ctx.storage.put(connectionsKey, [...this.connections]);
   }
 
-  public notify(character: Character, myConnectionKey: string) {
+  public notify(update: CharacterUpdate, myConnectionKey: string) {
     for (const key of this.connections) {
       if (myConnectionKey !== key) {
         const stub = this.env.CONNECTIONS.get(
@@ -42,7 +41,7 @@ export class CharacterDO extends DurableObject {
         ) as unknown as ConnectionDO;
 
         if (stub.isConnected) {
-          stub.sendCharacter(character);
+          stub.sendCharacterUpdate(update);
         }
       }
     }

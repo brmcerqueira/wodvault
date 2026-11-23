@@ -4,12 +4,14 @@ import { Form, Nav, Navbar, Spinner } from "react-bootstrap";
 import { Navigate } from "react-router";
 import { JSX } from "react/jsx-runtime";
 import { buildCharacter, getCharacter } from "./services/characterService.ts";
-import { sendCharacterUpdate } from "./services/peerService.ts";
 import { CharacterBag, CharacterBagContext } from "./characterBag.ts";
 import { ExperienceField } from "./fields/experienceField.tsx";
 import { locale } from "./i18n/locale.ts";
 import { characterTitle, keys } from "../../utils.ts";
-import { observeCharactersUpdate } from "./services/sseService.ts";
+import {
+  observeCharacterUpdate,
+  sendCharacterUpdate,
+} from "./services/sseService.ts";
 
 export abstract class CharacterSheet extends Component<
   {},
@@ -53,14 +55,11 @@ export abstract class CharacterSheet extends Component<
       key,
     };
 
-    observeCharactersUpdate((characters, remove) => {
-      if (remove.includes(this.state.character.id)) {
+    observeCharacterUpdate((update) => {
+      if (update.remove && this.state.character.id == update.remove) {
         this.setState({ redirect: "/" });
-      } else if (!this.state.characterBag.edit) {
-        const character = characters.find((character) =>
-          character.id == this.state.character.id
-        );
-        if (character) {
+      } else if (update.character && !this.state.characterBag.edit) {
+        if (this.state.character.id == update.character.id) {
           this.state.characterBag.adjustFields(character);
           this.setState({ character: character });
         }
