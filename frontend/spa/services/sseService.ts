@@ -48,6 +48,12 @@ connection.onmessage = (event) => {
       const character = getCharacter(data.character.id)!;
       if (character.timestamp < data.character.timestamp) {
         saveCharacter(data.character);
+      } else {
+        console.log(
+          "The character has already been updated: ",
+          character,
+          data.character,
+        );
       }
     } else {
       saveCharacter(data.character);

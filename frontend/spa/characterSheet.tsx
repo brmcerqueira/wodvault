@@ -60,8 +60,8 @@ export abstract class CharacterSheet extends Component<
         this.setState({ redirect: "/" });
       } else if (update.character && !this.state.characterBag.edit) {
         if (this.state.character.id == update.character.id) {
-          this.state.characterBag.adjustFields(character);
-          this.setState({ character: character });
+          this.state.characterBag.adjustFields(update.character);
+          this.setState({ character: update.character });
         }
       }
     });
