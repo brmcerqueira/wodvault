@@ -6,6 +6,7 @@ import { imageUpload } from "./imageUpload.ts";
 import { events } from "./events.ts";
 
 export { CharacterDO } from "./characterDO.ts";
+export { ConnectionDO } from "./connectionDO.ts";
 
 const app = new Hono<Bindings>();
 
@@ -18,7 +19,7 @@ app.use(
   }),
 );
 
-app.get("/api/events", events);
+app.get("/api/events/:key", events);
 
 app.all("/api/upload", imageUpload);
 

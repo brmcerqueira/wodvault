@@ -14,12 +14,16 @@
         "name": "CHARACTERS",
         "class_name": "CharacterDO",
       },
+      {
+        "name": "CONNECTIONS",
+        "class_name": "ConnectionDO",
+      },
     ],
   },
   "migrations": [
     {
       "tag": "v1",
-      "new_sqlite_classes": ["CharacterDO"],
+      "new_sqlite_classes": ["CharacterDO", "ConnectionDO"],
     },
   ],
   "kv_namespaces": [
