@@ -49,7 +49,7 @@ const characterEvents = new CharacterEvents(myId, {
   if (characterUpdateCallback) {
     characterUpdateCallback(update);
   }
-});
+}, "");
 
 export function observeCharacterUpdate(
   callback: CharacterUpdateCallback,

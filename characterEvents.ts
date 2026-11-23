@@ -2,14 +2,12 @@ import { Character } from "./character.ts";
 import { CharactersSubscribe, CharacterUpdate } from "./sseTypes.ts";
 
 export class CharacterEvents {
-  private host: string;
   constructor(
     private id: string,
     initSubscribe: CharactersSubscribe,
     onCharacterUpdate: (update: CharacterUpdate) => void,
-    host?: string,
+    private host: string,
   ) {
-    this.host = host ?? "";
     const connection = new EventSource(
       `${this.host}/api/events/${id}`,
     );

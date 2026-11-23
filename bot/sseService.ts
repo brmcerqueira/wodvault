@@ -34,7 +34,7 @@ const characterEvents = new CharacterEvents(myId, {
       saveCharacter(update.character);
     }
   }
-});
+}, Deno.env.get("SSE_HOST")!);
 
 export async function sendCharacterUpdate(character: Character) {
   await saveCharacter(character);
