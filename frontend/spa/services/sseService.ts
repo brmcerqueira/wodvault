@@ -1,8 +1,6 @@
 import { Character } from "../../../character.ts";
-import type {
-  CharactersSubscribe,
-  CharacterUpdate,
-} from "../../../sseTypes.ts";
+import { CharacterEvents } from "../../../characterEvents.ts";
+import type { CharacterUpdate } from "../../../sseTypes.ts";
 import { myId } from "./preferencesService.ts";
 import {
   allCharacters,
@@ -18,62 +16,40 @@ let characterUpdateCallback:
   | CharacterUpdateCallback
   | undefined;
 
-const connection = new EventSource(
-  `/api/events/${myId}`,
-);
-
-connection.onopen = () => {
-  console.log("SSE connected");
-
-  fetch(
-    `api/events/${myId}/subscribe`,
-    {
-      method: "PUT",
-      body: JSON.stringify({
-        subscribe: allCharacters(),
-      } as CharactersSubscribe),
-    },
-  );
-};
-
-connection.onmessage = (event) => {
-  const data = JSON.parse(event.data) as CharacterUpdate;
-
-  console.log("Event received:", data);
+const characterEvents = new CharacterEvents(myId, {
+  subscribe: allCharacters(),
+}, (update) => {
+  console.log("Event received:", update);
 
   const keys = allCharacters();
 
-  if (data.character) {
-    if (keys.includes(localStorageCharacterKey(data.character.id))) {
-      const character = getCharacter(data.character.id)!;
-      if (character.timestamp < data.character.timestamp) {
-        saveCharacter(data.character);
+  if (update.character) {
+    if (keys.includes(localStorageCharacterKey(update.character.id))) {
+      const character = getCharacter(update.character.id)!;
+      if (character.timestamp < update.character.timestamp) {
+        saveCharacter(update.character);
       } else {
         console.log(
           "The character has already been updated: ",
           character,
-          data.character,
+          update.character,
         );
       }
     } else {
-      saveCharacter(data.character);
+      saveCharacter(update.character);
     }
   }
 
-  if (data.remove) {
-    if (keys.includes(localStorageCharacterKey(data.remove))) {
-      removeCharacter(data.remove);
+  if (update.remove) {
+    if (keys.includes(localStorageCharacterKey(update.remove))) {
+      removeCharacter(update.remove);
     }
   }
 
   if (characterUpdateCallback) {
-    characterUpdateCallback(data);
+    characterUpdateCallback(update);
   }
-};
-
-connection.onerror = (event) => {
-  console.error("SSE error:", event);
-};
+});
 
 export function observeCharacterUpdate(
   callback: CharacterUpdateCallback,
@@ -83,12 +59,5 @@ export function observeCharacterUpdate(
 
 export async function sendCharacterUpdate(character: Character) {
   saveCharacter(character);
-
-  await fetch(
-    `api/character/${myId}`,
-    {
-      method: "PUT",
-      body: JSON.stringify(character),
-    },
-  );
+  await characterEvents.sendUpdate(character);
 }
