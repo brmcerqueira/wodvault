@@ -1,7 +1,7 @@
 import type { Context } from "hono";
-import type { Bindings } from "./bindings.ts";
+import type { Bindings } from "../bindings.ts";
 
-export async function events(
+export function get(
   context: Context<Bindings>,
 ): Promise<Response> {
   const stub = context.env.CONNECTIONS.get(

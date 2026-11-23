@@ -2,13 +2,11 @@ import type { Context } from "hono";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import type { Bindings } from "./bindings.ts";
-import { get, put, shared } from "./character/mod.ts";
-import { events } from "./events.ts";
+import character from "./character/mod.ts";
+import events from "./events/mod.ts";
 import { imageUpload } from "./imageUpload.ts";
-import { subscribe } from "./subscribe.ts";
 
-export { CharacterDO } from "./characterDO.ts";
-export { ConnectionDO } from "./connectionDO.ts";
+export * from "./do/mod.ts";
 
 const app = new Hono<Bindings>();
 
@@ -21,17 +19,11 @@ app.use(
   }),
 );
 
-app.get("/api/events/:key", events);
-
-app.put("/api/events/:key/subscribe", subscribe);
-
 app.all("/api/upload", imageUpload);
 
-app.get("/api/character/:key.json", get);
+app.route("/api/events", events);
 
-app.put("/api/character/:key.json", put);
-
-app.get("/api/shared/:key.html", shared);
+app.route("/api/character", character);
 
 app.notFound((context: Context<Bindings>) => {
   return context.body(null, 404);

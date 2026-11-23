@@ -1,9 +1,9 @@
 import { DurableObject } from "cloudflare:workers";
-import { Character } from "../character.ts";
+import { Character } from "../../character.ts";
 
 export class ConnectionDO extends DurableObject {
   private encoder = new TextEncoder();
-  private controller!: ReadableStreamDefaultController<Uint8Array>;
+  private controller: ReadableStreamDefaultController<Uint8Array> | undefined;
   private interval: number | undefined;
 
   constructor(
@@ -45,12 +45,17 @@ export class ConnectionDO extends DurableObject {
     if (this.interval) {
       clearInterval(this.interval);
     }
+    this.controller = undefined;
   }
 
   private enqueue(message: string) {
-    this.controller.enqueue(
+    this.controller?.enqueue(
       this.encoder.encode(message),
     );
+  }
+
+  public get isConnected(): boolean {
+    return this.controller !== undefined;
   }
 
   public sendCharacter(character: Character) {
