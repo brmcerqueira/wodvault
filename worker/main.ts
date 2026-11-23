@@ -5,6 +5,8 @@ import { get, put, shared } from "./character/mod.ts";
 import { imageUpload } from "./imageUpload.ts";
 import { events } from "./events.ts";
 
+export { CharacterDO } from "./characterDO.ts";
+
 const app = new Hono<Bindings>();
 
 app.use(

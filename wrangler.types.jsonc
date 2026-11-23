@@ -1,0 +1,30 @@
+{
+  "name": "wodvault-types",
+  "main": "worker/main.ts",
+  "compatibility_date": "2026-11-20",
+  "assets": {
+    "binding": "ASSETS",
+  },
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "CHARACTERS",
+        "class_name": "CharacterDO",
+      },
+    ],
+  },
+  "exports": {
+    "CharacterDO": {
+      "type": "durable-object",
+      "storage": "sqlite"
+    },
+  },
+  "kv_namespaces": [
+    {
+      "binding": "STORAGE",
+    },
+  ],
+  "secrets": {
+    "required": ["IMGBB_API_KEY"],
+  },
+}

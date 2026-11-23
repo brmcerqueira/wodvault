@@ -11,15 +11,15 @@
   "durable_objects": {
     "bindings": [
       {
-        "name": "CHARACTER_EVENTS",
-        "class_name": "CharacterEvents",
+        "name": "CHARACTERS",
+        "class_name": "CharacterDO",
       },
     ],
   },
   "migrations": [
     {
       "tag": "v1",
-      "new_sqlite_classes": ["CharacterEvents"],
+      "new_sqlite_classes": ["CharacterDO"],
     },
   ],
   "kv_namespaces": [
