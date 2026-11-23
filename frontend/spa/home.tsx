@@ -1,8 +1,7 @@
 import { Character, CharacterKind } from "../../character.ts";
 import { keys } from "../../utils.ts";
-import { Component, createRef, JSX } from "react";
+import { Component } from "react";
 import { Navigate } from "react-router";
-import { QRCodeSVG } from "react-qrcode";
 import {
   Button,
   ButtonGroup,
@@ -10,13 +9,11 @@ import {
   Col,
   Container,
   Form,
-  InputGroup,
   Nav,
   Navbar,
   NavDropdown,
   Offcanvas,
   Row,
-  Spinner,
 } from "react-bootstrap";
 import { Alert } from "./dialog/alert.ts";
 import { Confirm } from "./dialog/confirm.ts";
@@ -29,25 +26,8 @@ import {
   getCharacter,
   removeCharacter,
 } from "./services/characterService.ts";
-import {
-  connect,
-  ConnectionStatus,
-  connectionStatus,
-  disconnect,
-  host,
-} from "./services/peerService.ts";
-import {
-  hostId,
-  isDark,
-  isHost,
-  myId,
-  setDark,
-  setHost,
-  setWebSocketPort,
-  webSocketPort,
-} from "./services/preferencesService.ts";
+import { isDark, myId, setDark } from "./services/preferencesService.ts";
 import { ImportCharacter } from "./dialog/importCharacter.tsx";
-import { QrcodeScanner } from "./dialog/qrcodeScanner.tsx";
 import {
   observeCharacterUpdate,
   sendCharacterUpdate,
@@ -55,15 +35,10 @@ import {
 
 export class Home extends Component<{}, {
   showOffcanvas: boolean;
-  host: boolean;
-  connectionStatus: ConnectionStatus;
   dark: boolean;
   characters: Record<string, Character>;
   redirect?: string;
 }> {
-  private connectIdRef = createRef<HTMLInputElement>();
-  private webSocketPortRef = createRef<HTMLInputElement>();
-
   constructor() {
     super({});
 
@@ -79,8 +54,6 @@ export class Home extends Component<{}, {
 
     this.state = {
       showOffcanvas: false,
-      host: isHost(),
-      connectionStatus: connectionStatus(),
       dark: isDark(),
       characters,
     };
@@ -98,58 +71,9 @@ export class Home extends Component<{}, {
     });
   }
 
-  private onSwitchHost(value: boolean) {
-    setHost(value);
-    this.setState({ host: value });
-  }
-
-  private onCopyMyIdInClipboard(): void {
-    navigator.clipboard.writeText(myId);
-  }
-
-  private async onConnectOrDisconnect(): Promise<void> {
-    if (
-      this.state.connectionStatus == ConnectionStatus.Connected ||
-      this.state.connectionStatus == ConnectionStatus.Connecting
-    ) {
-      disconnect();
-    } else {
-      this.setState({ connectionStatus: ConnectionStatus.Connecting });
-      if (this.state.host) {
-        const webSocketPortValue =
-          this.webSocketPortRef.current?.value.trim() ?? "";
-        setWebSocketPort(
-          webSocketPortValue === "" ? null : parseInt(webSocketPortValue),
-        );
-        await host();
-      } else {
-        const id = this.connectIdRef.current?.value.trim() ?? "";
-
-        if (id.length > 0) {
-          await connect(id);
-        }
-      }
-    }
-
-    this.setState({ connectionStatus: connectionStatus() });
-  }
-
   private onSwitchDark(value: boolean): void {
     setDark(value);
     this.setState({ dark: value });
-  }
-
-  private async onQrcodeScan() {
-    const id = await dialog(new QrcodeScanner());
-    if (id) {
-      const connectId = this.connectIdRef.current;
-      if (connectId) {
-        connectId.value = id;
-      }
-      this.setState({ connectionStatus: ConnectionStatus.Connecting });
-      await connect(id);
-      this.setState({ connectionStatus: connectionStatus() });
-    }
   }
 
   private async onOwnership(character: Character) {
@@ -241,41 +165,12 @@ export class Home extends Component<{}, {
     return result;
   }
 
-  private renderConnectButtonContent(): string | JSX.Element {
-    switch (this.state.connectionStatus) {
-      case ConnectionStatus.Connecting:
-        return (
-          <>
-            <Spinner animation="border" size="sm" className="me-2" />
-            {locale.cancel}
-          </>
-        );
-      case ConnectionStatus.Connected:
-        return locale.disconnect;
-      default:
-        return this.state.host ? locale.host : locale.connect;
-    }
-  }
-
-  private renderConnectButtonVariant(): string {
-    switch (this.state.connectionStatus) {
-      case ConnectionStatus.Connecting:
-        return "warning";
-      case ConnectionStatus.Connected:
-        return "danger";
-      default:
-        return "primary";
-    }
-  }
-
   public override render() {
     if (this.state.redirect) {
       return <Navigate to={this.state.redirect} replace />;
     }
 
     const array = keys(this.state.characters);
-
-    const hostIdValue = hostId();
 
     return (
       <>
@@ -310,82 +205,7 @@ export class Home extends Component<{}, {
         >
           <Offcanvas.Header closeButton />
           <Offcanvas.Body className="d-flex flex-column">
-            <Form.Group className="mb-3">
-              {this.state.host
-                ? (
-                  <>
-                    <div className="d-flex justify-content-center mb-2">
-                      <QRCodeSVG
-                        value={myId}
-                        size={250}
-                        level="H"
-                        marginSize={2}
-                      />
-                    </div>
-                    <InputGroup>
-                      <Form.Control defaultValue={myId} disabled />
-                      <Button
-                        variant="outline-secondary"
-                        onClick={() => this.onCopyMyIdInClipboard()}
-                      >
-                        <i className="bi bi-copy" />
-                      </Button>
-                    </InputGroup>
-                    <Form.Group className="mt-3 mb-3">
-                      <Form.Label>
-                        <i className="bi bi-router" /> {locale.webSocketPort}
-                      </Form.Label>
-                      <Form.Control
-                        type="number"
-                        defaultValue={webSocketPort() ?? ""}
-                        ref={this.webSocketPortRef}
-                      />
-                    </Form.Group>
-                  </>
-                )
-                : (
-                  <InputGroup>
-                    <Form.Control
-                      defaultValue={hostIdValue != null && hostIdValue != myId
-                        ? hostIdValue
-                        : ""}
-                      ref={this.connectIdRef}
-                      disabled={this.state.connectionStatus !==
-                        ConnectionStatus.Disconnected}
-                    />
-                    <Button
-                      variant="outline-secondary"
-                      onClick={async (e) => {
-                        e.stopPropagation();
-                        await this.onQrcodeScan();
-                      }}
-                    >
-                      <i className="bi bi-qr-code-scan" />
-                    </Button>
-                  </InputGroup>
-                )}
-              <Button
-                className="mt-2 w-100"
-                variant={this.renderConnectButtonVariant()}
-                onClick={async () => await this.onConnectOrDisconnect()}
-              >
-                {this.renderConnectButtonContent()}
-              </Button>
-            </Form.Group>
             <div className="mt-auto border-top pt-3">
-              <Form.Check
-                className="mb-2"
-                onChange={(e) => this.onSwitchHost(e.target.checked)}
-                defaultChecked={this.state.host}
-                type="switch"
-                label={
-                  <i
-                    className={`bi ${
-                      this.state.host ? "bi-broadcast" : "bi-broadcast-pin"
-                    }`}
-                  />
-                }
-              />
               <Form.Check
                 className="mb-2"
                 onChange={(e) => this.onSwitchDark(e.target.checked)}

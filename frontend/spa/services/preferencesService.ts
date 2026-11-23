@@ -4,38 +4,6 @@ if (localStorage.getItem("myId") == null) {
 
 export const myId = localStorage.getItem("myId") as string;
 
-export function webSocketPort(): number | null {
-  return localStorage.getItem("webSocketPort") ? parseInt(localStorage.getItem("webSocketPort") as string) : null;
-}
-
-export function setWebSocketPort(port: number | null): void {
-  if (port === null) {
-    localStorage.removeItem("webSocketPort");
-  } else {
-    localStorage.setItem("webSocketPort", port.toString());
-  }
-}
-
-export function hostId(): string | null {
-  return localStorage.getItem("hostId");
-}
-
-export function setHostId(id: string | null): void {
-  if (id === null) {
-    localStorage.removeItem("hostId");
-  } else {
-    localStorage.setItem("hostId", id);
-  }
-}
-
-export function isHost(): boolean {
-  return getBoolean("host");
-}
-
-export function setHost(value: boolean) {
-  localStorage.setItem("host", JSON.stringify(value));
-}
-
 let _dark = getBoolean("dark");
 
 if (_dark) {
