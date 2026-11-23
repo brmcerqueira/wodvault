@@ -36,7 +36,6 @@ import {
   connectionStatus,
   disconnect,
   host,
-  observeCharactersUpdate,
   sendCharacterUpdate,
 } from "./services/peerService.ts";
 import {
@@ -51,6 +50,7 @@ import {
 } from "./services/preferencesService.ts";
 import { ImportCharacter } from "./dialog/importCharacter.tsx";
 import { QrcodeScanner } from "./dialog/qrcodeScanner.tsx";
+import { observeCharactersUpdate } from "./services/sseService.ts";
 
 export class Home extends Component<{}, {
   showOffcanvas: boolean;

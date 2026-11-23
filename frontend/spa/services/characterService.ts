@@ -173,7 +173,7 @@ export function saveCharacter(character: Character) {
   );
 
   fetch(
-    `api/character/${character.id}.json`,
+    `api/character/${myId}`,
     {
       method: "PUT",
       body: data,

@@ -4,14 +4,12 @@ import { Form, Nav, Navbar, Spinner } from "react-bootstrap";
 import { Navigate } from "react-router";
 import { JSX } from "react/jsx-runtime";
 import { buildCharacter, getCharacter } from "./services/characterService.ts";
-import {
-  observeCharactersUpdate,
-  sendCharacterUpdate,
-} from "./services/peerService.ts";
+import { sendCharacterUpdate } from "./services/peerService.ts";
 import { CharacterBag, CharacterBagContext } from "./characterBag.ts";
 import { ExperienceField } from "./fields/experienceField.tsx";
 import { locale } from "./i18n/locale.ts";
 import { characterTitle, keys } from "../../utils.ts";
+import { observeCharactersUpdate } from "./services/sseService.ts";
 
 export abstract class CharacterSheet extends Component<
   {},

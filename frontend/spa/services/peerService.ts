@@ -152,7 +152,7 @@ export async function connect(id: string): Promise<void> {
   });
 }
 
-export function observeCharactersUpdate(
+export function observeCharactersUpdate2(
   callback: (characters: Character[], remove: string[]) => void,
 ) {
   observeCharactersUpdateCallback = callback;
