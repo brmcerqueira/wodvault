@@ -1,24 +1,28 @@
 import { DurableObject } from "cloudflare:workers";
 import { Character } from "../character.ts";
+import { ConnectionDO } from "./connectionDO.ts";
 
 export class CharacterDO extends DurableObject {
+  private connections: Set<DurableObjectId> = new Set();
   constructor(
-    private state: DurableObjectState,
+    state: DurableObjectState,
     env: Env,
   ) {
     super(state, env);
   }
 
-  async saveCharacter(character: Character) {
-    await this.state.storage.put(
-      "character",
-      character,
-    );
+  public subscribe(id: DurableObjectId) {
+    this.connections.add(id);
   }
 
-  async getCharacter() {
-    return await this.state.storage.get<Character>(
-      "character",
-    );
+  public unsubscribe(id: DurableObjectId) {
+    this.connections.delete(id);
+  }
+
+  public notify(character: Character) {
+    for (const id of this.connections) {
+      const stub = this.env.CONNECTIONS.get(id) as unknown as ConnectionDO;
+      stub.sendCharacter(character);
+    }
   }
 }
