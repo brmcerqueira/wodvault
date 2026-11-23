@@ -2,6 +2,8 @@ import { DurableObject } from "cloudflare:workers";
 import { Character } from "../../character.ts";
 import { ConnectionDO } from "./connectionDO.ts";
 
+const connectionsKey: string = "connections";
+
 export class CharacterDO extends DurableObject {
   private connections: Set<string> = new Set();
   constructor(
@@ -9,14 +11,27 @@ export class CharacterDO extends DurableObject {
     env: Env,
   ) {
     super(state, env);
+
+    this.ctx.blockConcurrencyWhile(async () => {
+      const connections = await this.ctx.storage.get<string[]>(connectionsKey);
+      if (connections) {
+        for (const id of connections) {
+          this.connections.add(id);
+        }
+      }
+    });
   }
 
-  public subscribe(id: string) {
+  public async subscribe(id: string) {
     this.connections.add(id);
+
+    await this.ctx.storage.put(connectionsKey, [...this.connections]);
   }
 
-  public unsubscribe(id: string) {
+  public async unsubscribe(id: string) {
     this.connections.delete(id);
+
+    await this.ctx.storage.put(connectionsKey, [...this.connections]);
   }
 
   public notify(character: Character, myConnectionKey: string) {

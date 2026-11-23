@@ -31,7 +31,7 @@ connection.onmessage = (event) => {
   console.log("Event received:", data);
 
   if (observeCharactersUpdateCallback) {
-    observeCharactersUpdateCallback(data, []);
+    observeCharactersUpdateCallback([data], []);
   }
 };
 

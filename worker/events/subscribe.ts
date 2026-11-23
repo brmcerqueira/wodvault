@@ -12,14 +12,14 @@ export async function subscribe(
   if (body.subscribe) {
     for (const id of body.subscribe) {
       const stub = getCharacterDO(context, id);
-      stub.subscribe(key);
+      await stub.subscribe(key);
     }
   }
 
   if (body.unsubscribe) {
     for (const id of body.unsubscribe) {
       const stub = getCharacterDO(context, id);
-      stub.unsubscribe(key);
+      await stub.unsubscribe(key);
     }
   }
 
