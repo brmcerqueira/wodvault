@@ -16,7 +16,6 @@ import { logger } from "./logger.ts";
 import { encodeBase64 } from "@std/encoding/base64";
 import { interactionCustomId } from "./actions/module.ts";
 import { locale } from "./i18n/locale.ts";
-import { start } from "./webSocketService.ts";
 
 interface CreateEmojiPayload {
   name: string;
@@ -166,7 +165,5 @@ client.on("ready", async () => {
     }
   }
 });
-
-start(parseInt(Deno.env.get("WEBSOCKET_PORT") ?? "8787"));
 
 await client.connect();

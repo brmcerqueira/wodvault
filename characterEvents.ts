@@ -46,8 +46,4 @@ export class CharacterEvents {
       },
     );
   }
-
-  public timestamp(): number {
-    return Date.now();
-  }
 }
