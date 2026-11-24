@@ -5,6 +5,7 @@ import type { Bindings } from "./bindings.ts";
 import character from "./character/mod.ts";
 import events from "./events/mod.ts";
 import { imageUpload } from "./imageUpload.ts";
+import { locale } from "./i18n/locale.ts";
 
 export { CharacterDO, ConnectionDO } from "./do/mod.ts";
 
@@ -18,6 +19,20 @@ app.use(
     allowHeaders: ["Content-Type"],
   }),
 );
+
+app.onError((error: Error, context: Context<Bindings>) => {
+  console.error({
+    method: context.req.method,
+    path: context.req.path,
+    error: error.message,
+    stack: error.stack,
+  });
+
+  return context.json(
+    { error: locale.internalServerError },
+    500,
+  );
+});
 
 app.all("/api/upload", imageUpload);
 

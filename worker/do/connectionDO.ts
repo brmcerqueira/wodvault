@@ -13,32 +13,27 @@ export class ConnectionDO extends DurableObject {
     super(state, env);
   }
 
-  override async fetch(request: Request): Promise<Response> {
+  override async fetch(_request: Request): Promise<Response> {
     this.cancel();
 
-    const stream = new ReadableStream<Uint8Array>({
-      start: (controller) => {
-        this.start(controller);
+    return new Response(
+      new ReadableStream<Uint8Array>({
+        start: (controller) => {
+          this.start(controller);
+        },
+        cancel: () => {
+          this.cancel();
+        },
+      }),
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "text/event-stream; charset=utf-8",
+          "Cache-Control": "no-cache, no-transform",
+          "X-Accel-Buffering": "no",
+        },
       },
-      cancel: () => {
-        this.cancel();
-      },
-    });
-
-    request.signal.addEventListener(
-      "abort",
-      () => this.cancel(),
-      { once: true },
     );
-
-    return new Response(stream, {
-      status: 200,
-      headers: {
-        "Content-Type": "text/event-stream; charset=utf-8",
-        "Cache-Control": "no-cache, no-transform",
-        "X-Accel-Buffering": "no",
-      },
-    });
   }
 
   private start(controller: ReadableStreamDefaultController<Uint8Array>) {
@@ -52,6 +47,7 @@ export class ConnectionDO extends DurableObject {
   }
 
   private cancel() {
+    console.info(`connection[${this.ctx.id}]-cancel`);
     if (this.interval !== undefined) {
       clearInterval(this.interval);
       this.interval = undefined;
@@ -64,6 +60,7 @@ export class ConnectionDO extends DurableObject {
     if (!this.controller) return;
 
     try {
+      console.info(`connection[${this.ctx.id}]-enqueue -> ${message}`);
       this.controller.enqueue(this.encoder.encode(message));
     } catch {
       this.cancel();
