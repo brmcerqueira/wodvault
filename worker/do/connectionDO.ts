@@ -13,45 +13,61 @@ export class ConnectionDO extends DurableObject {
     super(state, env);
   }
 
-  override async fetch(_request: Request): Promise<Response> {
-    return new Response(
-      new ReadableStream<Uint8Array>({
-        start: (c) => this.start(c),
-        cancel: () => this.cancel(),
-      }),
-      {
-        headers: {
-          "Content-Type": "text/event-stream",
-          "Cache-Control": "no-cache",
-          "Connection": "keep-alive",
-        },
+  override async fetch(request: Request): Promise<Response> {
+    this.cancel();
+
+    const stream = new ReadableStream<Uint8Array>({
+      start: (controller) => {
+        this.start(controller);
       },
+      cancel: () => {
+        this.cancel();
+      },
+    });
+
+    request.signal.addEventListener(
+      "abort",
+      () => this.cancel(),
+      { once: true },
     );
+
+    return new Response(stream, {
+      status: 200,
+      headers: {
+        "Content-Type": "text/event-stream; charset=utf-8",
+        "Cache-Control": "no-cache, no-transform",
+        "X-Accel-Buffering": "no",
+      },
+    });
   }
 
   private start(controller: ReadableStreamDefaultController<Uint8Array>) {
     this.controller = controller;
 
+    this.enqueue(": connected\n\n");
+
     this.interval = setInterval(() => {
-      try {
-        this.enqueue(": ping\n\n");
-      } catch {
-        this.cancel();
-      }
-    }, 30_000);
+      this.enqueue(": ping\n\n");
+    }, 20_000);
   }
 
   private cancel() {
-    if (this.interval) {
+    if (this.interval !== undefined) {
       clearInterval(this.interval);
+      this.interval = undefined;
     }
+
     this.controller = undefined;
   }
 
   private enqueue(message: string) {
-    this.controller?.enqueue(
-      this.encoder.encode(message),
-    );
+    if (!this.controller) return;
+
+    try {
+      this.controller.enqueue(this.encoder.encode(message));
+    } catch {
+      this.cancel();
+    }
   }
 
   public get isConnected(): boolean {
