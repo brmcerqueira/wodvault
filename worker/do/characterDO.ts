@@ -1,6 +1,6 @@
 import { DurableObject } from "cloudflare:workers";
-import { ConnectionDO } from "./connectionDO.ts";
 import { CharacterUpdate } from "../../sseTypes.ts";
+import { getConnectionStub } from "./getConnectionStub.ts";
 
 const connectionsKey: string = "connections";
 
@@ -48,10 +48,7 @@ export class CharacterDO extends DurableObject {
     );
     for (const key of this.connections) {
       if (myConnectionKey !== key) {
-        const stub = this.env.CONNECTIONS.get(
-          this.env.CONNECTIONS.idFromName(key),
-        ) as unknown as ConnectionDO;
-
+        const stub = getConnectionStub(this.env, key);
         await stub.sendCharacterUpdate(update);
       }
     }

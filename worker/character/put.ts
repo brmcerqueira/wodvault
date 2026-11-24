@@ -2,7 +2,7 @@ import type { Context } from "hono";
 import type { Bindings } from "../bindings.ts";
 import { key as storageKey } from "./key.ts";
 import { Character } from "../../character.ts";
-import { CharacterDO } from "../do/mod.ts";
+import { getCharacterStub } from "../do/mod.ts";
 
 export async function put(
   context: Context<Bindings>,
@@ -15,9 +15,7 @@ export async function put(
     JSON.stringify(character),
   );
 
-  const stub = context.env.CHARACTERS.get(
-    context.env.CHARACTERS.idFromName(character.id),
-  ) as unknown as CharacterDO;
+  const stub = getCharacterStub(context.env, character.id);
 
   await stub.notify({ character }, key);
 
