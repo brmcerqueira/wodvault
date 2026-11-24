@@ -67,11 +67,7 @@ export class ConnectionDO extends DurableObject {
     }
   }
 
-  public get isConnected(): boolean {
-    return this.controller !== undefined;
-  }
-
-  public sendCharacterUpdate(update: CharacterUpdate) {
+  public async sendCharacterUpdate(update: CharacterUpdate): Promise<void> {
     this.enqueue(`data: ${JSON.stringify(update)}\n\n`);
   }
 }

@@ -37,7 +37,10 @@ export class CharacterDO extends DurableObject {
     await this.ctx.storage.put(connectionsKey, [...this.connections]);
   }
 
-  public notify(update: CharacterUpdate, myConnectionKey: string) {
+  public async notify(
+    update: CharacterUpdate,
+    myConnectionKey: string,
+  ): Promise<void> {
     console.info(
       `character[${this.ctx.id}]-notify -> myConnectionKey: ${myConnectionKey} update: ${
         JSON.stringify(update)
@@ -49,9 +52,7 @@ export class CharacterDO extends DurableObject {
           this.env.CONNECTIONS.idFromName(key),
         ) as unknown as ConnectionDO;
 
-        if (stub.isConnected) {
-          stub.sendCharacterUpdate(update);
-        }
+        await stub.sendCharacterUpdate(update);
       }
     }
   }
