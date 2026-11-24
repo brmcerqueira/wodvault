@@ -1,6 +1,6 @@
 import { CharacterBagContext } from "../characterBag.ts";
 import { Component } from "react";
-import { Col, Form, Row } from "react-bootstrap";
+import { Col, Container, Form, Row } from "react-bootstrap";
 import { FieldProps } from "./common.tsx";
 
 export class DetailsField extends Component<FieldProps<string>> {
@@ -13,7 +13,7 @@ export class DetailsField extends Component<FieldProps<string>> {
 
   public override render() {
     return (
-      <>
+      <Container>
         <Row className="align-items-center mb-2">
           <Col className="text-center">
             <b>{this.props.name}</b>
@@ -41,7 +41,7 @@ export class DetailsField extends Component<FieldProps<string>> {
               />
             )}
         </Row>
-      </>
+      </Container>
     );
   }
 }

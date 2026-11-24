@@ -13,6 +13,18 @@ img {
     cursor: pointer;
 }
 
+.card-actions {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 4px;
+}
+
+.card-actions .btn {
+  width: 100%;
+  min-width: 0;
+  padding-inline: 4px;
+}
+
 .form-switch .form-check-input {
     cursor: pointer
 }

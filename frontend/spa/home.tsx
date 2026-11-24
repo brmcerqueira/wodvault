@@ -205,21 +205,19 @@ export class Home extends Component<{}, {
         >
           <Offcanvas.Header closeButton />
           <Offcanvas.Body className="d-flex flex-column">
-            <div className="mt-auto border-top pt-3">
-              <Form.Check
-                className="mb-2"
-                onChange={(e) => this.onSwitchDark(e.target.checked)}
-                defaultChecked={this.state.dark}
-                type="switch"
-                label={
-                  <i
-                    className={`bi ${
-                      this.state.dark ? "bi-moon-fill" : "bi-sun-fill"
-                    }`}
-                  />
-                }
-              />
-            </div>
+            <Form.Check
+              className="mb-2"
+              onChange={(e) => this.onSwitchDark(e.target.checked)}
+              defaultChecked={this.state.dark}
+              type="switch"
+              label={
+                <i
+                  className={`bi ${
+                    this.state.dark ? "bi-moon-fill" : "bi-sun-fill"
+                  }`}
+                />
+              }
+            />
           </Offcanvas.Body>
         </Offcanvas>
         {array.length == 0 && (
@@ -270,7 +268,7 @@ export class Home extends Component<{}, {
                           <Col className="text-start">{character.player}</Col>
                         </Row>
                       </Card.Text>
-                      <ButtonGroup>
+                      <div className="card-actions">
                         {(character.owner === null ||
                           character.owner === myId) && (
                           <Button
@@ -318,7 +316,7 @@ export class Home extends Component<{}, {
                         >
                           <i className="bi bi-trash3" />
                         </Button>
-                      </ButtonGroup>
+                      </div>
                     </Card.Body>
                   </Card>
                 </Col>
