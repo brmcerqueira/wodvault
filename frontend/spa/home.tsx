@@ -125,7 +125,7 @@ export class Home extends Component<{}, {
   private async onShared(character: Character) {
     const url = new URL("/", import.meta.url);
 
-    url.pathname = `api/character/shared/${character.id}.html`;
+    url.pathname = `api/character/shared/${character.id}`;
 
     if (navigator.share) {
       await navigator.share({

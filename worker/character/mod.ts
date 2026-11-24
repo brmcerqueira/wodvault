@@ -6,10 +6,10 @@ import { shared } from "./shared.tsx";
 
 const app = new Hono<Bindings>();
 
-app.get("/:key.json", get);
+app.get("/:key", get);
 
 app.put("/:key", put);
 
-app.get("/shared/:key.html", shared);
+app.get("/shared/:key", shared);
 
 export default app;

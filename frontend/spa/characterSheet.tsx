@@ -105,7 +105,7 @@ export abstract class CharacterSheet extends Component<
 
   private async loadKeyByShared() {
     const response = await fetch(
-      `api/character/${this.state.key}.json`,
+      `api/character/${this.state.key}`,
       {
         method: "GET",
       },
