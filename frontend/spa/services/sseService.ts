@@ -16,7 +16,7 @@ let characterUpdateCallback:
   | CharacterUpdateCallback
   | undefined;
 
-const characterEvents = new CharacterEvents(myId, {
+export const characterEvents = new CharacterEvents(myId, {
   subscribe: allCharacters(),
 }, (update) => {
   console.log("Event received:", update);

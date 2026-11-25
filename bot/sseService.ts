@@ -8,7 +8,7 @@ import {
   saveCharacter,
 } from "./persistence.ts";
 
-const characterEvents = new CharacterEvents(myId, {
+export const characterEvents = new CharacterEvents(myId, {
   subscribe: Object.keys(allCharacters()),
 }, async (update) => {
   logger.info(

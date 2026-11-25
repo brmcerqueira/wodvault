@@ -8,13 +8,10 @@ import {
   InteractionType,
 } from "harmony";
 import { colors, emojis, InteractionResponseError } from "./utils.ts";
-import {
-  createMissingCommands,
-  interactionCommand,
-} from "./commands/module.ts";
+import { createMissingCommands, interactionCommand } from "./commands/mod.ts";
 import { logger } from "./logger.ts";
 import { encodeBase64 } from "@std/encoding/base64";
-import { interactionCustomId } from "./actions/module.ts";
+import { interactionCustomId } from "./actions/mod.ts";
 import { locale } from "./i18n/locale.ts";
 
 interface CreateEmojiPayload {

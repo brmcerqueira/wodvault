@@ -11,6 +11,7 @@ import { setRollChannelSolver } from "../solver/setRollChannelSolver.ts";
 import { clearCurrentCharacterSolver } from "../solver/clearCurrentCharacterSolver.ts";
 import { setCurrentCharacterSolver } from "../solver/setCurrentCharacterSolver.ts";
 import { overlayCssSolver } from "../solver/overlayCssSolver.ts";
+import { importCharacterSolver } from "../solver/importCharacterSolver.ts";
 
 command({
   name: locale.commands.storyteller.name,
@@ -20,6 +21,7 @@ command({
       clearCurrentCharacter: clearCurrentCharacterSolver,
       setCurrentCharacter: setCurrentCharacterSolver,
       setCharacterToUser: setCharacterToUserSolver,
+      importCharacter: importCharacterSolver,
     }),
     rollChannel: groupSolver({
       clear: clearRollChannelSolver,
@@ -87,6 +89,32 @@ command({
               type: ApplicationCommandOptionType.STRING,
               required: true,
               autocomplete: true,
+            },
+          },
+        },
+        importCharacter: {
+          name: locale.commands.storyteller.character.importCharacter.name,
+          description: locale.commands.storyteller.character.importCharacter
+            .description,
+          type: ApplicationCommandOptionType.SUB_COMMAND,
+          options: {
+            code: {
+              name: locale.commands.storyteller.character.importCharacter.code
+                .name,
+              description:
+                locale.commands.storyteller.character.importCharacter.code
+                  .description,
+              type: ApplicationCommandOptionType.STRING,
+              required: true,
+            },
+            player: {
+              name: locale.commands.storyteller.character.importCharacter.player
+                .name,
+              description:
+                locale.commands.storyteller.character.importCharacter.player
+                  .description,
+              type: ApplicationCommandOptionType.USER,
+              required: false,
             },
           },
         },

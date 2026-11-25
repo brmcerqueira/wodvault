@@ -9,7 +9,7 @@ import { colors } from "./utils.ts";
 import { Character, CharacterKind } from "../character.ts";
 import { roll } from "./diceRoll.ts";
 import { buildRollMessage } from "./buildRollMessage.ts";
-import { reRollButton } from "./actions/module.ts";
+import { reRollButton } from "./actions/mod.ts";
 import { locale } from "./i18n/locale.ts";
 import {
   getDifficulty,

@@ -9,6 +9,7 @@ import { ExperienceField } from "./fields/experienceField.tsx";
 import { locale } from "./i18n/locale.ts";
 import { characterTitle, keys } from "../../utils.ts";
 import {
+  characterEvents,
   observeCharacterUpdate,
   sendCharacterUpdate,
 } from "./services/sseService.ts";
@@ -104,15 +105,9 @@ export abstract class CharacterSheet extends Component<
   }
 
   private async loadKeyByShared() {
-    const response = await fetch(
-      `api/character/${this.state.key}`,
-      {
-        method: "GET",
-      },
-    );
+    const character = await characterEvents.getCharacter(this.state.key!);
 
-    if (response.ok) {
-      const character = await response.json();
+    if (character) {
       this.state.characterBag.adjustFields(character);
       this.setState({ character: character, loading: false });
     } else {

@@ -44,4 +44,15 @@ export class CharacterEvents {
       },
     );
   }
+
+  public async getCharacter(id: string): Promise<Character | null> {
+    const response = await fetch(
+      `${this.host}/api/character/${id}`,
+      {
+        method: "GET",
+      },
+    );
+
+    return response.ok ? await response.json() : null;
+  }
 }

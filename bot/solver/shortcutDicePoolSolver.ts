@@ -4,7 +4,7 @@ import {
   MessageComponentType,
 } from "harmony";
 import { autocompleteDicePools, DicePoolInput } from "../utils.ts";
-import { dicePoolButton } from "../actions/module.ts";
+import { dicePoolButton } from "../actions/mod.ts";
 import { locale } from "../i18n/locale.ts";
 
 export async function shortcutDicePoolSolver(
