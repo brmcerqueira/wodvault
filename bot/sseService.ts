@@ -22,7 +22,7 @@ export const characterEvents = new CharacterEvents(myId, {
     if (characters[update.character.id]) {
       const character = await getCharacter(update.character.id)!;
       if (character && character.timestamp < update.character.timestamp) {
-        saveCharacter(update.character);
+        await saveCharacter(update.character);
       } else {
         logger.info(
           "The character has already been updated: %v %v",
@@ -31,7 +31,7 @@ export const characterEvents = new CharacterEvents(myId, {
         );
       }
     } else {
-      saveCharacter(update.character);
+      await saveCharacter(update.character);
     }
   }
 }, Deno.env.get("SSE_HOST")!);

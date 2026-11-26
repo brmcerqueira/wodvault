@@ -3,7 +3,7 @@ import { Component, createRef } from "react";
 import { Form, Nav, Navbar, Spinner } from "react-bootstrap";
 import { Navigate } from "react-router";
 import { JSX } from "react/jsx-runtime";
-import { buildCharacter, getCharacter } from "./services/characterService.ts";
+import { buildCharacter } from "./services/characterService.ts";
 import { CharacterBag, CharacterBagContext } from "./characterBag.ts";
 import { ExperienceField } from "./fields/experienceField.tsx";
 import { locale } from "./i18n/locale.ts";
@@ -13,13 +13,15 @@ import {
   observeCharacterUpdate,
   sendCharacterUpdate,
 } from "./services/sseService.ts";
+import { storage } from "../storage/mod.ts";
 
 export abstract class CharacterSheet extends Component<
   {},
   {
-    character: Character;
+    kind: CharacterKind;
     characterBag: CharacterBag;
-    loading: boolean;
+    shared: boolean;
+    character: Character;
     key?: string;
     redirect?: string;
   }
@@ -41,18 +43,11 @@ export abstract class CharacterSheet extends Component<
 
     const shared = params.get("shared") === "true";
 
-    let character = key ? getCharacter(key) : undefined;
-
-    if (character && !shared) {
-      characterBag.adjustFields(character);
-    } else {
-      character = buildCharacter(kind);
-    }
-
     this.state = {
+      kind,
       characterBag,
-      character: character!,
-      loading: shared,
+      shared,
+      character: null as unknown as Character,
       key,
     };
 
@@ -104,15 +99,24 @@ export abstract class CharacterSheet extends Component<
     };
   }
 
-  private async loadKeyByShared() {
-    const character = await characterEvents.getCharacter(this.state.key!);
+  private async loadCharacter() {
+    let character: Character | undefined;
+
+    if (this.state.key) {
+      if (this.state.shared) {
+        character = await characterEvents.getCharacter(this.state.key);
+      } else {
+        character = await storage.characters.get(this.state.key);
+      }
+    }
 
     if (character) {
       this.state.characterBag.adjustFields(character);
-      this.setState({ character: character, loading: false });
     } else {
-      this.setState({ loading: false });
+      character = buildCharacter(this.state.kind);
     }
+
+    this.setState({ character: character });
   }
 
   protected abstract sheet(): JSX.Element;
@@ -122,8 +126,8 @@ export abstract class CharacterSheet extends Component<
       return <Navigate to={this.state.redirect} replace />;
     }
 
-    if (this.state.loading && this.state.key) {
-      this.loadKeyByShared();
+    if (this.state.character === null) {
+      this.loadCharacter();
       return <Spinner animation="border" size="sm" />;
     }
 

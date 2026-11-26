@@ -2,13 +2,8 @@ import { Character } from "../../../character.ts";
 import { CharacterEvents } from "../../../characterEvents.ts";
 import type { CharacterUpdate } from "../../../sseTypes.ts";
 import { myId } from "./preferencesService.ts";
-import {
-  allCharacters,
-  getCharacter,
-  localStorageCharacterKey,
-  removeCharacter,
-  saveCharacter,
-} from "./characterService.ts";
+import { saveCharacter } from "./characterService.ts";
+import { storage } from "../../storage/mod.ts";
 
 type CharacterUpdateCallback = (update: CharacterUpdate) => void;
 
@@ -17,17 +12,15 @@ let characterUpdateCallback:
   | undefined;
 
 export const characterEvents = new CharacterEvents(myId, {
-  subscribe: allCharacters(),
-}, (update) => {
+  subscribe: (await storage.characters.all()).map((character) => character.id),
+}, async (update) => {
   console.log("Event received:", update);
 
-  const keys = allCharacters();
-
   if (update.character) {
-    if (keys.includes(localStorageCharacterKey(update.character.id))) {
-      const character = getCharacter(update.character.id)!;
+    const character = await storage.characters.get(update.character.id);
+    if (character) {
       if (character.timestamp < update.character.timestamp) {
-        saveCharacter(update.character);
+        await saveCharacter(update.character);
       } else {
         console.log(
           "The character has already been updated: ",
@@ -36,13 +29,14 @@ export const characterEvents = new CharacterEvents(myId, {
         );
       }
     } else {
-      saveCharacter(update.character);
+      await saveCharacter(update.character);
     }
   }
 
   if (update.remove) {
-    if (keys.includes(localStorageCharacterKey(update.remove))) {
-      removeCharacter(update.remove);
+    const character = await storage.characters.get(update.remove);
+    if (character) {
+      await storage.characters.remove(character.id);
     }
   }
 

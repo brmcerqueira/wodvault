@@ -1,5 +1,6 @@
 import { Character, CharacterKind, CharacterMode } from "../../../character.ts";
 import { timestamp } from "../../../utils.ts";
+import { storage } from "../../storage/mod.ts";
 import { myId } from "./preferencesService.ts";
 
 export function buildCharacter(kind: CharacterKind): Character {
@@ -113,66 +114,7 @@ export function buildCharacter(kind: CharacterKind): Character {
   };
 }
 
-export function localStorageCharacterKey(id: string): string {
-  return `character:${id}`;
-}
-
-export function allCharacters(): string[] {
-  const result: string[] = [];
-  for (let index = 0; index < localStorage.length; index++) {
-    const key = localStorage.key(index);
-    if (key?.startsWith("character:")) {
-      const [_, id] = key.split(":");
-
-      if (!id) {
-        localStorage.removeItem(key);
-        continue;
-      }
-
-      const character = getCharacter(id.trim());
-
-      if (character !== null) {
-        result.push(id.trim());
-      } else {
-        localStorage.removeItem(key);
-      }
-    }
-  }
-
-  return result;
-}
-
-export function getCharacter(id: string): Character | null {
-  const value = localStorage.getItem(localStorageCharacterKey(id));
-
-  if (value === null) {
-    return null;
-  }
-
-  try {
-    const character = JSON.parse(value) as Character;
-
-    if (character && typeof character.id === "string") {
-      return character;
-    }
-
-    return null;
-  } catch {
-    return null;
-  }
-}
-
-export function saveCharacter(character: Character) {
+export async function saveCharacter(character: Character) {
   character.timestamp = timestamp();
-
-  const data = JSON.stringify(character);
-
-  localStorage.setItem(
-    localStorageCharacterKey(character.id),
-    data,
-  );
-}
-
-export function removeCharacter(id: string) {
-  localStorage.removeItem(localStorageCharacterKey(id));
+  await storage.characters.save(character);
 }

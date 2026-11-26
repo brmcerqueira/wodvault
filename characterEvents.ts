@@ -5,7 +5,7 @@ export class CharacterEvents {
   constructor(
     private id: string,
     initSubscribe: CharactersSubscribe,
-    onCharacterUpdate: (update: CharacterUpdate) => void,
+    onCharacterUpdate: (update: CharacterUpdate) => Promise<void> | void,
     private host: string,
   ) {
     const connection = new EventSource(
@@ -45,7 +45,7 @@ export class CharacterEvents {
     );
   }
 
-  public async getCharacter(id: string): Promise<Character | null> {
+  public async getCharacter(id: string): Promise<Character | undefined> {
     const response = await fetch(
       `${this.host}/api/character/${id}`,
       {
@@ -53,6 +53,6 @@ export class CharacterEvents {
       },
     );
 
-    return response.ok ? await response.json() : null;
+    return response.ok ? await response.json() : undefined;
   }
 }

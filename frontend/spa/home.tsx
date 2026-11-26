@@ -4,7 +4,6 @@ import { Component } from "react";
 import { Navigate } from "react-router";
 import {
   Button,
-  ButtonGroup,
   Card,
   Col,
   Container,
@@ -14,48 +13,37 @@ import {
   NavDropdown,
   Offcanvas,
   Row,
+  Spinner,
 } from "react-bootstrap";
 import { Alert } from "./dialog/alert.ts";
 import { Confirm } from "./dialog/confirm.ts";
 import { dialog } from "./dialog/dialog.ts";
 import { format } from "./fields/common.tsx";
 import { locale } from "./i18n/locale.ts";
-import {
-  allCharacters,
-  buildCharacter,
-  getCharacter,
-  removeCharacter,
-} from "./services/characterService.ts";
+import { buildCharacter } from "./services/characterService.ts";
 import { isDark, myId, setDark } from "./services/preferencesService.ts";
 import { ImportCharacter } from "./dialog/importCharacter.tsx";
 import {
   observeCharacterUpdate,
   sendCharacterUpdate,
 } from "./services/sseService.ts";
+import { storage } from "../storage/mod.ts";
 
 export class Home extends Component<{}, {
   showOffcanvas: boolean;
   dark: boolean;
   characters: Record<string, Character>;
+  loading: boolean;
   redirect?: string;
 }> {
   constructor() {
     super({});
 
-    const characters: Record<string, Character> = {};
-
-    for (const key of allCharacters()) {
-      const character = getCharacter(key);
-
-      if (character !== null) {
-        characters[key] = character;
-      }
-    }
-
     this.state = {
       showOffcanvas: false,
       dark: isDark(),
-      characters,
+      characters: {},
+      loading: true,
     };
 
     observeCharacterUpdate((update) => {
@@ -144,7 +132,7 @@ export class Home extends Component<{}, {
         new Confirm(format(locale.onRemove.characters, character.name)),
       )
     ) {
-      removeCharacter(character.id);
+      await storage.characters.remove(character.id);
       delete this.state.characters[character.id];
       this.setState({ characters: this.state.characters });
     }
@@ -165,9 +153,26 @@ export class Home extends Component<{}, {
     return result;
   }
 
+  private async loadCharacters() {
+    const characters = await storage.characters.all();
+
+    for (const character of characters) {
+      this.state.characters[character.id] = character;
+    }
+
+    if (characters.length > 0) {
+      this.setState({ characters: this.state.characters });
+    }
+  }
+
   public override render() {
     if (this.state.redirect) {
       return <Navigate to={this.state.redirect} replace />;
+    }
+
+    if (this.state.loading) {
+      this.loadCharacters();
+      return <Spinner animation="border" size="sm" />;
     }
 
     const array = keys(this.state.characters);
