@@ -1,42 +1,26 @@
-if (localStorage.getItem("myId") == null) {
-  localStorage.setItem("myId", crypto.randomUUID());
-}
+import { storage } from "../../storage/mod.ts";
 
-export const myId = localStorage.getItem("myId") as string;
+export const myId = await storage.preferences.myId();
 
-let _dark = getBoolean("dark");
+let dark = await storage.preferences.isDark();
 
-if (_dark) {
+if (dark) {
   makeDark();
 }
 
 export function isDark(): boolean {
-  return _dark;
+  return dark;
 }
 
-export function setDark(value: boolean) {
-  _dark = value;
-  localStorage.setItem("dark", JSON.stringify(value));
+export async function setDark(value: boolean): Promise<void> {
+  dark = value;
+
+  await storage.preferences.setDark(value);
 
   if (value) {
     makeDark();
   } else {
     makeWhite();
-  }
-}
-
-function getBoolean(key: string): boolean {
-  const value = localStorage.getItem(key);
-
-  if (value === null) {
-    return false;
-  }
-
-  try {
-    return JSON.parse(value) === true;
-  } catch {
-    localStorage.removeItem(key);
-    return false;
   }
 }
 

@@ -1,19 +1,36 @@
 import { Collection } from "./collection.ts";
 import { Character } from "../../character.ts";
+import { PreferenceCollection } from "./preferenceCollection.ts";
 
 type Storage = {
   characters: Collection<Character>;
+  preferences: PreferenceCollection;
 };
 
 type Collections = Record<
   keyof Storage,
-  IDBObjectStoreParameters | null
+  {
+    collection: new (
+      database: IDBDatabase,
+      name: string,
+    ) => unknown;
+    options?: IDBObjectStoreParameters;
+  }
 >;
 
 function setup(): Collections {
   return {
     characters: {
-      keyPath: "id",
+      collection: Collection,
+      options: {
+        keyPath: "id",
+      },
+    },
+    preferences: {
+      collection: PreferenceCollection,
+      options: {
+        keyPath: "id",
+      },
     },
   };
 }
@@ -28,9 +45,9 @@ function createStorage(): Promise<Storage> {
       const database = (event.target as IDBOpenDBRequest).result;
 
       for (const key in collections) {
-        const options = collections[key as keyof Storage];
-        if (options) {
-          database.createObjectStore(key, options);
+        const value = collections[key as keyof Storage];
+        if (value.options) {
+          database.createObjectStore(key, value.options);
         }
       }
     };
@@ -38,10 +55,11 @@ function createStorage(): Promise<Storage> {
     request.onsuccess = () => {
       console.log("Database opened!");
 
-      const result: Record<string, Collection> = {};
+      const result: Record<string, unknown> = {};
 
       for (const key in collections) {
-        result[key] = new Collection(request.result, key);
+        const value = collections[key as keyof Storage];
+        result[key] = new value.collection(request.result, key);
       }
 
       resolve(result as Storage);

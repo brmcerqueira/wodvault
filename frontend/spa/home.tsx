@@ -59,8 +59,8 @@ export class Home extends Component<{}, {
     });
   }
 
-  private onSwitchDark(value: boolean): void {
-    setDark(value);
+  private async onSwitchDark(value: boolean): Promise<void> {
+    await setDark(value);
     this.setState({ dark: value });
   }
 
@@ -161,7 +161,9 @@ export class Home extends Component<{}, {
     }
 
     if (characters.length > 0) {
-      this.setState({ characters: this.state.characters });
+      this.setState({ characters: this.state.characters, loading: false });
+    } else {
+      this.setState({ loading: false });
     }
   }
 
@@ -212,7 +214,7 @@ export class Home extends Component<{}, {
           <Offcanvas.Body className="d-flex flex-column">
             <Form.Check
               className="mb-2"
-              onChange={(e) => this.onSwitchDark(e.target.checked)}
+              onChange={async (e) => await this.onSwitchDark(e.target.checked)}
               defaultChecked={this.state.dark}
               type="switch"
               label={
