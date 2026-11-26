@@ -1,7 +1,12 @@
 import { DurableObject } from "cloudflare:workers";
 import { CharacterUpdate } from "../../sseTypes.ts";
 
-export class ConnectionDO extends DurableObject {
+export interface IConnectionDO {
+  fetch(request: Request): Promise<Response>;
+  sendCharacterUpdate(update: CharacterUpdate): Promise<void>;
+}
+
+export class ConnectionDO extends DurableObject implements IConnectionDO {
   private encoder = new TextEncoder();
   private controller: ReadableStreamDefaultController<Uint8Array> | undefined;
   private interval: number | undefined;

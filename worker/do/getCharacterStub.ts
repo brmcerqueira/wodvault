@@ -1,10 +1,10 @@
-import { CharacterDO } from "./characterDO.ts";
+import { ICharacterDO } from "./characterDO.ts";
 
 export function getCharacterStub(
   env: Env,
   name: string,
-): CharacterDO {
+): ICharacterDO {
   return env.CHARACTERS.get(
     env.CHARACTERS.idFromName(name),
-  ) as unknown as CharacterDO;
+  ) as ICharacterDO;
 }

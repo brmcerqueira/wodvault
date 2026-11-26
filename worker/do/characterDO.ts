@@ -4,7 +4,13 @@ import { getConnectionStub } from "./getConnectionStub.ts";
 
 const connectionsKey: string = "connections";
 
-export class CharacterDO extends DurableObject {
+export interface ICharacterDO {
+  subscribe(id: string): Promise<void>;
+  unsubscribe(id: string): Promise<void>;
+  notify(update: CharacterUpdate, myConnectionKey: string): Promise<void>;
+}
+
+export class CharacterDO extends DurableObject implements ICharacterDO {
   private connections: Set<string> = new Set();
   constructor(
     state: DurableObjectState,
@@ -37,10 +43,7 @@ export class CharacterDO extends DurableObject {
     await this.ctx.storage.put(connectionsKey, [...this.connections]);
   }
 
-  public async notify(
-    update: CharacterUpdate,
-    myConnectionKey: string,
-  ): Promise<void> {
+  public async notify(update: CharacterUpdate, myConnectionKey: string) {
     console.info(
       `character[${this.ctx.id}]-notify -> myConnectionKey: ${myConnectionKey} update: ${
         JSON.stringify(update)

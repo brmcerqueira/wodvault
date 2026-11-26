@@ -1,10 +1,10 @@
-import { ConnectionDO } from "./connectionDO.ts";
+import { IConnectionDO } from "./connectionDO.ts";
 
 export function getConnectionStub(
   env: Env,
   name: string,
-): ConnectionDO {
+): IConnectionDO {
   return env.CONNECTIONS.get(
     env.CONNECTIONS.idFromName(name),
-  ) as unknown as ConnectionDO;
+  ) as IConnectionDO;
 }
