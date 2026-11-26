@@ -1,6 +1,5 @@
 import { Character, CharacterKind, CharacterMode } from "../../../character.ts";
 import { timestamp } from "../../../utils.ts";
-import { storage } from "../../storage/mod.ts";
 import { myId } from "./preferencesService.ts";
 
 export function buildCharacter(kind: CharacterKind): Character {
@@ -112,9 +111,4 @@ export function buildCharacter(kind: CharacterKind): Character {
     gifts: {},
     rites: [],
   };
-}
-
-export async function saveCharacter(character: Character) {
-  character.timestamp = timestamp();
-  await storage.characters.save(character);
 }

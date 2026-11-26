@@ -2,8 +2,11 @@ import { Character } from "../../../character.ts";
 import { CharacterEvents } from "../../../characterEvents.ts";
 import type { CharacterUpdate } from "../../../sseTypes.ts";
 import { myId } from "./preferencesService.ts";
-import { saveCharacter } from "./characterService.ts";
-import { storage } from "../../storage/mod.ts";
+import {
+  saveCharacter,
+  storage,
+  treatCharacterUpdate,
+} from "../../storage/mod.ts";
 
 type CharacterUpdateCallback = (update: CharacterUpdate) => void;
 
@@ -16,29 +19,7 @@ export const characterEvents = new CharacterEvents(myId, {
 }, async (update) => {
   console.log("Event received:", update);
 
-  if (update.character) {
-    const character = await storage.characters.get(update.character.id);
-    if (character) {
-      if (character.timestamp < update.character.timestamp) {
-        await saveCharacter(update.character);
-      } else {
-        console.log(
-          "The character has already been updated: ",
-          character,
-          update.character,
-        );
-      }
-    } else {
-      await saveCharacter(update.character);
-    }
-  }
-
-  if (update.remove) {
-    const character = await storage.characters.get(update.remove);
-    if (character) {
-      await storage.characters.remove(character.id);
-    }
-  }
+  await treatCharacterUpdate(update);
 
   if (characterUpdateCallback) {
     characterUpdateCallback(update);

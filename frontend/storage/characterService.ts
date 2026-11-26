@@ -1,0 +1,35 @@
+import { Character } from "../../character.ts";
+import { CharacterUpdate } from "../../sseTypes.ts";
+import { timestamp } from "../../utils.ts";
+import { storage } from "./storage.ts";
+
+export async function saveCharacter(character: Character) {
+  character.timestamp = timestamp();
+  await storage.characters.save(character);
+}
+
+export async function treatCharacterUpdate(update: CharacterUpdate) {
+  if (update.character) {
+    const character = await storage.characters.get(update.character.id);
+    if (character) {
+      if (character.timestamp < update.character.timestamp) {
+        await saveCharacter(update.character);
+      } else {
+        console.log(
+          "The character has already been updated: ",
+          character,
+          update.character,
+        );
+      }
+    } else {
+      await saveCharacter(update.character);
+    }
+  }
+
+  if (update.remove) {
+    const character = await storage.characters.get(update.remove);
+    if (character) {
+      await storage.characters.remove(character.id);
+    }
+  }
+}
