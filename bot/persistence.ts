@@ -1,5 +1,5 @@
 import { Character } from "../character.ts";
-import { timestamp } from "../utils.ts";
+import { timestamp } from "../timestamp.ts";
 import { RollResult } from "./diceRoll.ts";
 import { logger } from "./logger.ts";
 

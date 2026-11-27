@@ -37,7 +37,7 @@ export async function allowPushNotification() {
     throw new Error("Notification permission not granted");
   }
 
-  const response = await fetch("/api/application/server/key", {
+  const response = await fetch("/api/vapid/key", {
     method: "GET",
     headers: {
       "Content-Type": "text/plain; charset=utf-8",

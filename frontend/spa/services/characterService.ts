@@ -1,5 +1,5 @@
 import { Character, CharacterKind, CharacterMode } from "../../../character.ts";
-import { timestamp } from "../../../utils.ts";
+import { timestamp } from "../../../timestamp.ts";
 import { myId } from "./preferencesService.ts";
 
 export function buildCharacter(kind: CharacterKind): Character {

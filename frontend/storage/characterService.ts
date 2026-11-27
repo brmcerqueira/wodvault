@@ -1,6 +1,6 @@
 import { Character } from "../../character.ts";
 import { CharacterUpdate } from "../../sseTypes.ts";
-import { timestamp } from "../../utils.ts";
+import { timestamp } from "../../timestamp.ts";
 import { storage } from "./storage.ts";
 
 export async function saveCharacter(character: Character) {

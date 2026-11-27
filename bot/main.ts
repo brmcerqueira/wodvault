@@ -13,6 +13,7 @@ import { logger } from "./logger.ts";
 import { encodeBase64 } from "@std/encoding/base64";
 import { interactionCustomId } from "./actions/mod.ts";
 import { locale } from "./i18n/locale.ts";
+import { clockAdjust } from "../timestamp.ts";
 
 interface CreateEmojiPayload {
   name: string;
@@ -162,5 +163,7 @@ client.on("ready", async () => {
     }
   }
 });
+
+await clockAdjust();
 
 await client.connect();

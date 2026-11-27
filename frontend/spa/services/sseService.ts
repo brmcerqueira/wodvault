@@ -7,12 +7,15 @@ import {
   storage,
   treatCharacterUpdate,
 } from "../../storage/mod.ts";
+import { clockAdjust } from "../../../timestamp.ts";
 
 type CharacterUpdateCallback = (update: CharacterUpdate) => void;
 
 let characterUpdateCallback:
   | CharacterUpdateCallback
   | undefined;
+
+await clockAdjust();
 
 export const characterEvents = new CharacterEvents(myId, {
   subscribe: (await storage.instance.characters.all()).map((character) =>
