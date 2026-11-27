@@ -1,5 +1,7 @@
 import { DurableObject } from "cloudflare:workers";
 import { CharacterUpdate } from "../../sseTypes.ts";
+import { send, Subscription } from "webpush";
+import { vapid } from "../vapid.ts";
 
 export interface IConnectionDO {
   fetch(request: Request): Promise<Response>;
@@ -9,6 +11,7 @@ export interface IConnectionDO {
 export class ConnectionDO extends DurableObject implements IConnectionDO {
   private encoder = new TextEncoder();
   private controller: ReadableStreamDefaultController<Uint8Array> | undefined;
+  private subscription: Subscription | undefined;
   private interval: number | undefined;
 
   constructor(
@@ -73,6 +76,16 @@ export class ConnectionDO extends DurableObject implements IConnectionDO {
   }
 
   public async sendCharacterUpdate(update: CharacterUpdate): Promise<void> {
-    this.enqueue(`data: ${JSON.stringify(update)}\n\n`);
+    const message = JSON.stringify(update);
+    if (this.controller) {
+      this.enqueue(`data: ${message}\n\n`);
+    } else if (this.subscription) {
+      console.info(`connection[${this.ctx.id}]-web-push -> ${message}`);
+      await send(this.subscription, message, {
+        vapid: vapid(this.env),
+        subscriber: "https://example.com/webpush",
+        ttl: 60,
+      });
+    }
   }
 }

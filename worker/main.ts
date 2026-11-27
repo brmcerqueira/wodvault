@@ -6,7 +6,7 @@ import character from "./character/mod.ts";
 import events from "./events/mod.ts";
 import { imageUpload } from "./imageUpload.ts";
 import { locale } from "./i18n/locale.ts";
-import { vapidKey } from "./vapidKey.ts";
+import { vapidPublicKey } from "./vapidPublicKey.ts";
 
 export { CharacterDO, ConnectionDO } from "./do/mod.ts";
 
@@ -37,7 +37,7 @@ app.onError((error: Error, context: Context<Bindings>) => {
 
 app.all("/api/upload", imageUpload);
 
-app.get("/api/vapid/key", vapidKey);
+app.get("/api/vapid/key", vapidPublicKey);
 
 app.route("/api/events", events);
 

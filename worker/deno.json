@@ -6,7 +6,11 @@
     "types": ["./workerConfiguration.d.ts"],
     "skipLibCheck": true
   },
+  "tasks": {
+    "vapid": "deno run generateVapidKeys.ts"
+  },
   "imports": {
+    "webpush": "jsr:@daaku/webpush",
     "hono": "jsr:@hono/hono",
     "hono/jsx": "jsr:@hono/hono/jsx",
     "hono/html": "jsr:@hono/hono/html"
