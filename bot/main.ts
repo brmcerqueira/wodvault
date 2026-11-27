@@ -14,6 +14,7 @@ import { encodeBase64 } from "@std/encoding/base64";
 import { interactionCustomId } from "./actions/mod.ts";
 import { locale } from "./i18n/locale.ts";
 import { clockAdjust } from "../timestamp.ts";
+import config from "./config/mod.ts";
 
 interface CreateEmojiPayload {
   name: string;
@@ -40,7 +41,7 @@ async function cleanCommands(
 }
 
 const client = new Client({
-  token: Deno.env.get("DISCORD_TOKEN")!,
+  token: config.discordToken,
   intents: [
     GatewayIntents.GUILDS,
     GatewayIntents.GUILD_MESSAGES,

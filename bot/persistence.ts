@@ -1,13 +1,12 @@
 import { Character } from "../character.ts";
 import { timestamp } from "../timestamp.ts";
+import config from "./config/mod.ts";
 import { RollResult } from "./diceRoll.ts";
 import { logger } from "./logger.ts";
 
-const databaseDir = Deno.env.get("DATABASE_DIR") ?? "./database";
+await Deno.mkdir(config.databaseDir, { recursive: true });
 
-await Deno.mkdir(databaseDir, { recursive: true });
-
-const kv = await Deno.openKv(`${databaseDir}/bot.db`);
+const kv = await Deno.openKv(`${config.databaseDir}/bot.db`);
 
 const character = "character";
 const userIdCharacterId = "userId_characterId";

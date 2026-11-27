@@ -1,5 +1,6 @@
 import { ConsoleHandler, getLogger, LevelName, setup } from "@std/log";
 import { sprintf } from "@std/fmt/printf";
+import config from "./config/mod.ts";
 
 setup({
   handlers: {
@@ -26,7 +27,7 @@ setup({
   },
   loggers: {
     default: {
-      level: (Deno.env.get("LOG_LEVEL") || "DEBUG") as LevelName,
+      level: config.logLevel,
       handlers: ["default"],
     },
   },

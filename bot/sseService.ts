@@ -1,5 +1,6 @@
 import { Character } from "../character.ts";
 import { CharacterEvents } from "../characterEvents.ts";
+import config from "./config/mod.ts";
 import { logger } from "./logger.ts";
 import {
   allCharacters,
@@ -34,7 +35,7 @@ export const characterEvents = new CharacterEvents(myId, {
       await saveCharacter(update.character);
     }
   }
-}, Deno.env.get("SSE_HOST")!);
+}, config.sseHost);
 
 export async function sendCharacterUpdate(character: Character) {
   await saveCharacter(character);
