@@ -1,16 +1,13 @@
 import { Character, CharacterKind } from "../../character.ts";
 import { keys } from "../../utils.ts";
-import { Component, createRef, JSX } from "react";
+import { Component } from "react";
 import { Navigate } from "react-router";
-import { QRCodeSVG } from "react-qrcode";
 import {
   Button,
-  ButtonGroup,
   Card,
   Col,
   Container,
   Form,
-  InputGroup,
   Nav,
   Navbar,
   NavDropdown,
@@ -23,132 +20,52 @@ import { Confirm } from "./dialog/confirm.ts";
 import { dialog } from "./dialog/dialog.ts";
 import { format } from "./fields/common.tsx";
 import { locale } from "./i18n/locale.ts";
-import {
-  allCharacters,
-  buildCharacter,
-  getCharacter,
-  removeCharacter,
-  saveCharacter,
-} from "./services/characterService.ts";
-import {
-  connect,
-  ConnectionStatus,
-  connectionStatus,
-  disconnect,
-  host,
-  observeCharactersUpdate,
-  sendCharacterUpdate,
-} from "./services/peerService.ts";
-import {
-  hostId,
-  isDark,
-  isHost,
-  myId,
-  setDark,
-  setHost,
-  setWebSocketPort,
-  webSocketPort,
-} from "./services/preferencesService.ts";
+import { buildCharacter } from "./services/characterService.ts";
+import { isDark, myId, setDark } from "./services/preferencesService.ts";
 import { ImportCharacter } from "./dialog/importCharacter.tsx";
-import { QrcodeScanner } from "./dialog/qrcodeScanner.tsx";
+import {
+  characterEvents,
+  observeCharacterUpdate,
+  sendCharacterUpdate,
+} from "./services/sseService.ts";
+import { storage } from "../storage/mod.ts";
+import { allowPushNotification } from "./services/serviceWorkerService.ts";
 
 export class Home extends Component<{}, {
   showOffcanvas: boolean;
-  host: boolean;
-  connectionStatus: ConnectionStatus;
   dark: boolean;
   characters: Record<string, Character>;
+  loading: boolean;
+  loadingAllowPushNotification: boolean;
   redirect?: string;
 }> {
-  private connectIdRef = createRef<HTMLInputElement>();
-  private webSocketPortRef = createRef<HTMLInputElement>();
-
   constructor() {
     super({});
 
-    const characters: Record<string, Character> = {};
-
-    for (const key of allCharacters()) {
-      const character = getCharacter(key);
-
-      if (character !== null) {
-        characters[key] = character;
-      }
-    }
-
     this.state = {
       showOffcanvas: false,
-      host: isHost(),
-      connectionStatus: connectionStatus(),
       dark: isDark(),
-      characters,
+      characters: {},
+      loading: true,
+      loadingAllowPushNotification: false,
     };
 
-    observeCharactersUpdate((characters, remove) => {
-      for (const character of characters) {
-        this.state.characters[character.id] = character;
+    observeCharacterUpdate((update) => {
+      if (update.remove) {
+        delete this.state.characters[update.remove];
       }
 
-      for (const id of remove) {
-        delete this.state.characters[id];
+      if (update.character) {
+        this.state.characters[update.character.id] = update.character;
       }
 
       this.setState({ characters: this.state.characters });
     });
   }
 
-  private onSwitchHost(value: boolean) {
-    setHost(value);
-    this.setState({ host: value });
-  }
-
-  private onCopyMyIdInClipboard(): void {
-    navigator.clipboard.writeText(myId);
-  }
-
-  private async onConnectOrDisconnect(): Promise<void> {
-    if (
-      this.state.connectionStatus == ConnectionStatus.Connected ||
-      this.state.connectionStatus == ConnectionStatus.Connecting
-    ) {
-      disconnect();
-    } else {
-      this.setState({ connectionStatus: ConnectionStatus.Connecting });
-      if (this.state.host) {
-        const webSocketPortValue =
-          this.webSocketPortRef.current?.value.trim() ?? "";
-        setWebSocketPort(
-          webSocketPortValue === "" ? null : parseInt(webSocketPortValue),
-        );
-        await host();
-      } else {
-        const id = this.connectIdRef.current?.value.trim() ?? "";
-
-        if (id.length > 0) {
-          await connect(id);
-        }
-      }
-    }
-
-    this.setState({ connectionStatus: connectionStatus() });
-  }
-
-  private onSwitchDark(value: boolean): void {
-    setDark(value);
+  private async onSwitchDark(value: boolean) {
+    await setDark(value);
     this.setState({ dark: value });
-  }
-
-  private async onQrcodeScan() {
-    const id = await dialog(new QrcodeScanner());
-    if (id) {
-      const connectId = this.connectIdRef.current;
-      if (connectId) {
-        connectId.value = id;
-      }
-      this.setState({ connectionStatus: ConnectionStatus.Connecting });
-      await connect(id);
-      this.setState({ connectionStatus: connectionStatus() });
-    }
   }
 
   private async onOwnership(character: Character) {
@@ -176,7 +93,8 @@ export class Home extends Component<{}, {
         buildCharacter(data.kind as CharacterKind),
         data,
       ) as Character;
-      saveCharacter(character);
+      await sendCharacterUpdate(character);
+      await characterEvents.subscribe({ subscribe: [character.id] });
       this.state.characters[character.id] = character;
       this.setState({ characters: this.state.characters });
       await dialog(new Alert(format(locale.import, character.name)));
@@ -184,23 +102,14 @@ export class Home extends Component<{}, {
   }
 
   private async onExport(character: Character) {
-    navigator.clipboard.writeText(JSON.stringify(character, (key, value) => {
-      if (
-        key === "id" || key === "owner" || key === "mode" ||
-        key === "timestamp" || key === "playerId"
-      ) {
-        return undefined;
-      }
-
-      return value;
-    }));
+    navigator.clipboard.writeText(JSON.stringify(character));
     await dialog(new Alert(format(locale.export, character.name)));
   }
 
   private async onShared(character: Character) {
     const url = new URL("/", import.meta.url);
 
-    url.pathname = `api/shared/${character.id}.html`;
+    url.pathname = `api/character/shared/${character.id}`;
 
     if (navigator.share) {
       await navigator.share({
@@ -213,16 +122,25 @@ export class Home extends Component<{}, {
     }
   }
 
-  private async onRemove(character: Character): Promise<void> {
+  private async onRemove(character: Character) {
     if (
       await dialog(
         new Confirm(format(locale.onRemove.characters, character.name)),
       )
     ) {
-      removeCharacter(character.id);
+      await characterEvents.subscribe({
+        unsubscribe: [character.id],
+      });
+      await storage.instance.characters.remove(character.id);
       delete this.state.characters[character.id];
       this.setState({ characters: this.state.characters });
     }
+  }
+
+  private async onAllowPushNotification() {
+    this.setState({ loadingAllowPushNotification: true });
+    await allowPushNotification();
+    this.setState({ loadingAllowPushNotification: false });
   }
 
   private parseKind(kind: CharacterKind): string {
@@ -240,30 +158,17 @@ export class Home extends Component<{}, {
     return result;
   }
 
-  private renderConnectButtonContent(): string | JSX.Element {
-    switch (this.state.connectionStatus) {
-      case ConnectionStatus.Connecting:
-        return (
-          <>
-            <Spinner animation="border" size="sm" className="me-2" />
-            {locale.cancel}
-          </>
-        );
-      case ConnectionStatus.Connected:
-        return locale.disconnect;
-      default:
-        return this.state.host ? locale.host : locale.connect;
-    }
-  }
+  private async loadCharacters() {
+    const characters = await storage.instance.characters.all();
 
-  private renderConnectButtonVariant(): string {
-    switch (this.state.connectionStatus) {
-      case ConnectionStatus.Connecting:
-        return "warning";
-      case ConnectionStatus.Connected:
-        return "danger";
-      default:
-        return "primary";
+    for (const character of characters) {
+      this.state.characters[character.id] = character;
+    }
+
+    if (characters.length > 0) {
+      this.setState({ characters: this.state.characters, loading: false });
+    } else {
+      this.setState({ loading: false });
     }
   }
 
@@ -272,9 +177,12 @@ export class Home extends Component<{}, {
       return <Navigate to={this.state.redirect} replace />;
     }
 
-    const array = keys(this.state.characters);
+    if (this.state.loading) {
+      this.loadCharacters();
+      return <Spinner animation="border" size="sm" />;
+    }
 
-    const hostIdValue = hostId();
+    const array = keys(this.state.characters);
 
     return (
       <>
@@ -309,96 +217,30 @@ export class Home extends Component<{}, {
         >
           <Offcanvas.Header closeButton />
           <Offcanvas.Body className="d-flex flex-column">
-            <Form.Group className="mb-3">
-              {this.state.host
-                ? (
-                  <>
-                    <div className="d-flex justify-content-center mb-2">
-                      <QRCodeSVG
-                        value={myId}
-                        size={250}
-                        level="H"
-                        marginSize={2}
-                      />
-                    </div>
-                    <InputGroup>
-                      <Form.Control defaultValue={myId} disabled />
-                      <Button
-                        variant="outline-secondary"
-                        onClick={() => this.onCopyMyIdInClipboard()}
-                      >
-                        <i className="bi bi-copy" />
-                      </Button>
-                    </InputGroup>
-                    <Form.Group className="mt-3 mb-3">
-                      <Form.Label>
-                        <i className="bi bi-router" /> {locale.webSocketPort}
-                      </Form.Label>
-                      <Form.Control
-                        type="number"
-                        defaultValue={webSocketPort() ?? ""}
-                        ref={this.webSocketPortRef}
-                      />
-                    </Form.Group>
-                  </>
-                )
-                : (
-                  <InputGroup>
-                    <Form.Control
-                      defaultValue={hostIdValue != null && hostIdValue != myId
-                        ? hostIdValue
-                        : ""}
-                      ref={this.connectIdRef}
-                      disabled={this.state.connectionStatus !==
-                        ConnectionStatus.Disconnected}
-                    />
-                    <Button
-                      variant="outline-secondary"
-                      onClick={async (e) => {
-                        e.stopPropagation();
-                        await this.onQrcodeScan();
-                      }}
-                    >
-                      <i className="bi bi-qr-code-scan" />
-                    </Button>
-                  </InputGroup>
-                )}
-              <Button
-                className="mt-2 w-100"
-                variant={this.renderConnectButtonVariant()}
-                onClick={async () => await this.onConnectOrDisconnect()}
-              >
-                {this.renderConnectButtonContent()}
-              </Button>
-            </Form.Group>
-            <div className="mt-auto border-top pt-3">
-              <Form.Check
-                className="mb-2"
-                onChange={(e) => this.onSwitchHost(e.target.checked)}
-                defaultChecked={this.state.host}
-                type="switch"
-                label={
-                  <i
-                    className={`bi ${
-                      this.state.host ? "bi-broadcast" : "bi-broadcast-pin"
-                    }`}
-                  />
-                }
-              />
-              <Form.Check
-                className="mb-2"
-                onChange={(e) => this.onSwitchDark(e.target.checked)}
-                defaultChecked={this.state.dark}
-                type="switch"
-                label={
-                  <i
-                    className={`bi ${
-                      this.state.dark ? "bi-moon-fill" : "bi-sun-fill"
-                    }`}
-                  />
-                }
-              />
-            </div>
+            <Button
+              className="mb-2 w-100"
+              variant="primary"
+              active={!this.state.loadingAllowPushNotification}
+              onClick={async () => await this.onAllowPushNotification()}
+            >
+              <i className="bi bi-bell" /> {locale.allowPushNotification}{" "}
+              {this.state.loadingAllowPushNotification && (
+                <Spinner animation="border" size="sm" />
+              )}
+            </Button>
+            <Form.Check
+              className="mb-2"
+              onChange={async (e) => await this.onSwitchDark(e.target.checked)}
+              defaultChecked={this.state.dark}
+              type="switch"
+              label={
+                <i
+                  className={`bi ${
+                    this.state.dark ? "bi-moon-fill" : "bi-sun-fill"
+                  }`}
+                />
+              }
+            />
           </Offcanvas.Body>
         </Offcanvas>
         {array.length == 0 && (
@@ -449,7 +291,7 @@ export class Home extends Component<{}, {
                           <Col className="text-start">{character.player}</Col>
                         </Row>
                       </Card.Text>
-                      <ButtonGroup>
+                      <div className="card-actions">
                         {(character.owner === null ||
                           character.owner === myId) && (
                           <Button
@@ -497,7 +339,7 @@ export class Home extends Component<{}, {
                         >
                           <i className="bi bi-trash3" />
                         </Button>
-                      </ButtonGroup>
+                      </div>
                     </Card.Body>
                   </Card>
                 </Col>

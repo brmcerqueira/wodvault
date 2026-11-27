@@ -1,8 +1,14 @@
+import type { Context } from "hono";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import type { Bindings } from "./bindings.ts";
-import { get, put, shared } from "./character/mod.ts";
+import character from "./character/mod.ts";
+import events from "./events/mod.ts";
 import { imageUpload } from "./imageUpload.ts";
+import { locale } from "./i18n/locale.ts";
+import { vapidPublicKey } from "./vapidPublicKey.ts";
+
+export { CharacterDO, ConnectionDO } from "./do/mod.ts";
 
 const app = new Hono<Bindings>();
 
@@ -15,15 +21,29 @@ app.use(
   }),
 );
 
+app.onError((error: Error, context: Context<Bindings>) => {
+  console.error({
+    method: context.req.method,
+    path: context.req.path,
+    error: error.message,
+    stack: error.stack,
+  });
+
+  return context.json(
+    { error: locale.internalServerError },
+    500,
+  );
+});
+
 app.all("/api/upload", imageUpload);
 
-app.get("/api/character/:key.json", get);
+app.get("/api/vapid/key", vapidPublicKey);
 
-app.put("/api/character/:key.json", put);
+app.route("/api/events", events);
 
-app.get("/api/shared/:key.html", shared);
+app.route("/api/character", character);
 
-app.notFound((context) => {
+app.notFound((context: Context<Bindings>) => {
   return context.body(null, 404);
 });
 

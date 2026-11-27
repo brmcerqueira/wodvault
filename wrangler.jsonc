@@ -8,6 +8,24 @@
     "not_found_handling": "single-page-application",
     "run_worker_first": ["/api/*"],
   },
+  "durable_objects": {
+    "bindings": [
+      {
+        "name": "CHARACTERS",
+        "class_name": "CharacterDO",
+      },
+      {
+        "name": "CONNECTIONS",
+        "class_name": "ConnectionDO",
+      },
+    ],
+  },
+  "migrations": [
+    {
+      "tag": "v1",
+      "new_sqlite_classes": ["CharacterDO", "ConnectionDO"],
+    },
+  ],
   "kv_namespaces": [
     {
       "binding": "STORAGE",
@@ -15,9 +33,10 @@
     },
   ],
   "secrets": {
-    "required": ["IMGBB_API_KEY"],
+    "required": ["IMGBB_API_KEY", "VAPID_PRIVATE_KEY", "WEB_PUSH_SUBSCRIBER"],
   },
   "observability": {
     "enabled": true,
-  },
+    "head_sampling_rate": 1
+  }
 }

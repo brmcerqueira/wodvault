@@ -60,12 +60,8 @@ type OptionsLocale = {
 } & Named;
 
 export type LocaleType = {
-  connect: string;
+  allowPushNotification: string;
   cancel: string;
-  disconnect: string;
-  host: string;
-  connectedToHost: string;
-  yourHostId: string;
   emptyCharacters: string;
   addCharacters: string;
   health: string;
@@ -215,5 +211,4 @@ export type LocaleType = {
     common: Record<RitesCommonType, string>;
     social: Record<RitesSocialType, string>;
   } & Named;
-  webSocketPort: string;
 } & Named;

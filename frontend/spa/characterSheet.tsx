@@ -3,22 +3,26 @@ import { Component, createRef } from "react";
 import { Form, Nav, Navbar, Spinner } from "react-bootstrap";
 import { Navigate } from "react-router";
 import { JSX } from "react/jsx-runtime";
-import { buildCharacter, getCharacter } from "./services/characterService.ts";
-import {
-  observeCharactersUpdate,
-  sendCharacterUpdate,
-} from "./services/peerService.ts";
+import { buildCharacter } from "./services/characterService.ts";
 import { CharacterBag, CharacterBagContext } from "./characterBag.ts";
 import { ExperienceField } from "./fields/experienceField.tsx";
 import { locale } from "./i18n/locale.ts";
 import { characterTitle, keys } from "../../utils.ts";
+import {
+  characterEvents,
+  observeCharacterUpdate,
+  sendCharacterUpdate,
+} from "./services/sseService.ts";
+import { storage } from "../storage/mod.ts";
 
 export abstract class CharacterSheet extends Component<
   {},
   {
-    character: Character;
+    kind: CharacterKind;
     characterBag: CharacterBag;
-    loading: boolean;
+    shared: boolean;
+    isNew: boolean;
+    character: Character;
     key?: string;
     redirect?: string;
   }
@@ -40,31 +44,22 @@ export abstract class CharacterSheet extends Component<
 
     const shared = params.get("shared") === "true";
 
-    let character = key ? getCharacter(key) : undefined;
-
-    if (character && !shared) {
-      characterBag.adjustFields(character);
-    } else {
-      character = buildCharacter(kind);
-    }
-
     this.state = {
+      kind,
       characterBag,
-      character: character!,
-      loading: shared,
+      shared,
+      isNew: false,
+      character: null as unknown as Character,
       key,
     };
 
-    observeCharactersUpdate((characters, remove) => {
-      if (remove.includes(this.state.character.id)) {
+    observeCharacterUpdate((update) => {
+      if (update.remove && this.state.character.id == update.remove) {
         this.setState({ redirect: "/" });
-      } else if (!this.state.characterBag.edit) {
-        const character = characters.find((character) =>
-          character.id == this.state.character.id
-        );
-        if (character) {
-          this.state.characterBag.adjustFields(character);
-          this.setState({ character: character });
+      } else if (update.character && !this.state.characterBag.edit) {
+        if (this.state.character.id == update.character.id) {
+          this.state.characterBag.adjustFields(update.character);
+          this.setState({ character: update.character });
         }
       }
     });
@@ -72,12 +67,19 @@ export abstract class CharacterSheet extends Component<
 
   private async updateEdit(edit: boolean) {
     this.state.characterBag.edit = edit;
-
-    this.setState({ characterBag: this.state.characterBag });
+    let isNew = this.state.isNew;
 
     if (!edit) {
       await sendCharacterUpdate(this.state.character);
+      if (isNew) {
+        await characterEvents.subscribe({
+          subscribe: [this.state.character.id],
+        });
+        isNew = false;
+      }
     }
+
+    this.setState({ characterBag: this.state.characterBag, isNew });
   }
 
   private onChangeMode(mode: CharacterMode): void {
@@ -106,21 +108,29 @@ export abstract class CharacterSheet extends Component<
     };
   }
 
-  private async loadKeyByShared() {
-    const response = await fetch(
-      `api/character/${this.state.key}.json`,
-      {
-        method: "GET",
-      },
-    );
+  private async loadCharacter() {
+    let character: Character | undefined;
+    let isNew = false;
 
-    if (response.ok) {
-      const character = await response.json();
-      this.state.characterBag.adjustFields(character);
-      this.setState({ character: character, loading: false });
-    } else {
-      this.setState({ loading: false });
+    if (this.state.key) {
+      if (this.state.shared) {
+        character = await characterEvents.getCharacter(this.state.key);
+        if (character) {
+          await characterEvents.subscribe({ subscribe: [character.id] });
+        }
+      } else {
+        character = await storage.instance.characters.get(this.state.key);
+      }
     }
+
+    if (character) {
+      this.state.characterBag.adjustFields(character);
+    } else {
+      character = buildCharacter(this.state.kind);
+      isNew = true;
+    }
+
+    this.setState({ character, isNew });
   }
 
   protected abstract sheet(): JSX.Element;
@@ -130,8 +140,8 @@ export abstract class CharacterSheet extends Component<
       return <Navigate to={this.state.redirect} replace />;
     }
 
-    if (this.state.loading && this.state.key) {
-      this.loadKeyByShared();
+    if (this.state.character === null) {
+      this.loadCharacter();
       return <Spinner animation="border" size="sm" />;
     }
 

@@ -34,6 +34,8 @@ export type LocaleType = {
   storytellerChangeRollChannel: string;
   storytellerClearRollChannel: string;
   storytellerClearCurrentCharacter: string;
+  storytellerImportCharacter: string;
+  storytellerImportCharacterNotFound: string;
   hostId: string;
   notFound: string;
   commands: {
@@ -71,6 +73,10 @@ export type LocaleType = {
         setCharacterToUser: {
           player: CommandOption;
           character: CommandOption;
+        } & CommandOption;
+        importCharacter: {
+          code: CommandOption;
+          player: CommandOption;
         } & CommandOption;
       } & CommandOption;
       rollChannel: {

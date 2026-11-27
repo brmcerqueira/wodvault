@@ -8,15 +8,12 @@ import {
   InteractionType,
 } from "harmony";
 import { colors, emojis, InteractionResponseError } from "./utils.ts";
-import {
-  createMissingCommands,
-  interactionCommand,
-} from "./commands/module.ts";
+import { createMissingCommands, interactionCommand } from "./commands/mod.ts";
 import { logger } from "./logger.ts";
 import { encodeBase64 } from "@std/encoding/base64";
-import { interactionCustomId } from "./actions/module.ts";
+import { interactionCustomId } from "./actions/mod.ts";
 import { locale } from "./i18n/locale.ts";
-import { start } from "./webSocketService.ts";
+import { clockAdjust } from "../timestamp.ts";
 
 interface CreateEmojiPayload {
   name: string;
@@ -167,6 +164,6 @@ client.on("ready", async () => {
   }
 });
 
-start(parseInt(Deno.env.get("WEBSOCKET_PORT") ?? "8787"));
+await clockAdjust();
 
 await client.connect();

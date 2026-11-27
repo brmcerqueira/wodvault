@@ -35,6 +35,8 @@ export const pt: LocaleType & BaseLocaleType = Object.assign({
     "O narrador limpou a seleção do canal de rolagem.",
   storytellerClearCurrentCharacter:
     "O narrador não tem mais um personagem atribuído a ele.",
+  storytellerImportCharacter: "O narrador importou um personagem.",
+  storytellerImportCharacterNotFound: "O personagem não foi encontrado!",
   hostId: "Servidor",
   notFound: "Não encontrado",
   commands: {
@@ -152,6 +154,18 @@ export const pt: LocaleType & BaseLocaleType = Object.assign({
           character: {
             name: "personagem",
             description: "Personagem a ser escolhido",
+          },
+        },
+        importCharacter: {
+          name: "importar",
+          description: "Importar um personagem",
+          code: {
+            name: "chave",
+            description: "Chave do personagem a ser importado",
+          },
+          player: {
+            name: "jogador",
+            description: "Jogador a ser escolhido",
           },
         },
       },

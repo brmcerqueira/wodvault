@@ -1,5 +1,5 @@
 import { Character } from "../character.ts";
-import { timestamp } from "../utils.ts";
+import { timestamp } from "../timestamp.ts";
 import { RollResult } from "./diceRoll.ts";
 import { logger } from "./logger.ts";
 
@@ -14,6 +14,7 @@ const userIdCharacterId = "userId_characterId";
 const characterKey = (id: string) => [character, id] as const;
 const userIdCharacterIdKey = (id: string) => [userIdCharacterId, id] as const;
 const lastRollKey = (id: string) => ["lastRoll", id] as const;
+const myIdKey = ["myId"] as const;
 const storytellerIdKey = ["storytellerId"] as const;
 const rollChannelIdKey = ["rollChannelId"] as const;
 const difficultyKey = ["difficulty"] as const;
@@ -24,6 +25,12 @@ export type LastRoll = {
   content: string;
   result: RollResult;
 };
+
+if ((await getNullableValue(myIdKey)) == null) {
+  setNullableValue(myIdKey, crypto.randomUUID());
+}
+
+export const myId = await getNullableValue(myIdKey) as string;
 
 async function setNullableValue<T>(key: Deno.KvKey, value: T | null) {
   if (value === null) {

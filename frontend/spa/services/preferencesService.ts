@@ -1,74 +1,28 @@
-if (localStorage.getItem("myId") == null) {
-  localStorage.setItem("myId", crypto.randomUUID());
-}
+import { loadStorage, storage } from "../../storage/mod.ts";
 
-export const myId = localStorage.getItem("myId") as string;
+await loadStorage();
 
-export function webSocketPort(): number | null {
-  return localStorage.getItem("webSocketPort") ? parseInt(localStorage.getItem("webSocketPort") as string) : null;
-}
+export const myId = await storage.instance.preferences.myId();
 
-export function setWebSocketPort(port: number | null): void {
-  if (port === null) {
-    localStorage.removeItem("webSocketPort");
-  } else {
-    localStorage.setItem("webSocketPort", port.toString());
-  }
-}
+let dark = await storage.instance.preferences.isDark();
 
-export function hostId(): string | null {
-  return localStorage.getItem("hostId");
-}
-
-export function setHostId(id: string | null): void {
-  if (id === null) {
-    localStorage.removeItem("hostId");
-  } else {
-    localStorage.setItem("hostId", id);
-  }
-}
-
-export function isHost(): boolean {
-  return getBoolean("host");
-}
-
-export function setHost(value: boolean) {
-  localStorage.setItem("host", JSON.stringify(value));
-}
-
-let _dark = getBoolean("dark");
-
-if (_dark) {
+if (dark) {
   makeDark();
 }
 
 export function isDark(): boolean {
-  return _dark;
+  return dark;
 }
 
-export function setDark(value: boolean) {
-  _dark = value;
-  localStorage.setItem("dark", JSON.stringify(value));
+export async function setDark(value: boolean): Promise<void> {
+  dark = value;
+
+  await storage.instance.preferences.setDark(value);
 
   if (value) {
     makeDark();
   } else {
     makeWhite();
-  }
-}
-
-function getBoolean(key: string): boolean {
-  const value = localStorage.getItem(key);
-
-  if (value === null) {
-    return false;
-  }
-
-  try {
-    return JSON.parse(value) === true;
-  } catch {
-    localStorage.removeItem(key);
-    return false;
   }
 }
 

@@ -7,7 +7,7 @@ import {
 } from "../utils.ts";
 import { locale } from "../i18n/locale.ts";
 import { check } from "../diceRoll.ts";
-import { sendCharacterUpdate } from "../webSocketService.ts";
+import { sendCharacterUpdate } from "../sseService.ts";
 
 export async function checkSolver(
   interaction: Interaction,

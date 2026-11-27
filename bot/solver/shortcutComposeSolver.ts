@@ -5,7 +5,7 @@ import {
   MessageComponentType,
 } from "harmony";
 import { AttributeType, colors, ComposeInput } from "../utils.ts";
-import { composeButton } from "../actions/module.ts";
+import { composeButton } from "../actions/mod.ts";
 import { locale } from "../i18n/locale.ts";
 import { LocaleType } from "../../i18n/localeType.ts";
 
