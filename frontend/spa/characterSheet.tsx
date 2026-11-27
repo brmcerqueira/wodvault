@@ -21,6 +21,7 @@ export abstract class CharacterSheet extends Component<
     kind: CharacterKind;
     characterBag: CharacterBag;
     shared: boolean;
+    isNew: boolean;
     character: Character;
     key?: string;
     redirect?: string;
@@ -47,6 +48,7 @@ export abstract class CharacterSheet extends Component<
       kind,
       characterBag,
       shared,
+      isNew: false,
       character: null as unknown as Character,
       key,
     };
@@ -65,12 +67,19 @@ export abstract class CharacterSheet extends Component<
 
   private async updateEdit(edit: boolean) {
     this.state.characterBag.edit = edit;
-
-    this.setState({ characterBag: this.state.characterBag });
+    let isNew = this.state.isNew;
 
     if (!edit) {
       await sendCharacterUpdate(this.state.character);
+      if (isNew) {
+        await characterEvents.subscribe({
+          subscribe: [this.state.character.id],
+        });
+        isNew = false;
+      }
     }
+
+    this.setState({ characterBag: this.state.characterBag, isNew });
   }
 
   private onChangeMode(mode: CharacterMode): void {
@@ -101,10 +110,14 @@ export abstract class CharacterSheet extends Component<
 
   private async loadCharacter() {
     let character: Character | undefined;
+    let isNew = false;
 
     if (this.state.key) {
       if (this.state.shared) {
         character = await characterEvents.getCharacter(this.state.key);
+        if (character) {
+          await characterEvents.subscribe({ subscribe: [character.id] });
+        }
       } else {
         character = await storage.instance.characters.get(this.state.key);
       }
@@ -114,9 +127,10 @@ export abstract class CharacterSheet extends Component<
       this.state.characterBag.adjustFields(character);
     } else {
       character = buildCharacter(this.state.kind);
+      isNew = true;
     }
 
-    this.setState({ character: character });
+    this.setState({ character, isNew });
   }
 
   protected abstract sheet(): JSX.Element;

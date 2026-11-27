@@ -24,6 +24,7 @@ import { buildCharacter } from "./services/characterService.ts";
 import { isDark, myId, setDark } from "./services/preferencesService.ts";
 import { ImportCharacter } from "./dialog/importCharacter.tsx";
 import {
+  characterEvents,
   observeCharacterUpdate,
   sendCharacterUpdate,
 } from "./services/sseService.ts";
@@ -91,6 +92,7 @@ export class Home extends Component<{}, {
         data,
       ) as Character;
       await sendCharacterUpdate(character);
+      await characterEvents.subscribe({ subscribe: [character.id] });
       this.state.characters[character.id] = character;
       this.setState({ characters: this.state.characters });
       await dialog(new Alert(format(locale.import, character.name)));
@@ -98,16 +100,7 @@ export class Home extends Component<{}, {
   }
 
   private async onExport(character: Character) {
-    navigator.clipboard.writeText(JSON.stringify(character, (key, value) => {
-      if (
-        key === "id" || key === "owner" || key === "mode" ||
-        key === "timestamp" || key === "playerId"
-      ) {
-        return undefined;
-      }
-
-      return value;
-    }));
+    navigator.clipboard.writeText(JSON.stringify(character));
     await dialog(new Alert(format(locale.export, character.name)));
   }
 
@@ -133,6 +126,9 @@ export class Home extends Component<{}, {
         new Confirm(format(locale.onRemove.characters, character.name)),
       )
     ) {
+      await characterEvents.subscribe({
+        unsubscribe: [character.id],
+      });
       await storage.instance.characters.remove(character.id);
       delete this.state.characters[character.id];
       this.setState({ characters: this.state.characters });
