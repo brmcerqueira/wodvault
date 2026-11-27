@@ -218,7 +218,7 @@ export class Home extends Component<{}, {
               variant="primary"
               onClick={async () => await allowPushNotification()}
             >
-              <i className="bi bi-router" /> {locale.allowPushNotification}
+              <i className="bi bi-bell" /> {locale.allowPushNotification}
             </Button>
             <Form.Check
               className="mb-2"
