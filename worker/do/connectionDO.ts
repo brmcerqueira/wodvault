@@ -3,9 +3,12 @@ import { CharacterUpdate } from "../../sseTypes.ts";
 import { send, Subscription } from "webpush";
 import { vapid } from "../vapid.ts";
 
+const subscriptionKey = "subscription";
+
 export interface IConnectionDO {
   fetch(request: Request): Promise<Response>;
   sendCharacterUpdate(update: CharacterUpdate): Promise<void>;
+  webPushSubscription(subscription: Subscription): Promise<void>;
 }
 
 export class ConnectionDO extends DurableObject implements IConnectionDO {
@@ -19,6 +22,20 @@ export class ConnectionDO extends DurableObject implements IConnectionDO {
     env: Env,
   ) {
     super(state, env);
+
+    this.ctx.blockConcurrencyWhile(async () => {
+      const subscription = await this.ctx.storage.get<Subscription>(
+        subscriptionKey,
+      );
+      if (subscription) {
+        console.info(
+          `connection[${this.ctx.id}]-load-subscription -> ${
+            JSON.stringify(subscription)
+          }`,
+        );
+        this.subscription = subscription;
+      }
+    });
   }
 
   override async fetch(_request: Request): Promise<Response> {
@@ -83,9 +100,19 @@ export class ConnectionDO extends DurableObject implements IConnectionDO {
       console.info(`connection[${this.ctx.id}]-web-push -> ${message}`);
       await send(this.subscription, message, {
         vapid: vapid(this.env),
-        subscriber: "https://example.com/webpush",
+        subscriber: this.env.WEB_PUSH_SUBSCRIBER,
         ttl: 60,
       });
     }
+  }
+
+  public async webPushSubscription(subscription: Subscription): Promise<void> {
+    console.info(
+      `connection[${this.ctx.id}]-set-subscription -> ${
+        JSON.stringify(subscription)
+      }`,
+    );
+    this.subscription = subscription;
+    await this.ctx.storage.put(subscriptionKey, subscription);
   }
 }

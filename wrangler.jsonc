@@ -33,7 +33,7 @@
     },
   ],
   "secrets": {
-    "required": ["IMGBB_API_KEY", "VAPID_PRIVATE_KEY"],
+    "required": ["IMGBB_API_KEY", "VAPID_PRIVATE_KEY", "WEB_PUSH_SUBSCRIBER"],
   },
   "observability": {
     "enabled": true,

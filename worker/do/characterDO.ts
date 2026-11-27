@@ -22,7 +22,9 @@ export class CharacterDO extends DurableObject implements ICharacterDO {
       const connections = await this.ctx.storage.get<string[]>(connectionsKey);
       if (connections) {
         console.info(
-          `character[${this.ctx.id}]-connections -> ${connections.join(" | ")}`,
+          `character[${this.ctx.id}]-load-connections -> ${
+            connections.join(" | ")
+          }`,
         );
         for (const id of connections) {
           this.connections.add(id);
