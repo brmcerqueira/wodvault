@@ -115,9 +115,7 @@ export abstract class CharacterSheet extends Component<
     if (this.state.key) {
       if (this.state.shared) {
         character = await characterEvents.getCharacter(this.state.key);
-        if (character) {
-          await characterEvents.subscribe({ subscribe: [character.id] });
-        }
+        isNew = true;
       } else {
         character = await storage.instance.characters.get(this.state.key);
       }
