@@ -35,7 +35,7 @@ function setup(): Collections {
   };
 }
 
-function createStorage(): Promise<Storage> {
+export function createStorage(): Promise<Storage> {
   return new Promise((resolve, reject) => {
     const collections = setup();
 
@@ -72,4 +72,20 @@ function createStorage(): Promise<Storage> {
   });
 }
 
-export const storage = await createStorage();
+let instance: Storage | undefined;
+
+export async function loadStorage() {
+  if (instance === undefined) {
+    instance = await createStorage();
+  }
+}
+
+export const storage = {
+  get instance(): Storage {
+    if (instance === undefined) {
+      throw new Error("Storage has not been initialized");
+    }
+
+    return instance!;
+  },
+};

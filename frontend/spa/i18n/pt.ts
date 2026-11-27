@@ -4,12 +4,8 @@ import { basePt } from "../../../i18n/pt.ts";
 
 export const pt: LocaleType & BaseLocaleType = Object.assign({
   name: "Nome",
-  connect: "Conectar",
+  allowPushNotification: "Notificação offline",
   cancel: "Cancelar",
-  disconnect: "Desconectar",
-  host: "Hospedar",
-  connectedToHost: "Conectado ao host",
-  yourHostId: "Seu ID de host",
   emptyCharacters: "Você ainda não tem personagens",
   addCharacters:
     "Adicione um para começar sua estória e acompanhar o progresso.",
@@ -510,5 +506,4 @@ export const pt: LocaleType & BaseLocaleType = Object.assign({
       riteOfTheWinterWolf: "Ritual do Lobo do Inverno",
     },
   },
-  webSocketPort: "Porta do Bot",
 }, basePt) as LocaleType & BaseLocaleType;

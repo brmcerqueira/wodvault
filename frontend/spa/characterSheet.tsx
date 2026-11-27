@@ -106,7 +106,7 @@ export abstract class CharacterSheet extends Component<
       if (this.state.shared) {
         character = await characterEvents.getCharacter(this.state.key);
       } else {
-        character = await storage.characters.get(this.state.key);
+        character = await storage.instance.characters.get(this.state.key);
       }
     }
 

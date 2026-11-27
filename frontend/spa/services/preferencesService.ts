@@ -1,8 +1,10 @@
-import { storage } from "../../storage/mod.ts";
+import { loadStorage, storage } from "../../storage/mod.ts";
 
-export const myId = await storage.preferences.myId();
+await loadStorage();
 
-let dark = await storage.preferences.isDark();
+export const myId = await storage.instance.preferences.myId();
+
+let dark = await storage.instance.preferences.isDark();
 
 if (dark) {
   makeDark();
@@ -15,7 +17,7 @@ export function isDark(): boolean {
 export async function setDark(value: boolean): Promise<void> {
   dark = value;
 
-  await storage.preferences.setDark(value);
+  await storage.instance.preferences.setDark(value);
 
   if (value) {
     makeDark();

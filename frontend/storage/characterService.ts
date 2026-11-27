@@ -5,12 +5,14 @@ import { storage } from "./storage.ts";
 
 export async function saveCharacter(character: Character) {
   character.timestamp = timestamp();
-  await storage.characters.save(character);
+  await storage.instance.characters.save(character);
 }
 
 export async function treatCharacterUpdate(update: CharacterUpdate) {
   if (update.character) {
-    const character = await storage.characters.get(update.character.id);
+    const character = await storage.instance.characters.get(
+      update.character.id,
+    );
     if (character) {
       if (character.timestamp < update.character.timestamp) {
         await saveCharacter(update.character);
@@ -27,9 +29,9 @@ export async function treatCharacterUpdate(update: CharacterUpdate) {
   }
 
   if (update.remove) {
-    const character = await storage.characters.get(update.remove);
+    const character = await storage.instance.characters.get(update.remove);
     if (character) {
-      await storage.characters.remove(character.id);
+      await storage.instance.characters.remove(character.id);
     }
   }
 }

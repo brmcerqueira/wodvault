@@ -28,6 +28,7 @@ import {
   sendCharacterUpdate,
 } from "./services/sseService.ts";
 import { storage } from "../storage/mod.ts";
+import { allowPushNotification } from "./services/serviceWorkerService.ts";
 
 export class Home extends Component<{}, {
   showOffcanvas: boolean;
@@ -132,7 +133,7 @@ export class Home extends Component<{}, {
         new Confirm(format(locale.onRemove.characters, character.name)),
       )
     ) {
-      await storage.characters.remove(character.id);
+      await storage.instance.characters.remove(character.id);
       delete this.state.characters[character.id];
       this.setState({ characters: this.state.characters });
     }
@@ -154,7 +155,7 @@ export class Home extends Component<{}, {
   }
 
   private async loadCharacters() {
-    const characters = await storage.characters.all();
+    const characters = await storage.instance.characters.all();
 
     for (const character of characters) {
       this.state.characters[character.id] = character;
@@ -212,6 +213,13 @@ export class Home extends Component<{}, {
         >
           <Offcanvas.Header closeButton />
           <Offcanvas.Body className="d-flex flex-column">
+            <Button
+              className="mb-2 w-100"
+              variant="primary"
+              onClick={async () => await allowPushNotification()}
+            >
+              <i className="bi bi-router" /> {locale.allowPushNotification}
+            </Button>
             <Form.Check
               className="mb-2"
               onChange={async (e) => await this.onSwitchDark(e.target.checked)}

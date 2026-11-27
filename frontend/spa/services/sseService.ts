@@ -15,7 +15,9 @@ let characterUpdateCallback:
   | undefined;
 
 export const characterEvents = new CharacterEvents(myId, {
-  subscribe: (await storage.characters.all()).map((character) => character.id),
+  subscribe: (await storage.instance.characters.all()).map((character) =>
+    character.id
+  ),
 }, async (update) => {
   console.log("Event received:", update);
 
