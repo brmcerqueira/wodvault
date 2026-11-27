@@ -36,6 +36,7 @@ export class Home extends Component<{}, {
   dark: boolean;
   characters: Record<string, Character>;
   loading: boolean;
+  loadingAllowPushNotification: boolean;
   redirect?: string;
 }> {
   constructor() {
@@ -46,6 +47,7 @@ export class Home extends Component<{}, {
       dark: isDark(),
       characters: {},
       loading: true,
+      loadingAllowPushNotification: false,
     };
 
     observeCharacterUpdate((update) => {
@@ -61,7 +63,7 @@ export class Home extends Component<{}, {
     });
   }
 
-  private async onSwitchDark(value: boolean): Promise<void> {
+  private async onSwitchDark(value: boolean) {
     await setDark(value);
     this.setState({ dark: value });
   }
@@ -120,7 +122,7 @@ export class Home extends Component<{}, {
     }
   }
 
-  private async onRemove(character: Character): Promise<void> {
+  private async onRemove(character: Character) {
     if (
       await dialog(
         new Confirm(format(locale.onRemove.characters, character.name)),
@@ -133,6 +135,12 @@ export class Home extends Component<{}, {
       delete this.state.characters[character.id];
       this.setState({ characters: this.state.characters });
     }
+  }
+
+  private async onAllowPushNotification() {
+    this.setState({ loadingAllowPushNotification: true });
+    await allowPushNotification();
+    this.setState({ loadingAllowPushNotification: false });
   }
 
   private parseKind(kind: CharacterKind): string {
@@ -212,9 +220,13 @@ export class Home extends Component<{}, {
             <Button
               className="mb-2 w-100"
               variant="primary"
-              onClick={async () => await allowPushNotification()}
+              active={!this.state.loadingAllowPushNotification}
+              onClick={async () => await this.onAllowPushNotification()}
             >
-              <i className="bi bi-bell" /> {locale.allowPushNotification}
+              <i className="bi bi-bell" /> {locale.allowPushNotification}{" "}
+              {this.state.loadingAllowPushNotification && (
+                <Spinner animation="border" size="sm" />
+              )}
             </Button>
             <Form.Check
               className="mb-2"

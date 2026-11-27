@@ -31,27 +31,36 @@ function urlBase64ToUint8Array(
 
 export async function allowPushNotification() {
   const registration = await navigator.serviceWorker.ready;
-  const permission = await Notification.requestPermission();
 
-  if (permission !== "granted") {
-    throw new Error("Notification permission not granted");
+  let subscription = await registration.pushManager.getSubscription();
+
+  if (subscription) {
+    console.info("A Push subscription already exists");
+  } else {
+    const permission = await Notification.requestPermission();
+
+    if (permission !== "granted") {
+      console.info("Notification permission not granted");
+      return;
+    }
+
+    const response = await fetch("/api/vapid/key", {
+      method: "GET",
+      headers: {
+        "Content-Type": "text/plain; charset=utf-8",
+      },
+    });
+
+    if (!response.ok) {
+      console.info("Failed to retrieve the VAPID public key");
+      return;
+    }
+
+    subscription = await registration.pushManager.subscribe({
+      userVisibleOnly: true,
+      applicationServerKey: urlBase64ToUint8Array(await response.text()),
+    });
   }
-
-  const response = await fetch("/api/vapid/key", {
-    method: "GET",
-    headers: {
-      "Content-Type": "text/plain; charset=utf-8",
-    },
-  });
-
-  if (!response.ok) {
-    throw new Error("Failed to retrieve the VAPID public key");
-  }
-
-  const subscription = await registration.pushManager.subscribe({
-    userVisibleOnly: true,
-    applicationServerKey: urlBase64ToUint8Array(await response.text()),
-  });
 
   await fetch(`/api/events/${myId}/web/push/subscription`, {
     method: "PUT",
