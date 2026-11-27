@@ -53,7 +53,7 @@ export async function allowPushNotification() {
     applicationServerKey: urlBase64ToUint8Array(await response.text()),
   });
 
-  await fetch(`/api/events/${myId}/push/notification`, {
+  await fetch(`/api/events/${myId}/push/subscription`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
